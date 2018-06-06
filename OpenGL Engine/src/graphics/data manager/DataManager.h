@@ -11,7 +11,7 @@ public:
 	DataManager();
 	~DataManager();
 
-	Mesh LoadToVAO(std::vector<float> positions);
+	Mesh LoadToVAO(std::vector<float> positions, std::vector<unsigned int> indices);
 
 
 	void CleanUp();
@@ -19,6 +19,7 @@ public:
 private:
 	unsigned int createVAO();
 	void storeDataInAttributes(unsigned int location, std::vector<float> positions);
+	void bindIndiceBuffer(std::vector<unsigned int> indices);
 
 	void unbindVAO();
 

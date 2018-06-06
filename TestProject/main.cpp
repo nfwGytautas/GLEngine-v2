@@ -4,31 +4,31 @@
 
 int main()
 {
-	Engine::Initialize();
-	Display::CreateDisplay(1280,720, "Game");
+	Engine::Initialize(1280, 720, "Game");
 
 	float vertices[] = {
 		-0.5f, 0.5f, 0.0f,
 		-0.5f, -0.5f, 0.0f,
 		0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
 		0.5f, 0.5f, 0.0f,
-		-0.5f, 0.5f, 0.0f
 	};
 
-	Mesh testMesh = Engine::Loader().LoadToVAO(ArrayToVector<float>(vertices));
+	unsigned int indices[] = {
+		0,1,3,
+		3,1,2
+	};
 
-	while (!Display::Closed())
+	Mesh testMesh = Engine::Loader::LoadToVAO(ArrayToVector(vertices), ArrayToVector(indices));
+
+	while (!Engine::ShouldClose())
 	{
-		Engine::Renderer().Prepare();
-		Engine::Renderer().Render(testMesh);
+		Engine::Renderer::Prepare();
+		Engine::Renderer::Render(testMesh);
 
 
-		Display::UpdateDisplay();
+		Engine::Update();
 	}
 
 	Engine::Terminate();
-	Display::DestroyDisplay();
-
 	return 0;
 }

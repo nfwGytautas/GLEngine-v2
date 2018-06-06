@@ -3,35 +3,42 @@
 #include "algorithm\Algorithm.h"
 
 #include "graphics\mesh\Mesh.h"
-#include "graphics\display\Display.h"
 
-#include "graphics\data manager\DataManager.h"
-#include "graphics\renderer\Renderer.h"
+class StaticShader;
+class DataManager;
+class Renderer3D;
 
 class Engine
 {
 
 public:
+	class Loader
+	{
+	public:
+		static Mesh LoadToVAO(std::vector<float> positions, std::vector<unsigned int> indices);
+	};
+
+	class Renderer
+	{
+	public:
+		static void Prepare();
+		static void Render(Mesh mesh);
+	};
+
 	static bool IsInitialized()
 	{
 		return m_initialized;
 	}
 
-	static DataManager& Loader()
-	{
-		return *m_loader;
-	}
+	static void Update();
+	static bool ShouldClose();
 
-	static Renderer3D& Renderer()
-	{
-		return *m_renderer;
-	}
-
-	static void Initialize();
+	static void Initialize(unsigned int width, unsigned int height, const char* title, bool fullscreen = false);
 	static void Terminate();
 
 private:
 	static bool m_initialized;
 	static DataManager* m_loader;
 	static Renderer3D* m_renderer;
+	static StaticShader* m_shader;
 };

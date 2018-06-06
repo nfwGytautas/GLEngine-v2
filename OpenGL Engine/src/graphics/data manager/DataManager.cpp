@@ -8,12 +8,13 @@
 #include "..\FrameworkAssert.h"
 #include "..\mesh\Mesh.h"
 
-Mesh DataManager::LoadToVAO(std::vector<float> positions)
+Mesh DataManager::LoadToVAO(std::vector<float> positions, std::vector<unsigned int> indices)
 {
 	unsigned int vaoID = createVAO();
+	bindIndiceBuffer(indices);
 	storeDataInAttributes(AttributeLocation::Position, positions);
 	unbindVAO();
-	return Mesh(vaoID, positions.size() / 3 /*3 because vertice has x,y,z */);
+	return Mesh(vaoID, indices.size());
 }
 
 void DataManager::CleanUp()
@@ -62,6 +63,16 @@ void DataManager::storeDataInAttributes(unsigned int location, std::vector<float
 	));
 
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+}
+
+void DataManager::bindIndiceBuffer(std::vector<unsigned int> indices)
+{
+	unsigned int vboID;
+	GLCall(glGenBuffers(1, &vboID));
+	m_vbos.push_back(vboID);
+
+	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboID));
+	GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW));
 }
 
 void DataManager::unbindVAO()
