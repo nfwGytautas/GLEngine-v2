@@ -1,7 +1,6 @@
 #include "Display.h"
 #include "..\..\Engine.h"
 
-#include <glm\glm.hpp>
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 
@@ -44,72 +43,64 @@ void Display::Clear()
 
 void Display::CreateDisplay(unsigned int width, unsigned int height, const char* title, bool fullscreen)
 {
-	if(Engine::IsInitialized())
+	if(!created)
 	{
-		if(!created)
+		try
 		{
-			try
-			{
-				//Sets private variables
-				m_Width = width;
-				m_Height = height;
-				m_Title = title;
+			//Sets private variables
+			m_Width = width;
+			m_Height = height;
+			m_Title = title;
 
-				//Initializes glfw
-				if (!glfwInit())
-				{			
-					GLCall(glfwTerminate());			
-					throw "Failed initializing glfw3";					
-				}
-
-				//Creates a window
-				if (!fullscreen) m_Window = glfwCreateWindow(m_Width, m_Height, m_Title, NULL, NULL);
-				else m_Window = glfwCreateWindow(m_Width, m_Height, m_Title, glfwGetPrimaryMonitor(), NULL);
-
-				//Checks if a window is created successfully
-				if (!m_Window)
-				{
-					throw "Failed to create window!";
-				}
-
-				//Makes the window context current obviously
-				glfwMakeContextCurrent(m_Window);				
-
-				//Callbacks
-				SetUpCallbacks();
-
-				//Check for glew initialization status
-				if (glewInit() != GLEW_OK)
-				{
-					throw "Could not initialize GLEW!";
-				}
-
-				//Print version
-				std::cout << "[Engine][Display] OpenGL version: " << glGetString(GL_VERSION) << std::endl;
-
-				//Set the viewport
-				GLCall(glViewport(0, 0, m_Width, m_Height));
-
-				//Get variable for FPS counting
-				lastFrameTime = GetCurrentTime();
-
-				//Finaly set that the window is created
-				created = true;
-
-				std::cout << "[Engine][Display] Created successfully. \n";
-				return;
+			//Initializes glfw
+			if (!glfwInit())
+			{			
+				GLCall(glfwTerminate());			
+				throw "Failed initializing glfw3";					
 			}
-			catch (const char* exception)
+
+			//Creates a window
+			if (!fullscreen) m_Window = glfwCreateWindow(m_Width, m_Height, m_Title, NULL, NULL);
+			else m_Window = glfwCreateWindow(m_Width, m_Height, m_Title, glfwGetPrimaryMonitor(), NULL);
+
+			//Checks if a window is created successfully
+			if (!m_Window)
 			{
-				std::cout << "[Engine][Display] Exception caught: " << exception << " Arguments: (" << width << "; " << height << "; " << title << "; " << fullscreen << ")" << "\n";
-				return;
+				throw "Failed to create window!";
 			}
+
+			//Makes the window context current obviously
+			glfwMakeContextCurrent(m_Window);				
+
+			//Callbacks
+			SetUpCallbacks();
+
+			//Check for glew initialization status
+			if (glewInit() != GLEW_OK)
+			{
+				throw "Could not initialize GLEW!";
+			}
+
+			//Print version
+			std::cout << "[Engine][Display] OpenGL version: " << glGetString(GL_VERSION) << std::endl;
+
+			//Set the viewport
+			GLCall(glViewport(0, 0, m_Width, m_Height));
+
+			//Get variable for FPS counting
+			lastFrameTime = GetCurrentTime();
+
+			//Finaly set that the window is created
+			created = true;
+
+			std::cout << "[Engine][Display] Created successfully. \n";
+			return;
 		}
-	}
-	else
-	{
-		std::cout << "[Engine][Display] Engine was not initialized before creating the display!" << std::endl;
-		return;
+		catch (const char* exception)
+		{
+			std::cout << "[Engine][Display] Exception caught: " << exception << " Arguments: (" << width << "; " << height << "; " << title << "; " << fullscreen << ")" << "\n";
+			return;
+		}
 	}
 }
 

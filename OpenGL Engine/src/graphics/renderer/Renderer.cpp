@@ -16,18 +16,17 @@ Renderer3D::~Renderer3D()
 {
 }
 
-
 void Renderer3D::Prepare()
 {
-	GLCall(glClearColor(1, 0, 0, 1));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT));
+	GLCall(glClearColor(1, 0, 0, 1));
 }
 
 void Renderer3D::Render(Mesh mesh)
 {
 	GLCall(glBindVertexArray(mesh.GetRenderID()));
 	GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
-	GLCall(glDrawArrays(GL_TRIANGLES, 0, (GLsizei)mesh.GetVertexCount()));
+	GLCall(glDrawElements(GL_TRIANGLES, (GLsizei)mesh.GetVertexCount(), GL_UNSIGNED_INT, (void*)0 ));
 	GLCall(glDisableVertexAttribArray(AttributeLocation::Position));
 	GLCall(glBindVertexArray(0));
 }

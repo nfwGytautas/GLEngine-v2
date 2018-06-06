@@ -17,14 +17,11 @@ private:
 	static bool created;
 
 public:
-
 	static int PressedKey;
 	static int HeldKey;
 		
-
 	static double ScrollOffsetX;
 	static double ScrollOffsetY;
-
 private:
 	static double GetCurrentTime();
 	static void SetUpCallbacks();
