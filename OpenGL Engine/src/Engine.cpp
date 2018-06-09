@@ -59,7 +59,24 @@ void Engine::Renderer::Render(Mesh mesh)
 	m_shader->Unbind();
 }
 
-Mesh Engine::Loader::LoadToVAO(std::vector<float> positions, std::vector<unsigned int> indices)
+void Engine::Renderer::Render(Model model)
 {
-	return m_loader->LoadToVAO(positions, indices);
+	m_shader->Bind();
+	m_renderer->Render(model);
+	m_shader->Unbind();
+}
+
+Mesh Engine::Loader::LoadToVAO(std::vector<float> positions, std::vector<float> textureCoords, std::vector<unsigned int> indices)
+{
+	return m_loader->LoadToVAO(positions, textureCoords, indices);
+}
+
+Material Engine::Loader::LoadMaterial(std::string filePath)
+{
+	return Material(LoadTexture(filePath));
+}
+
+unsigned int Engine::Loader::LoadTexture(std::string filePath)
+{
+	return m_loader->LoadTexture(filePath);
 }

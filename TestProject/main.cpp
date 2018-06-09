@@ -18,12 +18,22 @@ int main()
 		3,1,2
 	};
 
-	Mesh testMesh = Engine::Loader::LoadToVAO(ArrayToVector(vertices), ArrayToVector(indices));
+	float textureCoords[] = {
+		0,0,
+		0,1,
+		1,1,
+		1,0
+	};
+
+	Mesh testMesh = Engine::Loader::LoadToVAO(ArrayToVector(vertices), ArrayToVector(textureCoords), ArrayToVector(indices));
+	Material testMaterial = Engine::Loader::LoadMaterial("E:/Test files/nfw/grassTexture.png");
+
+	Model testModel(testMesh, testMaterial);
 
 	while (!Engine::ShouldClose())
 	{
 		Engine::Renderer::Prepare();
-		Engine::Renderer::Render(testMesh);
+		Engine::Renderer::Render(testModel);
 
 
 		Engine::Update();

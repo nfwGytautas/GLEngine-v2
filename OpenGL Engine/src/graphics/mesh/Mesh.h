@@ -1,7 +1,12 @@
 #pragma once
 
+#ifdef NFW_DLL_EXPORT
+#	define NFW_API __declspec(dllexport)
+#else
+#	define NFW_API __declspec(dllimport)
+#endif
 
-class Mesh
+class NFW_API Mesh
 {
 public:
 	Mesh(unsigned int vertexArray, unsigned int vertexCount);

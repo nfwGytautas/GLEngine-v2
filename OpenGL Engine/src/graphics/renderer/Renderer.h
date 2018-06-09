@@ -1,6 +1,7 @@
 #pragma once
 
 class Mesh;
+class Model;
 
 class Renderer3D
 {
@@ -11,5 +12,6 @@ public:
 	void Prepare();
 
 	void Render(Mesh mesh);
+	void Render(Model model);
 };
 
