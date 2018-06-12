@@ -30,13 +30,16 @@ int main()
 
 	Model testModel(testMesh, testMaterial);
 
-	while (!Engine::ShouldClose())
+	Entity testEntity(testModel, glm::vec3(-1, 0, 0), 0, 0, 0, 1);
+
+	while (!Engine::Window::ShouldClose())
 	{
+		testEntity.IncreasePosition(0, 0, -0.0002f);
 		Engine::Renderer::Prepare();
-		Engine::Renderer::Render(testModel);
+		Engine::Renderer::Render(testEntity);
 
 
-		Engine::Update();
+		Engine::Window::Update();
 	}
 
 	Engine::Terminate();
