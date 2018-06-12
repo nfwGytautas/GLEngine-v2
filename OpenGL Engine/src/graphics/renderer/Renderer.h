@@ -2,6 +2,8 @@
 
 class Mesh;
 class Model;
+class Entity;
+class StaticShader;
 
 class Renderer3D
 {
@@ -13,5 +15,6 @@ public:
 
 	void Render(Mesh mesh);
 	void Render(Model model);
+	void Render(Entity entity, StaticShader* shader);
 };
 

@@ -10,6 +10,11 @@
 #include "..\mesh\Mesh.h"
 #include "..\material\Material.h"
 #include "..\renderables\Model.h"
+#include "..\renderables\Entity.h"
+
+#include "..\..\maths\Maths.h"
+
+#include "..\shader\StaticShader.h"
 
 Renderer3D::Renderer3D()
 {
@@ -39,6 +44,22 @@ void Renderer3D::Render(Model model)
 	GLCall(glBindVertexArray(mesh.GetRenderID()));
 	GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
 	GLCall(glEnableVertexAttribArray(AttributeLocation::UVs));
+	GLCall(glActiveTexture(GL_TEXTURE0));
+	GLCall(glBindTexture(GL_TEXTURE_2D, model.GetMaterial().GetTextureID()));
+	GLCall(glDrawElements(GL_TRIANGLES, (GLsizei)mesh.GetVertexCount(), GL_UNSIGNED_INT, (void*)0));
+	GLCall(glDisableVertexAttribArray(AttributeLocation::Position));
+	GLCall(glDisableVertexAttribArray(AttributeLocation::UVs));
+	GLCall(glBindVertexArray(0));
+}
+
+void Renderer3D::Render(Entity entity, StaticShader* shader)
+{
+	Model model = entity.GetModel();
+	Mesh mesh = model.GetMesh();
+	GLCall(glBindVertexArray(mesh.GetRenderID()));
+	GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
+	GLCall(glEnableVertexAttribArray(AttributeLocation::UVs));
+	shader->LoadTransformationMatrix(Maths::CreateTransformationMatrix(entity.GetPosition(), entity.GetRotation(), entity.GetScale()));
 	GLCall(glActiveTexture(GL_TEXTURE0));
 	GLCall(glBindTexture(GL_TEXTURE_2D, model.GetMaterial().GetTextureID()));
 	GLCall(glDrawElements(GL_TRIANGLES, (GLsizei)mesh.GetVertexCount(), GL_UNSIGNED_INT, (void*)0));

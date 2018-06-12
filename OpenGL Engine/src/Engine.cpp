@@ -37,12 +37,12 @@ void Engine::Terminate()
 	std::cout << "[Engine] Engine terminated!" << std::endl;
 }
 
-void Engine::Update()
+void Engine::Window::Update()
 {
 	Display::UpdateDisplay();
 }
 
-bool Engine::ShouldClose()
+bool Engine::Window::ShouldClose()
 {
 	return Display::Closed();
 }
@@ -63,6 +63,13 @@ void Engine::Renderer::Render(Model model)
 {
 	m_shader->Bind();
 	m_renderer->Render(model);
+	m_shader->Unbind();
+}
+
+void Engine::Renderer::Render(Entity entity)
+{
+	m_shader->Bind();
+	m_renderer->Render(entity, m_shader);
 	m_shader->Unbind();
 }
 

@@ -4,14 +4,15 @@
 #include <GLFW\glfw3.h>
 #include "..\FrameworkAssert.h"
 
+#include <glm\glm.hpp>
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>
 
-Shader::Shader(std::string vertexFile, std::string fragmentFile)
+Shader::Shader()
 {
-	m_programID = loadShaders(vertexFile, fragmentFile);
 }
 Shader::~Shader()
 {
@@ -22,10 +23,16 @@ void Shader::bindAttribute(unsigned int attribute, std::string variableName)
 	GLCall(glBindAttribLocation(m_programID, attribute, variableName.c_str()));
 }
 
-unsigned int Shader::loadShaders(std::string vertexPath, std::string fragmentPath)
+int Shader::getUniformLocation(std::string uniformName)
 {
-	unsigned int ProgramID;
+	GLCall(int location = glGetUniformLocation(m_programID, uniformName.c_str()));
+	if (location == -1)
+		std::cout << "[Engine][Shader] Warning: uniform '" << uniformName << "' doesn't exist!" << std::endl;
+	return location;
+}
 
+void Shader::loadShaders(std::string vertexPath, std::string fragmentPath)
+{
 	std::string fragmentSource;
 	std::string vertexSource;
 
@@ -36,7 +43,7 @@ unsigned int Shader::loadShaders(std::string vertexPath, std::string fragmentPat
 	}
 	else {
 		std::cout << "[Engine][Shader] Impossible to read " << vertexPath << std::endl;
-		return 0;
+		return;
 	}
 	vertexFile.close();
 	// Read the Fragment Shader code from the file
@@ -47,7 +54,7 @@ unsigned int Shader::loadShaders(std::string vertexPath, std::string fragmentPat
 	}
 	else {
 		std::cout << "[Engine][Shader] Impossible to read " << fragmentPath << std::endl;
-		return 0;
+		return;
 	}
 	fragmentFile.close();
 
@@ -97,29 +104,30 @@ unsigned int Shader::loadShaders(std::string vertexPath, std::string fragmentPat
 
 	// Link the program
 	std::cout << "[Engine][Shader] Linking program \n";
-	ProgramID = (unsigned int)glCreateProgram();
-	GLCall(glAttachShader(ProgramID, VertexShaderID));
-	GLCall(glAttachShader(ProgramID, FragmentShaderID));
+	m_programID = (unsigned int)glCreateProgram();
+	GLCall(glAttachShader(m_programID, VertexShaderID));
+	GLCall(glAttachShader(m_programID, FragmentShaderID));
 	BindAttributes();
-	GLCall(glLinkProgram(ProgramID));
+	GLCall(glLinkProgram(m_programID));
+	GLCall(glValidateProgram(m_programID));
+	GetAllUniformLocations();
 
 	// Check the program
-	GLCall(glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result));
-	GLCall(glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength));
+	GLCall(glGetProgramiv(m_programID, GL_LINK_STATUS, &Result));
+	GLCall(glGetProgramiv(m_programID, GL_INFO_LOG_LENGTH, &InfoLogLength));
 	if (InfoLogLength > 0) {
 		std::vector<char> ProgramErrorMessage(InfoLogLength + 1);
-		GLCall(glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]));
+		GLCall(glGetProgramInfoLog(m_programID, InfoLogLength, NULL, &ProgramErrorMessage[0]));
 		std::cout << "[Engine][Shader] " << &ProgramErrorMessage[0] << std::endl;
 	}
 
 
-	GLCall(glDetachShader(ProgramID, VertexShaderID));
-	GLCall(glDetachShader(ProgramID, FragmentShaderID));
+	GLCall(glDetachShader(m_programID, VertexShaderID));
+	GLCall(glDetachShader(m_programID, FragmentShaderID));
 
 	GLCall(glDeleteShader(VertexShaderID));
 	GLCall(glDeleteShader(FragmentShaderID));
 
-	return ProgramID;
 }
 
 void Shader::Bind()
@@ -130,3 +138,26 @@ void Shader::Unbind()
 {
 	GLCall(glUseProgram(0));
 }
+
+void Shader::SetFloatUniform(int location, float value)
+{
+	GLCall(glUniform1f(location, value));
+}
+void Shader::SetVec3Uniform(int location, glm::vec3 vector)
+{
+	GLCall(glUniform3f(location, vector.x, vector.y, vector.z));
+}
+void Shader::SetBooleanUniform(int location, bool value)
+{
+	float result = 0;
+	if (value)
+	{
+		result = 1;
+	}	
+	SetFloatUniform(location, value);
+}
+void Shader::SetMatrix4fUniform(int location, glm::mat4 matrix)
+{
+	GLCall(glUniformMatrix4fv(location, 1, GL_FALSE, &matrix[0][0]));
+}
+
