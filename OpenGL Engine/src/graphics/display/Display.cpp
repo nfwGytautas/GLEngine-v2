@@ -3,13 +3,15 @@
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
+#include "..\FrameworkAssert.h"
 
 #include <iostream>
 
 #include <sstream>
 #include <ctime>
 
-#include "..\FrameworkAssert.h"
+#include "..\..\input\InputManager.h"
+
 
 static const unsigned int SystemTimerResolution = 1000;
 
@@ -25,17 +27,10 @@ float Display::delta = 0.0f;
 
 bool Display::created = false;
 
-int Display::PressedKey = -1;
-int Display::HeldKey = -1;
-
-double Display::ScrollOffsetX = 0;
-double Display::ScrollOffsetY = 0;
-
 bool Display::Closed()
 {
 	return glfwWindowShouldClose(m_Window);
 }
-
 void Display::Clear()
 {
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
@@ -73,7 +68,7 @@ void Display::CreateDisplay(unsigned int width, unsigned int height, const char*
 			glfwMakeContextCurrent(m_Window);				
 
 			//Callbacks
-			SetUpCallbacks();
+			InputManager::SetCallBacks(m_Window);
 
 			//Check for glew initialization status
 			if (glewInit() != GLEW_OK)
@@ -103,7 +98,6 @@ void Display::CreateDisplay(unsigned int width, unsigned int height, const char*
 		}
 	}
 }
-
 void Display::UpdateDisplay()
 {
 	if (created)
@@ -115,10 +109,7 @@ void Display::UpdateDisplay()
 			std::cout << "[Engine][Display] OpenGL error: " << error << "\n";
 		}
 
-		PressedKey = -1;
-
-		//Poll events
-		GLCall(glfwPollEvents());
+		InputManager::Update();
 
 		//Swap buffers
 		GLCall(glfwSwapBuffers(m_Window));
@@ -137,28 +128,6 @@ void Display::DestroyDisplay()
 	created = false;
 }
 
-void Display::SetCursorPosition(double xpos, double ypos)
-{
-	if (created)
-	{
-		GLCall(glfwSetCursorPos(m_Window, xpos, ypos));
-	}
-}
-void Display::GetCursorPosition(double & xpos, double & ypos)
-{
-	if (created)
-	{
-		GLCall(glfwGetCursorPos(m_Window, &xpos, &ypos));
-	}
-}
-void Display::CenterCursorPosition()
-{
-	if (created)
-	{
-		GLCall(glfwSetCursorPos(m_Window, m_Width/2, m_Height/2));
-	}
-}
-
 void Display::SwitchVerticalSync(bool state)
 {
 	if (state = true) GLCall(glfwSwapInterval(1));
@@ -171,42 +140,3 @@ double Display::GetCurrentTime()
 	return glfwGetTime();
 }
 
-void Display::SetUpCallbacks()
-{
-	//Callbacks go here
-	GLCall(glfwSetKeyCallback(m_Window, KeyCallback));
-	GLCall(glfwSetScrollCallback(m_Window, ScrollCallback));
-}
-void Display::KeyCallback(GLFWwindow * win, int key, int scancode, int action, int mods)
-{
-	try
-	{
-		if (action == GLFW_PRESS)
-		{
-			Display::PressedKey = key;
-			Display::HeldKey = key;
-		}
-		else if (action == GLFW_RELEASE)
-		{
-			Display::HeldKey = -1;
-		}
-	}
-	catch(...)
-	{
-		std::cout << "[Engine][Display] Exception caught." << "KeyCallback(unknown)" << "\n";
-		return;
-	}
-}
-void Display::ScrollCallback(GLFWwindow * win, double xoffset, double yoffset)
-{
-	try
-	{
-		Display::ScrollOffsetX = xoffset;
-		Display::ScrollOffsetY = yoffset;
-	}
-	catch (...)
-	{
-		std::cout << "[Engine][Display] Exception caught." << "ScrollCallback(unknown)" << "\n";
-		return;
-	}
-}

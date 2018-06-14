@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\input\InputKeys.h" />
+    <ClInclude Include="src\input\InputManager.h" />
+    <ClInclude Include="src\graphics\display\Camera.h" />
     <ClInclude Include="src\graphics\renderables\Entity.h" />
     <ClInclude Include="src\maths\Maths.h" />
     <ClInclude Include="src\graphics\renderables\Model.h" />
@@ -35,6 +38,8 @@
     <ClInclude Include="src\graphics\shader\StaticShader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\input\InputManager.cpp" />
+    <ClCompile Include="src\graphics\display\Camera.cpp" />
     <ClCompile Include="src\graphics\renderables\Entity.cpp" />
     <ClCompile Include="src\maths\Maths.cpp" />
     <ClCompile Include="src\graphics\renderables\Model.cpp" />
