@@ -1,9 +1,17 @@
 #pragma once
 
 //Header containing all the variables used by the graphics engine
-
-enum AttributeLocation
+namespace AttributeLocation
 {
-	Position = 0,
-	UVs = 1
-};
+	enum ALoc
+	{
+		Position = 0,
+		UVs = 1
+	};
+}
+
+namespace ShaderPath
+{
+	const char* const Vertex =   "E:/CV/OpenGL engine/OpenGL Engine/Shaders/v4/vertex.shader";
+	const char* const Fragment = "E:/CV/OpenGL engine/OpenGL Engine/Shaders/v4/fragment.shader";
+}

@@ -4,35 +4,6 @@ struct GLFWwindow;
 
 class Display
 {
-private:
-	static GLFWwindow* m_Window;
-	static const char* m_Title;
-
-	static unsigned int m_Width;
-	static unsigned int m_Height;
-
-	static double lastFrameTime;
-	static float delta;
-
-	static bool created;
-
-public:
-	static int PressedKey;
-	static int HeldKey;
-		
-	static double ScrollOffsetX;
-	static double ScrollOffsetY;
-private:
-	static double GetCurrentTime();
-	static void SetUpCallbacks();
-
-	static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-	static void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
-
-private:
-	Display() {}
-	~Display() {}
-
 public:
 	//Checks if the window has been closed
 	static bool Closed();
@@ -56,13 +27,23 @@ public:
 	//Destroys the display
 	static 	void DestroyDisplay();
 
-	//Sets mouse cursor position
-	static void SetCursorPosition(double xpos, double ypos);
-	//Gets mouse cursor position
-	static 	void GetCursorPosition(double& xpos, double& ypos);
-	//Centers mouse cursor on the screen
-	static void CenterCursorPosition();
-
 	//Toggles V-Sync
 	static void SwitchVerticalSync(bool state);
+
+private:
+	static GLFWwindow* m_Window;
+	static const char* m_Title;
+
+	static unsigned int m_Width;
+	static unsigned int m_Height;
+
+	static double lastFrameTime;
+	static float delta;
+
+	static bool created;
+private:
+	static double GetCurrentTime();
+private:
+	Display() {}
+	~Display() {}
 };

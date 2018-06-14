@@ -8,13 +8,15 @@
 #include "graphics\renderables\Model.h"
 #include "graphics\renderables\Entity.h"
 
+#include "input\InputKeys.h"
+
 class StaticShader;
 class DataManager;
 class Renderer3D;
+class Camera;
 
 class Engine
 {
-
 public:
 	class Loader
 	{
@@ -39,20 +41,36 @@ public:
 	public:
 		static void Update();
 		static bool ShouldClose();
+		static void VSync(bool option);
+	};
+
+	class Input
+	{
+	public:
+		class Keyboard
+		{
+		public:
+			bool IsKeyDown(Key key);
+		};
+
+		class Mouse
+		{
+		public:
+
+		};
 	};
 
 	static bool IsInitialized()
 	{
 		return m_initialized;
 	}
-
-
 	static void Initialize(unsigned int width, unsigned int height, const char* title, bool fullscreen = false);
 	static void Terminate();
 
 private:
 	static bool m_initialized;
 	static DataManager* m_loader;
-	static Renderer3D* m_renderer;
 	static StaticShader* m_shader;
+	static Renderer3D* m_renderer;
+	static Camera* m_camera;
 };
