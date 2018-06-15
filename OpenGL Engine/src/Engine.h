@@ -21,6 +21,7 @@ public:
 	class Loader
 	{
 	public:
+		static Mesh LoadOBJ(std::string filePath);
 		static Mesh LoadToVAO(std::vector<float> positions, std::vector<float> textureCoords, std::vector<unsigned int> indices);
 		static Material LoadMaterial(std::string filePath);
 
