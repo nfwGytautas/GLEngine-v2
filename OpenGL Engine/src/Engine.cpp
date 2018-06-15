@@ -6,6 +6,7 @@
 #include "graphics\shader\StaticShader.h"
 #include "graphics\renderer\Renderer.h"
 #include "graphics\data manager\DataManager.h"
+#include "graphics\data manager\OBJLoader.h"
 #include "graphics\display\Camera.h"
 
 #include <iostream>
@@ -101,6 +102,11 @@ void Engine::Renderer::Render(Entity entity)
 //============================================================================================================================
 //LOADER
 //============================================================================================================================
+Mesh Engine::Loader::LoadOBJ(std::string filePath)
+{
+	return OBJLoader::LoadOBJ(filePath, *m_loader);
+}
+
 Mesh Engine::Loader::LoadToVAO(std::vector<float> positions, std::vector<float> textureCoords, std::vector<unsigned int> indices)
 {
 	return m_loader->LoadToVAO(positions, textureCoords, indices);

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\graphics\data manager\OBJLoader.h" />
     <ClInclude Include="src\input\InputKeys.h" />
     <ClInclude Include="src\input\InputManager.h" />
     <ClInclude Include="src\graphics\display\Camera.h" />
@@ -38,6 +39,7 @@
     <ClInclude Include="src\graphics\shader\StaticShader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\graphics\data manager\OBJLoader.cpp" />
     <ClCompile Include="src\input\InputManager.cpp" />
     <ClCompile Include="src\graphics\display\Camera.cpp" />
     <ClCompile Include="src\graphics\renderables\Entity.cpp" />
@@ -130,7 +132,7 @@
       <PreprocessorDefinitions>GLEW_STATIC;NFW_DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;SOIL.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;SOIL.lib;opengl32.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>C:\Users\gytau\Desktop\OpenGL clean\x$(PlatformArchitecture);E:\Boost\boost_1_66_0\x$(PlatformArchitecture)\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -150,7 +152,7 @@
       <PreprocessorDefinitions>GLEW_STATIC;NFW_DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;SOIL.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;SOIL.lib;opengl32.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>C:\Users\gytau\Desktop\OpenGL clean\x$(PlatformArchitecture);E:\Boost\boost_1_66_0\x$(PlatformArchitecture)\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -178,7 +180,7 @@
       <AdditionalDependencies>SOIL.lib;glew32s.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;SOIL.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;SOIL.lib;opengl32.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>C:\Users\gytau\Desktop\OpenGL clean\x$(PlatformArchitecture);E:\Boost\boost_1_66_0\x$(PlatformArchitecture)\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -202,7 +204,7 @@
       <AdditionalDependencies>SOIL.lib;glew32s.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>glew32s.lib;glfw3.lib;SOIL.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;glfw3.lib;SOIL.lib;opengl32.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>C:\Users\gytau\Desktop\OpenGL clean\x$(PlatformArchitecture);E:\Boost\boost_1_66_0\x$(PlatformArchitecture)\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
