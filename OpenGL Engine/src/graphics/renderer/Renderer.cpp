@@ -41,12 +41,14 @@ void Renderer3D::Prepare()
 void Renderer3D::Render(Entity entity, StaticShader* shader)
 {
 	Model model = entity.GetModel();
+	Material material = model.GetMaterial();
 	Mesh mesh = model.GetMesh();
 	GLCall(glBindVertexArray(mesh.GetRenderID()));
 	GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
 	GLCall(glEnableVertexAttribArray(AttributeLocation::UVs));
 	GLCall(glEnableVertexAttribArray(AttributeLocation::Normal));
 	shader->LoadTransformationMatrix(Maths::CreateTransformationMatrix(entity.GetPosition(), entity.GetRotation(), entity.GetScale()));
+	shader->LoadShineVariables(material.GetShineDamper(), material.GetReflectivity());
 	GLCall(glActiveTexture(GL_TEXTURE0));
 	GLCall(glBindTexture(GL_TEXTURE_2D, model.GetMaterial().GetTextureID()));
 	GLCall(glDrawElements(GL_TRIANGLES, (GLsizei)mesh.GetVertexCount(), GL_UNSIGNED_INT, (void*)0));

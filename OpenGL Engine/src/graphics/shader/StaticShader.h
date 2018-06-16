@@ -15,6 +15,7 @@ public:
 	void LoadProjectionMatrix(glm::mat4 matrix);
 	void LoadViewMatrix(Camera& camera);
 	void LoadLight(Light& light);
+	void LoadShineVariables(float damper, float reflectivity);
 protected:
 	void BindAttributes() override; 
 	void GetAllUniformLocations() override;
@@ -27,5 +28,7 @@ private:
 	int m_location_viewMatrix;
 	int m_location_lightPosition;
 	int m_location_lightColor;
+	int m_location_shineDamper;
+	int m_location_reflectivity;
 };
 

@@ -30,11 +30,15 @@ void StaticShader::LoadViewMatrix(Camera& camera)
 	glm::mat4 viewMatrix = Maths::CreateViewMatrix(&camera);
 	this->SetMatrix4fUniform(m_location_viewMatrix, viewMatrix);
 }
-
 void StaticShader::LoadLight(Light& light)
 {
 	this->SetVec3Uniform(m_location_lightPosition, light.GetPosition());
 	this->SetVec3Uniform(m_location_lightColor, light.GetColor());
+}
+void StaticShader::LoadShineVariables(float damper, float reflectivity)
+{
+	this->SetFloatUniform(m_location_shineDamper, damper);
+	this->SetFloatUniform(m_location_reflectivity, reflectivity);
 }
 
 void StaticShader::BindAttributes()
@@ -50,4 +54,6 @@ void StaticShader::GetAllUniformLocations()
 	m_location_viewMatrix = this->getUniformLocation("viewMatrix");
 	m_location_lightPosition = this->getUniformLocation("lightPosition");
 	m_location_lightColor = this->getUniformLocation("lightColour");
+	m_location_shineDamper = this->getUniformLocation("shineDamper");
+	m_location_reflectivity = this->getUniformLocation("reflectivity");
 }

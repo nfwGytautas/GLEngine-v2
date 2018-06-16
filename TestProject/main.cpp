@@ -7,7 +7,7 @@ int main()
 	Engine::Initialize(1280, 720, "Game");
 
 	Mesh testMesh = Engine::Loader::LoadOBJ("E:/Test files/nfw/dragon.obj");
-	Material testMaterial = Engine::Loader::LoadMaterial("E:/Test files/nfw/dragon.png");
+	Material testMaterial = Engine::Loader::LoadMaterial("E:/Test files/nfw/dragon.png", 10, 1);
 
 	Model testModel(testMesh, testMaterial);
 

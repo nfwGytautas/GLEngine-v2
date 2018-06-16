@@ -104,9 +104,9 @@ Mesh Engine::Loader::LoadToVAO(std::vector<float> positions, std::vector<float> 
 	return m_loader->LoadToVAO(positions, textureCoords, normals, indices);
 }
 
-Material Engine::Loader::LoadMaterial(std::string filePath)
+Material Engine::Loader::LoadMaterial(std::string filePath, float shineDamper, float reflectivity)
 {
-	return Material(LoadTexture(filePath));
+	return Material(LoadTexture(filePath), shineDamper, reflectivity);
 }
 
 unsigned int Engine::Loader::LoadTexture(std::string filePath)

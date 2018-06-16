@@ -21,7 +21,8 @@ public:
 	public:
 		static Mesh LoadOBJ(std::string filePath);
 		static Mesh LoadToVAO(std::vector<float> positions, std::vector<float> textureCoords, std::vector<float> normals, std::vector<unsigned int> indices);
-		static Material LoadMaterial(std::string filePath);
+		//TODO: Change this so that the engine would analyze a material file and figure out all the needed variables itself
+		static Material LoadMaterial(std::string filePath, float shineDamper = 1, float reflectivity = 0);
 
 		static unsigned int LoadTexture(std::string filePath);
 	};
