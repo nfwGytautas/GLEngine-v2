@@ -75,23 +75,15 @@ void Engine::Renderer::Prepare()
 	m_renderer->Prepare();
 }
 
-void Engine::Renderer::Render(Mesh mesh)
+//TODO: Optimize
+void Engine::Renderer::SetLight(Light& light)
 {
 	m_shader->Bind();
-	m_shader->LoadViewMatrix(*m_camera);
-	m_renderer->Render(mesh);
+	m_shader->LoadLight(light);
 	m_shader->Unbind();
 }
 
-void Engine::Renderer::Render(Model model)
-{
-	m_shader->Bind();
-	m_shader->LoadViewMatrix(*m_camera);
-	m_renderer->Render(model);
-	m_shader->Unbind();
-}
-
-void Engine::Renderer::Render(Entity entity)
+void Engine::Renderer::Render(Entity& entity)
 {
 	m_shader->Bind();
 	m_shader->LoadViewMatrix(*m_camera);
@@ -107,9 +99,9 @@ Mesh Engine::Loader::LoadOBJ(std::string filePath)
 	return OBJLoader::LoadOBJ(filePath, *m_loader);
 }
 
-Mesh Engine::Loader::LoadToVAO(std::vector<float> positions, std::vector<float> textureCoords, std::vector<unsigned int> indices)
+Mesh Engine::Loader::LoadToVAO(std::vector<float> positions, std::vector<float> textureCoords, std::vector<float> normals, std::vector<unsigned int> indices)
 {
-	return m_loader->LoadToVAO(positions, textureCoords, indices);
+	return m_loader->LoadToVAO(positions, textureCoords, normals, indices);
 }
 
 Material Engine::Loader::LoadMaterial(std::string filePath)

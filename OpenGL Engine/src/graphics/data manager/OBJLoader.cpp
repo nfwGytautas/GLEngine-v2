@@ -64,5 +64,5 @@ Mesh OBJLoader::LoadOBJ(std::string filePath, DataManager& manager)
 			for (unsigned int indiceIdx = 0; indiceIdx < face.mNumIndices; indiceIdx++) { out_indices.push_back(face.mIndices[indiceIdx]); }
 		}
 	}
-	return manager.LoadToVAO(Maths::Vec3ToFloatVector(out_vertices), Maths::Vec2ToFloatVector(out_uvs), out_indices);
+	return manager.LoadToVAO(Maths::Vec3ToFloatVector(out_vertices), Maths::Vec2ToFloatVector(out_uvs), Maths::Vec3ToFloatVector(out_normals), out_indices);
 }

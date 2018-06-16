@@ -2,11 +2,9 @@
 
 #include "algorithm\Algorithm.h"
 
-#include "graphics\mesh\Mesh.h"
-#include "graphics\material\Material.h"
-
 #include "graphics\renderables\Model.h"
 #include "graphics\renderables\Entity.h"
+#include "graphics\renderables\Light.h"
 
 #include "input\InputKeys.h"
 
@@ -22,7 +20,7 @@ public:
 	{
 	public:
 		static Mesh LoadOBJ(std::string filePath);
-		static Mesh LoadToVAO(std::vector<float> positions, std::vector<float> textureCoords, std::vector<unsigned int> indices);
+		static Mesh LoadToVAO(std::vector<float> positions, std::vector<float> textureCoords, std::vector<float> normals, std::vector<unsigned int> indices);
 		static Material LoadMaterial(std::string filePath);
 
 		static unsigned int LoadTexture(std::string filePath);
@@ -32,9 +30,8 @@ public:
 	{
 	public:
 		static void Prepare();
-		static void Render(Mesh mesh);
-		static void Render(Model model);
-		static void Render(Entity entity);
+		static void SetLight(Light& light);
+		static void Render(Entity& entity);
 	};
 
 	class Window

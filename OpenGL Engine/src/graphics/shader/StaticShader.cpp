@@ -3,6 +3,8 @@
 #include "..\gtypes\gTypes.h"
 #include "..\..\maths\Maths.h"
 
+#include "..\renderables\Light.h"
+
 const char* StaticShader::VERTEX_FILE = ShaderPath::Vertex;
 const char* StaticShader::FRAGMENT_FILE = ShaderPath::Fragment;
 
@@ -29,14 +31,23 @@ void StaticShader::LoadViewMatrix(Camera& camera)
 	this->SetMatrix4fUniform(m_location_viewMatrix, viewMatrix);
 }
 
+void StaticShader::LoadLight(Light& light)
+{
+	this->SetVec3Uniform(m_location_lightPosition, light.GetPosition());
+	this->SetVec3Uniform(m_location_lightColor, light.GetColor());
+}
+
 void StaticShader::BindAttributes()
 {
 	this->bindAttribute(AttributeLocation::Position, "position");
 	this->bindAttribute(AttributeLocation::UVs,	"textureCoords");
+	this->bindAttribute(AttributeLocation::Normal, "normal");
 }
 void StaticShader::GetAllUniformLocations()
 {
 	m_location_transformationMatrix = this->getUniformLocation("transformationMatrix");
 	m_location_projectionMatrix = this->getUniformLocation("projectionMatrix");
 	m_location_viewMatrix = this->getUniformLocation("viewMatrix");
+	m_location_lightPosition = this->getUniformLocation("lightPosition");
+	m_location_lightColor = this->getUniformLocation("lightColour");
 }

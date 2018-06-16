@@ -14,12 +14,13 @@
 
 #include <iostream>
 
-Mesh DataManager::LoadToVAO(std::vector<float> positions, std::vector<float> textureCoords, std::vector<unsigned int> indices)
+Mesh DataManager::LoadToVAO(std::vector<float> positions, std::vector<float> textureCoords, std::vector<float> normals, std::vector<unsigned int> indices)
 {
 	unsigned int vaoID = createVAO();
 	bindIndiceBuffer(indices);
 	storeDataInAttributes(AttributeLocation::Position, 3, positions);
 	storeDataInAttributes(AttributeLocation::UVs, 2, textureCoords);
+	storeDataInAttributes(AttributeLocation::Normal, 3, normals);
 	unbindVAO();
 	return Mesh(vaoID, indices.size());
 }

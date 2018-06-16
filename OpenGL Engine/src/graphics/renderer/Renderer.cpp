@@ -38,29 +38,6 @@ void Renderer3D::Prepare()
 	GLCall(glClearColor(0, 0.3f, 0.0f, 1));
 }
 
-void Renderer3D::Render(Mesh mesh)
-{
-	GLCall(glBindVertexArray(mesh.GetRenderID()));
-	GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
-	GLCall(glDrawElements(GL_TRIANGLES, (GLsizei)mesh.GetVertexCount(), GL_UNSIGNED_INT, (void*)0 ));
-	GLCall(glDisableVertexAttribArray(AttributeLocation::Position));
-	GLCall(glBindVertexArray(0));
-}
-
-void Renderer3D::Render(Model model)
-{
-	Mesh mesh = model.GetMesh();
-	GLCall(glBindVertexArray(mesh.GetRenderID()));
-	GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
-	GLCall(glEnableVertexAttribArray(AttributeLocation::UVs));
-	GLCall(glActiveTexture(GL_TEXTURE0));
-	GLCall(glBindTexture(GL_TEXTURE_2D, model.GetMaterial().GetTextureID()));
-	GLCall(glDrawElements(GL_TRIANGLES, (GLsizei)mesh.GetVertexCount(), GL_UNSIGNED_INT, (void*)0));
-	GLCall(glDisableVertexAttribArray(AttributeLocation::Position));
-	GLCall(glDisableVertexAttribArray(AttributeLocation::UVs));
-	GLCall(glBindVertexArray(0));
-}
-
 void Renderer3D::Render(Entity entity, StaticShader* shader)
 {
 	Model model = entity.GetModel();
@@ -68,12 +45,14 @@ void Renderer3D::Render(Entity entity, StaticShader* shader)
 	GLCall(glBindVertexArray(mesh.GetRenderID()));
 	GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
 	GLCall(glEnableVertexAttribArray(AttributeLocation::UVs));
+	GLCall(glEnableVertexAttribArray(AttributeLocation::Normal));
 	shader->LoadTransformationMatrix(Maths::CreateTransformationMatrix(entity.GetPosition(), entity.GetRotation(), entity.GetScale()));
 	GLCall(glActiveTexture(GL_TEXTURE0));
 	GLCall(glBindTexture(GL_TEXTURE_2D, model.GetMaterial().GetTextureID()));
 	GLCall(glDrawElements(GL_TRIANGLES, (GLsizei)mesh.GetVertexCount(), GL_UNSIGNED_INT, (void*)0));
 	GLCall(glDisableVertexAttribArray(AttributeLocation::Position));
 	GLCall(glDisableVertexAttribArray(AttributeLocation::UVs));
+	GLCall(glDisableVertexAttribArray(AttributeLocation::Normal));
 	GLCall(glBindVertexArray(0));
 }
 
