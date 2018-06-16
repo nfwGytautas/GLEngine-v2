@@ -6,12 +6,13 @@ namespace AttributeLocation
 	enum ALoc
 	{
 		Position = 0,
-		UVs = 1
+		UVs = 1,
+		Normal = 2
 	};
 }
 
 namespace ShaderPath
 {
-	const char* const Vertex =   "E:/CV/OpenGL engine/OpenGL Engine/Shaders/v4/vertex.shader";
-	const char* const Fragment = "E:/CV/OpenGL engine/OpenGL Engine/Shaders/v4/fragment.shader";
+	const char* const Vertex =   "E:/CV/OpenGL engine/OpenGL Engine/Shaders/v5.1/vertex.shader";
+	const char* const Fragment = "E:/CV/OpenGL engine/OpenGL Engine/Shaders/v5.1/fragment.shader";
 }

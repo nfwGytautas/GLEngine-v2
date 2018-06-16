@@ -15,8 +15,6 @@ public:
 
 	void Prepare();
 
-	void Render(Mesh mesh);
-	void Render(Model model);
 	void Render(Entity entity, StaticShader* shader);
 private:
 	//TODO: Move to engine/camera

@@ -11,7 +11,7 @@ public:
 	DataManager();
 	~DataManager();
 
-	Mesh LoadToVAO(std::vector<float> positions, std::vector<float> textureCoords, std::vector<unsigned int> indices);
+	Mesh LoadToVAO(std::vector<float> positions, std::vector<float> textureCoords, std::vector<float> normals, std::vector<unsigned int> indices);
 	unsigned int LoadTexture(std::string filePath);
 
 
