@@ -14,3 +14,8 @@ Development started at: 2018-06-08
 * The Open-Asset-Importer-Lib (Assimp) http://www.assimp.org/
 * Boost C++ Libraries (boost) https://www.boost.org/ 
   * Filesystem https://www.boost.org/doc/libs/1_67_0/libs/filesystem/doc/index.htm
+
+**CREDITS**
+* A big chunk of engine code is drawn from https://www.youtube.com/user/ThinMatrix game engine series
+* A good starting place http://www.opengl-tutorial.org/
+* Really good C++ and OpenGL toturials https://www.youtube.com/user/TheChernoProject
