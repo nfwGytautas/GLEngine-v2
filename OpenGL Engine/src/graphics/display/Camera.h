@@ -25,7 +25,7 @@ private:
 	glm::vec3 m_direction;
 	glm::vec3 m_right;
 
-	float m_horizontalAngle = 0.0f;
+	float m_horizontalAngle = 180.0f;
 	float m_verticalAngle = 0.0f;
 
 	float m_moveSpeed = 3.0f;

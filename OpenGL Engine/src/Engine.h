@@ -10,7 +10,7 @@
 
 class StaticShader;
 class DataManager;
-class Renderer3D;
+class MasterRenderer;
 class Camera;
 
 class Engine
@@ -30,9 +30,8 @@ public:
 	class Renderer
 	{
 	public:
-		static void Prepare();
-		static void SetLight(Light& light);
-		static void Render(Entity& entity);
+		static void AddEntity(Entity& entity);
+		static void Render(Light& sun);
 	};
 
 	class Window
@@ -70,6 +69,6 @@ private:
 	static bool m_initialized;
 	static DataManager* m_loader;
 	static StaticShader* m_shader;
-	static Renderer3D* m_renderer;
+	static MasterRenderer* m_renderer;
 	static Camera* m_camera;
 };

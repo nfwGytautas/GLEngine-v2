@@ -16,6 +16,7 @@ Shader::Shader()
 }
 Shader::~Shader()
 {
+	GLCall(glDeleteProgram(m_programID));
 }
 
 void Shader::bindAttribute(unsigned int attribute, std::string variableName)
