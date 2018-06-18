@@ -4,6 +4,7 @@
 #include "input\InputManager.h"
 
 #include "graphics\shader\StaticShader.h"
+#include "graphics\shader\TerrainShader.h"
 #include "graphics\renderer\MasterRenderer.h"
 #include "graphics\data manager\DataManager.h"
 #include "graphics\data manager\OBJLoader.h"
@@ -14,6 +15,7 @@
 bool Engine::m_initialized = false;
 DataManager* Engine::m_loader = nullptr;
 StaticShader* Engine::m_shader = nullptr;
+TerrainShader* Engine::m_terrainShader = nullptr;
 MasterRenderer* Engine::m_renderer = nullptr;
 Camera* Engine::m_camera = nullptr;
 
@@ -25,7 +27,8 @@ void Engine::Initialize(unsigned int width, unsigned int height, const char* tit
 	Display::CreateDisplay(width, height, title, fullscreen);
 	m_loader = new DataManager();
 	m_shader = new StaticShader();
-	m_renderer = new MasterRenderer(*m_shader);
+	m_terrainShader = new TerrainShader();
+	m_renderer = new MasterRenderer(*m_shader, *m_terrainShader);
 	m_camera = new Camera();
 
 
@@ -39,6 +42,7 @@ void Engine::Terminate()
 
 	delete m_loader;
 	delete m_shader;
+	delete m_terrainShader;
 	delete m_renderer;
 	delete m_camera;
 
@@ -73,6 +77,11 @@ void Engine::Window::VSync(bool option)
 void Engine::Renderer::AddEntity(Entity& entity)
 {
 	m_renderer->ProcessEntity(entity);
+}
+
+void Engine::Renderer::AddTerrain(Terrain& terrain)
+{
+	m_renderer->ProcessTerrain(terrain);
 }
 
 void Engine::Renderer::Render(Light& sun)

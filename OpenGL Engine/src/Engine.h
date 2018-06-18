@@ -5,10 +5,12 @@
 #include "graphics\renderables\Model.h"
 #include "graphics\renderables\Entity.h"
 #include "graphics\renderables\Light.h"
+#include "graphics\renderables\Terrain.h"
 
 #include "input\InputKeys.h"
 
 class StaticShader;
+class TerrainShader;
 class DataManager;
 class MasterRenderer;
 class Camera;
@@ -31,6 +33,7 @@ public:
 	{
 	public:
 		static void AddEntity(Entity& entity);
+		static void AddTerrain(Terrain& terrain);
 		static void Render(Light& sun);
 	};
 
@@ -69,6 +72,7 @@ private:
 	static bool m_initialized;
 	static DataManager* m_loader;
 	static StaticShader* m_shader;
+	static TerrainShader* m_terrainShader;
 	static MasterRenderer* m_renderer;
 	static Camera* m_camera;
 };

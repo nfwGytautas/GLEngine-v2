@@ -13,6 +13,9 @@ namespace AttributeLocation
 
 namespace ShaderPath
 {
-	const char* const Vertex =   "E:/CV/OpenGL engine/OpenGL Engine/Shaders/v5.1/vertex.shader";
-	const char* const Fragment = "E:/CV/OpenGL engine/OpenGL Engine/Shaders/v5.1/fragment.shader";
+	const char* const Vertex =   "E:/CV/OpenGL engine/OpenGL Engine/Shaders/v6/vertex.shader";
+	const char* const Fragment = "E:/CV/OpenGL engine/OpenGL Engine/Shaders/v6/fragment.shader";
+
+	const char* const TerrainVertex = "E:/CV/OpenGL engine/OpenGL Engine/Shaders/v6/terrainVertex.shader";
+	const char* const TerrainFragment = "E:/CV/OpenGL engine/OpenGL Engine/Shaders/v6/terrainFragment.shader";
 }

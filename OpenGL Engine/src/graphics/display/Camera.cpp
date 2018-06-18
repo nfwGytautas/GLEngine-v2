@@ -5,11 +5,12 @@
 #include <iostream>
 
 //TODO: This really should not be here
+#include "Display.h"
 #include <glm\gtx\transform.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 
 Camera::Camera()
-	:m_position(glm::vec3(0,0,5))
+	:m_position(glm::vec3(0,1,5))
 {
 }
 Camera::~Camera()
@@ -25,21 +26,21 @@ void Camera::Move()
 	m_horizontalAngle += 0.005f * /*deltaTime */ float(1280 / 2 - xpos);
 	m_verticalAngle += 0.005f * /*deltaTime */ float(720 / 2 - ypos);
 
-	if (InputManager::Keyboard::IsKeyDown(Key::KEY_S))
-	{
-		m_position.z += 0.02f;
-	}
 	if (InputManager::Keyboard::IsKeyDown(Key::KEY_W))
 	{
-		m_position.z -= 0.02f;
+		m_position += m_direction * Display::GetDelta() * 20.0f;
 	}
-	if (InputManager::Keyboard::IsKeyDown(Key::KEY_D))
+	else if (InputManager::Keyboard::IsKeyDown(Key::KEY_S))
 	{
-		m_position.x += 0.02f;
+		m_position -= m_direction * Display::GetDelta() * 20.0f;
 	}
-	if (InputManager::Keyboard::IsKeyDown(Key::KEY_A))
+	else if (InputManager::Keyboard::IsKeyDown(Key::KEY_D))
 	{
-		m_position.x -= 0.02f;
+		m_position += m_right * Display::GetDelta() * 20.0f;
+	}
+	else if (InputManager::Keyboard::IsKeyDown(Key::KEY_A))
+	{
+		m_position -= m_right * Display::GetDelta() * 20.0f;
 	}
 }
 
