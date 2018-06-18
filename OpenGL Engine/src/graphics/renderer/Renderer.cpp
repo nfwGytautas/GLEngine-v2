@@ -20,12 +20,15 @@
 
 #include "..\shader\StaticShader.h"
 
-Renderer3D::Renderer3D(StaticShader* shader)
+Renderer3D::Renderer3D(StaticShader& shader)
+	:m_shader(shader)
 {
+	GLCall(glEnable(GL_CULL_FACE));
+	GLCall(glCullFace(GL_BACK));
 	createProjectionMatrix();
-	shader->Bind();
-	shader->LoadProjectionMatrix(m_projectionMatrix);
-	shader->Unbind();
+	m_shader.Bind();
+	m_shader.LoadProjectionMatrix(m_projectionMatrix);
+	m_shader.Unbind();
 }
 Renderer3D::~Renderer3D()
 {
@@ -38,24 +41,46 @@ void Renderer3D::Prepare()
 	GLCall(glClearColor(0, 0.3f, 0.0f, 1));
 }
 
-void Renderer3D::Render(Entity entity, StaticShader* shader)
+void Renderer3D::Render(std::unordered_map<Model, std::vector<Entity>, KeyHasher> renderList)
 {
-	Model model = entity.GetModel();
-	Material material = model.GetMaterial();
+	for(auto it : renderList)
+	{
+		Model model = it.first;
+		prepareModel(model);
+		std::vector<Entity> batch = it.second;
+		for (Entity entity : batch)
+		{
+			prepareInstance(entity);
+			GLCall(glDrawElements(GL_TRIANGLES, (GLsizei)model.GetMesh().GetVertexCount(), GL_UNSIGNED_INT, (void*)0));
+		}
+		unbindModel();
+	}
+}
+
+void Renderer3D::prepareModel(Model & model)
+{
 	Mesh mesh = model.GetMesh();
 	GLCall(glBindVertexArray(mesh.GetRenderID()));
 	GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
 	GLCall(glEnableVertexAttribArray(AttributeLocation::UVs));
 	GLCall(glEnableVertexAttribArray(AttributeLocation::Normal));
-	shader->LoadTransformationMatrix(Maths::CreateTransformationMatrix(entity.GetPosition(), entity.GetRotation(), entity.GetScale()));
-	shader->LoadShineVariables(material.GetShineDamper(), material.GetReflectivity());
+	Material material = model.GetMaterial();
+	m_shader.LoadShineVariables(material.GetShineDamper(), material.GetReflectivity());
 	GLCall(glActiveTexture(GL_TEXTURE0));
 	GLCall(glBindTexture(GL_TEXTURE_2D, model.GetMaterial().GetTextureID()));
-	GLCall(glDrawElements(GL_TRIANGLES, (GLsizei)mesh.GetVertexCount(), GL_UNSIGNED_INT, (void*)0));
+}
+
+void Renderer3D::unbindModel()
+{
 	GLCall(glDisableVertexAttribArray(AttributeLocation::Position));
 	GLCall(glDisableVertexAttribArray(AttributeLocation::UVs));
 	GLCall(glDisableVertexAttribArray(AttributeLocation::Normal));
 	GLCall(glBindVertexArray(0));
+}
+
+void Renderer3D::prepareInstance(Entity & entity)
+{
+	m_shader.LoadTransformationMatrix(Maths::CreateTransformationMatrix(entity.GetPosition(), entity.GetRotation(), entity.GetScale()));
 }
 
 void Renderer3D::createProjectionMatrix()

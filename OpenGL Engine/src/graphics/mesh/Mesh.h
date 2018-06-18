@@ -6,11 +6,11 @@ public:
 	Mesh(unsigned int vertexArray, unsigned int vertexCount);
 	~Mesh();
 
-	unsigned int GetRenderID()
+	unsigned int GetRenderID() const
 	{
 		return m_vaoID;
 	}
-	unsigned int GetVertexCount()
+	unsigned int GetVertexCount() const
 	{
 		return m_vertexCount;
 	}

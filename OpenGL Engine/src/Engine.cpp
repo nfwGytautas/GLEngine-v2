@@ -4,7 +4,7 @@
 #include "input\InputManager.h"
 
 #include "graphics\shader\StaticShader.h"
-#include "graphics\renderer\Renderer.h"
+#include "graphics\renderer\MasterRenderer.h"
 #include "graphics\data manager\DataManager.h"
 #include "graphics\data manager\OBJLoader.h"
 #include "graphics\display\Camera.h"
@@ -14,7 +14,7 @@
 bool Engine::m_initialized = false;
 DataManager* Engine::m_loader = nullptr;
 StaticShader* Engine::m_shader = nullptr;
-Renderer3D* Engine::m_renderer = nullptr;
+MasterRenderer* Engine::m_renderer = nullptr;
 Camera* Engine::m_camera = nullptr;
 
 //============================================================================================================================
@@ -25,7 +25,7 @@ void Engine::Initialize(unsigned int width, unsigned int height, const char* tit
 	Display::CreateDisplay(width, height, title, fullscreen);
 	m_loader = new DataManager();
 	m_shader = new StaticShader();
-	m_renderer = new Renderer3D(m_shader);
+	m_renderer = new MasterRenderer(*m_shader);
 	m_camera = new Camera();
 
 
@@ -53,6 +53,7 @@ void Engine::Terminate()
 //============================================================================================================================
 void Engine::Window::Update()
 {
+	m_camera->Move();
 	Display::UpdateDisplay();
 }
 
@@ -69,26 +70,14 @@ void Engine::Window::VSync(bool option)
 //============================================================================================================================
 //RENDERER
 //============================================================================================================================
-void Engine::Renderer::Prepare()
+void Engine::Renderer::AddEntity(Entity& entity)
 {
-	m_camera->Move();
-	m_renderer->Prepare();
+	m_renderer->ProcessEntity(entity);
 }
 
-//TODO: Optimize
-void Engine::Renderer::SetLight(Light& light)
+void Engine::Renderer::Render(Light& sun)
 {
-	m_shader->Bind();
-	m_shader->LoadLight(light);
-	m_shader->Unbind();
-}
-
-void Engine::Renderer::Render(Entity& entity)
-{
-	m_shader->Bind();
-	m_shader->LoadViewMatrix(*m_camera);
-	m_renderer->Render(entity, m_shader);
-	m_shader->Unbind();
+	m_renderer->Render(sun, *m_camera);
 }
 
 //============================================================================================================================

@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\graphics\renderer\HashImplementations.h" />
+    <ClInclude Include="src\graphics\renderer\MasterRenderer.h" />
     <ClInclude Include="src\graphics\renderables\Light.h" />
     <ClInclude Include="src\graphics\data manager\OBJLoader.h" />
     <ClInclude Include="src\input\InputKeys.h" />
@@ -40,6 +42,8 @@
     <ClInclude Include="src\graphics\shader\StaticShader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\graphics\renderer\HashImplementations.cpp" />
+    <ClCompile Include="src\graphics\renderer\MasterRenderer.cpp" />
     <ClCompile Include="src\graphics\renderables\Light.cpp" />
     <ClCompile Include="src\graphics\data manager\OBJLoader.cpp" />
     <ClCompile Include="src\input\InputManager.cpp" />

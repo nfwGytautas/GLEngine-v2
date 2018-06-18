@@ -8,17 +8,17 @@ public:
 	~Material();
 
 	//Temporary
-	unsigned int GetTextureID()
+	unsigned int GetTextureID() const
 	{
 		return m_textureID;
 	}
 	//Temporary
-	float GetShineDamper()
+	float GetShineDamper() const
 	{
 		return m_shineDamper;
 	}
 	//Temporary
-	float GetReflectivity()
+	float GetReflectivity() const
 	{
 		return m_reflectivity;
 	}
