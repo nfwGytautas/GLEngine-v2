@@ -2,8 +2,10 @@
 
 #include "algorithm\Algorithm.h"
 
+#include "components\Entity.h"
+
+//This will be deleted as they are entities with specific components
 #include "graphics\renderables\Model.h"
-#include "graphics\renderables\Entity.h"
 #include "graphics\renderables\Light.h"
 #include "graphics\renderables\Terrain.h"
 

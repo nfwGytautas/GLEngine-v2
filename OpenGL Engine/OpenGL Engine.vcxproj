@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\components\EntityManager.h" />
+    <ClInclude Include="src\components\PreDefinedComponents.h" />
+    <ClInclude Include="src\components\Component.h" />
     <ClInclude Include="src\graphics\renderer\HashImplementations.h" />
     <ClInclude Include="src\graphics\renderer\MasterRenderer.h" />
     <ClInclude Include="src\graphics\renderables\Light.h" />
@@ -26,7 +29,7 @@
     <ClInclude Include="src\input\InputKeys.h" />
     <ClInclude Include="src\input\InputManager.h" />
     <ClInclude Include="src\graphics\display\Camera.h" />
-    <ClInclude Include="src\graphics\renderables\Entity.h" />
+    <ClInclude Include="src\components\Entity.h" />
     <ClInclude Include="src\maths\Maths.h" />
     <ClInclude Include="src\graphics\renderables\Model.h" />
     <ClInclude Include="src\graphics\material\Material.h" />
@@ -45,13 +48,15 @@
     <ClInclude Include="src\graphics\renderer\TerrainRenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\components\EntityManager.cpp" />
+    <ClCompile Include="src\components\PreDefinedComponents.cpp" />
     <ClCompile Include="src\graphics\renderer\HashImplementations.cpp" />
     <ClCompile Include="src\graphics\renderer\MasterRenderer.cpp" />
     <ClCompile Include="src\graphics\renderables\Light.cpp" />
     <ClCompile Include="src\graphics\data manager\OBJLoader.cpp" />
     <ClCompile Include="src\input\InputManager.cpp" />
     <ClCompile Include="src\graphics\display\Camera.cpp" />
-    <ClCompile Include="src\graphics\renderables\Entity.cpp" />
+    <ClCompile Include="src\components\Entity.cpp" />
     <ClCompile Include="src\maths\Maths.cpp" />
     <ClCompile Include="src\graphics\renderables\Model.cpp" />
     <ClCompile Include="src\graphics\material\Material.cpp" />
