@@ -20,3 +20,4 @@ Development started at: 2018-06-08
 * A big chunk of engine code is drawn from https://www.youtube.com/user/ThinMatrix game engine series
 * A good starting place http://www.opengl-tutorial.org/
 * Really good C++ and OpenGL toturials https://www.youtube.com/user/TheChernoProject
+* **CBA** or **C**omponent **B**ased **A**rchitecture toturial https://www.youtube.com/watch?v=QAmtgvwHInM&list=PLTEcWGdSiQenl4YRPvSqW7UPC6SiGNN7e&index=5
