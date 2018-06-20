@@ -48,6 +48,7 @@
     <ClInclude Include="src\graphics\renderer\TerrainRenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\components\Component.cpp" />
     <ClCompile Include="src\components\EntityManager.cpp" />
     <ClCompile Include="src\components\PreDefinedComponents.cpp" />
     <ClCompile Include="src\graphics\renderer\HashImplementations.cpp" />

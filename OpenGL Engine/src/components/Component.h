@@ -1,8 +1,5 @@
 #pragma once
-//For now just to get the system working only update and draw methods will be used
-
 class Entity;
-
 struct Component
 {
 	Entity* entity{ nullptr };
