@@ -41,3 +41,13 @@ void Entity::destroy()
 {
 	m_alive = false;
 }
+
+bool Entity::hasGroup(Group mGroup) const noexcept
+{
+	return m_groupBitset[mGroup];
+}
+
+void Entity::delGroup(Group mGroup) noexcept
+{
+	m_groupBitset[mGroup] = false;
+}

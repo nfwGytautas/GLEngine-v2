@@ -70,22 +70,17 @@ EntityManager::~EntityManager()
 	m_entities.clear();
 }
 
-bool Entity::hasGroup(Group mGroup) const noexcept
-{
-	return m_groupBitset[mGroup];
-}
-
 void Entity::addGroup(Group mGroup) noexcept
 {
 	m_groupBitset[mGroup] = true;
 	m_manager.addToGroup(this, mGroup);
 }
 
-void Entity::delGroup(Group mGroup) noexcept
-{
-	m_groupBitset[mGroup] = false;
-}
-
-Entity::Entity(EntityManager & mManager)
+Entity::Entity(EntityManager& mManager)
 	:m_manager(mManager)
 {}
+
+Entity::~Entity()
+{
+	m_components.clear();
+}

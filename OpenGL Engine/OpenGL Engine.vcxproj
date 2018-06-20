@@ -22,8 +22,6 @@
     <ClInclude Include="src\components\EntityManager.h" />
     <ClInclude Include="src\components\PreDefinedComponents.h" />
     <ClInclude Include="src\components\Component.h" />
-    <ClInclude Include="src\graphics\renderer\HashImplementations.h" />
-    <ClInclude Include="src\graphics\renderer\MasterRenderer.h" />
     <ClInclude Include="src\graphics\data manager\OBJLoader.h" />
     <ClInclude Include="src\input\InputKeys.h" />
     <ClInclude Include="src\input\InputManager.h" />
@@ -37,17 +35,12 @@
     <ClInclude Include="src\graphics\display\Display.h" />
     <ClInclude Include="src\graphics\FrameworkAssert.h" />
     <ClInclude Include="src\graphics\gtypes\gTypes.h" />
-    <ClInclude Include="src\graphics\renderer\Renderer.h" />
     <ClInclude Include="src\graphics\shader\StaticShader.h" />
-    <ClInclude Include="src\graphics\shader\TerrainShader.h" />
-    <ClInclude Include="src\graphics\renderer\TerrainRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\components\Component.cpp" />
     <ClCompile Include="src\components\EntityManager.cpp" />
     <ClCompile Include="src\components\PreDefinedComponents.cpp" />
-    <ClCompile Include="src\graphics\renderer\HashImplementations.cpp" />
-    <ClCompile Include="src\graphics\renderer\MasterRenderer.cpp" />
     <ClCompile Include="src\graphics\data manager\OBJLoader.cpp" />
     <ClCompile Include="src\input\InputManager.cpp" />
     <ClCompile Include="src\graphics\display\Camera.cpp" />
@@ -58,10 +51,7 @@
     <ClCompile Include="src\graphics\data manager\DataManager.cpp" />
     <ClCompile Include="src\graphics\display\Display.cpp" />
     <ClCompile Include="src\graphics\FrameworkAssert.cpp" />
-    <ClCompile Include="src\graphics\renderer\Renderer.cpp" />
     <ClCompile Include="src\graphics\shader\StaticShader.cpp" />
-    <ClCompile Include="src\graphics\shader\TerrainShader.cpp" />
-    <ClCompile Include="src\graphics\renderer\TerrainRenderer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

@@ -1,22 +1,15 @@
 #pragma once
 #include "Component.h"
-
 #include <glm/glm.hpp>
-
-//For now none of the components will have private members until messaging is added 
-//since there would be no way to change them during runtime. Also none of the functions
-//are filled until next commit
-
-//TODO: Add dependencies so that components would add a component that it requires if it doesn't have it
 
 class StaticShader;
 
 struct CPosition : Component
 {
-	glm::vec3 position;
+	glm::vec3 value;
 
 	CPosition() = default;
-	CPosition(const glm::vec3& mPosition) : position{ Position } {}
+	CPosition(const glm::vec3& mPosition) : value{ mPosition } {}
 };
 struct CTransformation : Component
 {
@@ -33,7 +26,6 @@ struct CTransformation : Component
 private:
 	StaticShader* m_shader;
 };
-
 struct CMesh : Component
 {
 	void draw() override;
@@ -45,7 +37,6 @@ struct CMesh : Component
 private:
 	unsigned int m_vaoID;
 };
-
 struct CMaterial : Component
 {
 	void draw() override;
@@ -57,4 +48,29 @@ struct CMaterial : Component
 private:
 	StaticShader* m_shader;
 	unsigned int m_textureID;
+};
+struct CRenderer : Component
+{
+	void draw() override;
+
+	CRenderer() {}
+};
+struct CColor : Component
+{
+	glm::vec3 value;
+
+	CColor() = default;
+	CColor(const glm::vec3& mColor) : value{ mColor } {}
+};
+struct CLightEmiter : Component
+{
+	CPosition* cPosition;
+	CColor* cColor;
+
+	void init() override;
+	void draw() override;
+
+	CLightEmiter(StaticShader* mShader) : m_shader{ mShader } {}
+private:
+	StaticShader* m_shader;
 };

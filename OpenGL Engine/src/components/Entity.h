@@ -7,6 +7,7 @@
 #include "Component.h"
 
 class EntityManager;
+class EntityBlueprint;
 
 constexpr size_t maxComponents{ 32 };
 constexpr size_t maxGroups{ 32 };
@@ -58,6 +59,7 @@ public:
 	void delGroup(Group mGroup) noexcept;
 
 	Entity(EntityManager& mManager);
+	~Entity();
 private:
 	using ComponentID = size_t;
 	static inline ComponentID getUniqueComponentID() noexcept
