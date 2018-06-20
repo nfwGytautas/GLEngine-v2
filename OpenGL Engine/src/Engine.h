@@ -1,14 +1,8 @@
 #pragma once
 
 #include "algorithm\Algorithm.h"
-
 #include "components\Entity.h"
-
-//This will be deleted as they are entities with specific components
-#include "graphics\renderables\Model.h"
-#include "graphics\renderables\Light.h"
-#include "graphics\renderables\Terrain.h"
-
+#include "components\PreDefinedComponents.h"
 #include "input\InputKeys.h"
 
 class StaticShader;
@@ -16,6 +10,7 @@ class TerrainShader;
 class DataManager;
 class MasterRenderer;
 class Camera;
+class EntityManager;
 
 class Engine
 {
@@ -23,28 +18,27 @@ public:
 	class Loader
 	{
 	public:
-		static Mesh LoadOBJ(std::string filePath);
-		static Mesh LoadToVAO(std::vector<float> positions, std::vector<float> textureCoords, std::vector<float> normals, std::vector<unsigned int> indices);
+		static Mesh loadOBJ(std::string filePath);
+		static Mesh loadToVAO(std::vector<float> positions, std::vector<float> textureCoords, std::vector<float> normals, std::vector<unsigned int> indices);
 		//TODO: Change this so that the engine would analyze a material file and figure out all the needed variables itself
-		static Material LoadMaterial(std::string filePath, float shineDamper = 1, float reflectivity = 0);
+		static Material loadMaterial(std::string filePath, float shineDamper = 1, float reflectivity = 0);
 
-		static unsigned int LoadTexture(std::string filePath);
+		static unsigned int loadTexture(std::string filePath);
 	};
 
 	class Renderer
 	{
 	public:
-		static void AddEntity(Entity& entity);
-		static void AddTerrain(Terrain& terrain);
-		static void Render(Light& sun);
+		static void addEntity(Entity& entity);
+		static void addTerrain(Terrain& terrain);
+		static void render(Light& sun);
 	};
 
 	class Window
 	{
 	public:
-		static void Update();
-		static bool ShouldClose();
-		static void VSync(bool option);
+		static bool shouldClose();
+		static void vSync(bool option);
 	};
 
 	class Input
@@ -53,7 +47,7 @@ public:
 		class Keyboard
 		{
 		public:
-			bool IsKeyDown(Key key);
+			bool isKeyDown(Key key);
 		};
 
 		class Mouse
@@ -63,12 +57,19 @@ public:
 		};
 	};
 
-	static bool IsInitialized()
+	class EntityFactory
+	{
+	public:
+		static Entity& createEntity();
+	};
+
+	static void initialize(unsigned int width, unsigned int height, const char* title, bool fullscreen = false);
+	static void update();
+	static bool isInitialized()
 	{
 		return m_initialized;
 	}
-	static void Initialize(unsigned int width, unsigned int height, const char* title, bool fullscreen = false);
-	static void Terminate();
+	static void terminate();
 
 private:
 	static bool m_initialized;
@@ -77,4 +78,5 @@ private:
 	static TerrainShader* m_terrainShader;
 	static MasterRenderer* m_renderer;
 	static Camera* m_camera;
+	static EntityManager* m_entityManager;
 };

@@ -66,7 +66,9 @@ std::vector<Entity*>& EntityManager::getEntitiesByGroup(Group mGroup)
 EntityManager::EntityManager()
 {}
 EntityManager::~EntityManager()
-{}
+{
+	m_entities.clear();
+}
 
 bool Entity::hasGroup(Group mGroup) const noexcept
 {

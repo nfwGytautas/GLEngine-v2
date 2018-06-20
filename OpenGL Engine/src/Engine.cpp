@@ -3,6 +3,8 @@
 #include "graphics\display\Display.h"
 #include "input\InputManager.h"
 
+#include "components\EntityManager.h"
+
 #include "graphics\shader\StaticShader.h"
 #include "graphics\shader\TerrainShader.h"
 #include "graphics\renderer\MasterRenderer.h"
@@ -18,11 +20,12 @@ StaticShader* Engine::m_shader = nullptr;
 TerrainShader* Engine::m_terrainShader = nullptr;
 MasterRenderer* Engine::m_renderer = nullptr;
 Camera* Engine::m_camera = nullptr;
+EntityManager* Engine::m_entityManager = nullptr;
 
 //============================================================================================================================
 //ENGINE
 //============================================================================================================================
-void Engine::Initialize(unsigned int width, unsigned int height, const char* title, bool fullscreen)
+void Engine::initialize(unsigned int width, unsigned int height, const char* title, bool fullscreen)
 {
 	Display::CreateDisplay(width, height, title, fullscreen);
 	m_loader = new DataManager();
@@ -30,13 +33,24 @@ void Engine::Initialize(unsigned int width, unsigned int height, const char* tit
 	m_terrainShader = new TerrainShader();
 	m_renderer = new MasterRenderer(*m_shader, *m_terrainShader);
 	m_camera = new Camera();
+	m_entityManager = new EntityManager();
 
 
 	m_initialized = true;
 	std::cout << "[Engine] Engine initialized!" << std::endl;
 }
 
-void Engine::Terminate()
+void Engine::update()
+{
+	if (m_initialized)
+	{
+		m_camera->Move();
+		Display::UpdateDisplay();
+		m_entityManager->update(Display::GetDelta());
+	}
+}
+
+void Engine::terminate()
 {
 	m_loader->CleanUp();
 
@@ -45,6 +59,7 @@ void Engine::Terminate()
 	delete m_terrainShader;
 	delete m_renderer;
 	delete m_camera;
+	delete m_entityManager;
 
 	Display::DestroyDisplay();
 
@@ -55,18 +70,12 @@ void Engine::Terminate()
 //============================================================================================================================
 //WINDOW
 //============================================================================================================================
-void Engine::Window::Update()
-{
-	m_camera->Move();
-	Display::UpdateDisplay();
-}
-
-bool Engine::Window::ShouldClose()
+bool Engine::Window::shouldClose()
 {
 	return Display::Closed();
 }
 
-void Engine::Window::VSync(bool option)
+void Engine::Window::vSync(bool option)
 {
 	Display::SwitchVerticalSync(option);
 }
@@ -74,17 +83,17 @@ void Engine::Window::VSync(bool option)
 //============================================================================================================================
 //RENDERER
 //============================================================================================================================
-void Engine::Renderer::AddEntity(Entity& entity)
+void Engine::Renderer::addEntity(Entity& entity)
 {
 	m_renderer->ProcessEntity(entity);
 }
 
-void Engine::Renderer::AddTerrain(Terrain& terrain)
+void Engine::Renderer::addTerrain(Terrain& terrain)
 {
 	m_renderer->ProcessTerrain(terrain);
 }
 
-void Engine::Renderer::Render(Light& sun)
+void Engine::Renderer::render(Light& sun)
 {
 	m_renderer->Render(sun, *m_camera);
 }
@@ -92,22 +101,22 @@ void Engine::Renderer::Render(Light& sun)
 //============================================================================================================================
 //LOADER
 //============================================================================================================================
-Mesh Engine::Loader::LoadOBJ(std::string filePath)
+Mesh Engine::Loader::loadOBJ(std::string filePath)
 {
-	return OBJLoader::LoadOBJ(filePath, *m_loader);
+	return OBJLoader::loadOBJ(filePath, *m_loader);
 }
 
-Mesh Engine::Loader::LoadToVAO(std::vector<float> positions, std::vector<float> textureCoords, std::vector<float> normals, std::vector<unsigned int> indices)
+Mesh Engine::Loader::loadToVAO(std::vector<float> positions, std::vector<float> textureCoords, std::vector<float> normals, std::vector<unsigned int> indices)
 {
 	return m_loader->LoadToVAO(positions, textureCoords, normals, indices);
 }
 
-Material Engine::Loader::LoadMaterial(std::string filePath, float shineDamper, float reflectivity)
+Material Engine::Loader::loadMaterial(std::string filePath, float shineDamper, float reflectivity)
 {
 	return Material(LoadTexture(filePath), shineDamper, reflectivity);
 }
 
-unsigned int Engine::Loader::LoadTexture(std::string filePath)
+unsigned int Engine::Loader::loadTexture(std::string filePath)
 {
 	return m_loader->LoadTexture(filePath);
 }
@@ -115,7 +124,15 @@ unsigned int Engine::Loader::LoadTexture(std::string filePath)
 //============================================================================================================================
 //INPUT
 //============================================================================================================================
-bool Engine::Input::Keyboard::IsKeyDown(Key key)
+bool Engine::Input::Keyboard::isKeyDown(Key key)
 {
 	return InputManager::Keyboard::IsKeyDown(key);
+}
+
+//============================================================================================================================
+//ENTITY FACTORY
+//============================================================================================================================
+Entity & Engine::EntityFactory::createEntity()
+{
+	return m_entityManager->addEntity();
 }
