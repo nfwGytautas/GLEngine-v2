@@ -1,10 +1,7 @@
 #pragma once
-
 #include "Shader.h"
-
+class Entity;
 class Camera;
-class Light;
-
 class StaticShader : public Shader
 {
 public:
@@ -14,7 +11,7 @@ public:
 	void LoadTransformationMatrix(glm::mat4 matrix);
 	void LoadProjectionMatrix(glm::mat4 matrix);
 	void LoadViewMatrix(Camera& camera);
-	void LoadLight(Light& light);
+	void loadLight(Entity& mLight);
 	void LoadShineVariables(float damper, float reflectivity);
 protected:
 	void BindAttributes() override; 

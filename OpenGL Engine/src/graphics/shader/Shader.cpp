@@ -161,4 +161,3 @@ void Shader::SetMatrix4fUniform(int location, glm::mat4 matrix)
 {
 	GLCall(glUniformMatrix4fv(location, 1, GL_FALSE, &matrix[0][0]));
 }
-

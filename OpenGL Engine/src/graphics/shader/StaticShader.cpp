@@ -1,9 +1,8 @@
 #include "StaticShader.h"
-
+#include "..\..\components\Entity.h"
+#include "..\..\components\PreDefinedComponents.h"
 #include "..\gtypes\gTypes.h"
 #include "..\..\maths\Maths.h"
-
-#include "..\renderables\Light.h"
 
 const char* StaticShader::VERTEX_FILE = ShaderPath::Vertex;
 const char* StaticShader::FRAGMENT_FILE = ShaderPath::Fragment;
@@ -30,10 +29,12 @@ void StaticShader::LoadViewMatrix(Camera& camera)
 	glm::mat4 viewMatrix = Maths::CreateViewMatrix(&camera);
 	this->SetMatrix4fUniform(m_location_viewMatrix, viewMatrix);
 }
-void StaticShader::LoadLight(Light& light)
+void StaticShader::loadLight(Entity& mLight)
 {
-	this->SetVec3Uniform(m_location_lightPosition, light.GetPosition());
-	this->SetVec3Uniform(m_location_lightColor, light.GetColor());
+	glm::vec3 position = mLight.getComponent<CPosition>().value;
+	glm::vec3 color = mLight.getComponent<CColor>().value;
+	this->SetVec3Uniform(m_location_lightPosition, position);
+	this->SetVec3Uniform(m_location_lightColor, color);
 }
 void StaticShader::LoadShineVariables(float damper, float reflectivity)
 {

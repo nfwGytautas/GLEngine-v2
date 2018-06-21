@@ -1,48 +1,24 @@
 #pragma once
-
+#include <string>
+#include <glm\glm.hpp>
 #include "algorithm\Algorithm.h"
-
-#include "graphics\renderables\Model.h"
-#include "graphics\renderables\Entity.h"
-#include "graphics\renderables\Light.h"
-#include "graphics\renderables\Terrain.h"
-
+#include "components\Entity.h"
+#include "components\PreDefinedComponents.h"
 #include "input\InputKeys.h"
 
 class StaticShader;
-class TerrainShader;
 class DataManager;
-class MasterRenderer;
 class Camera;
+class EntityManager;
 
 class Engine
 {
 public:
-	class Loader
-	{
-	public:
-		static Mesh LoadOBJ(std::string filePath);
-		static Mesh LoadToVAO(std::vector<float> positions, std::vector<float> textureCoords, std::vector<float> normals, std::vector<unsigned int> indices);
-		//TODO: Change this so that the engine would analyze a material file and figure out all the needed variables itself
-		static Material LoadMaterial(std::string filePath, float shineDamper = 1, float reflectivity = 0);
-
-		static unsigned int LoadTexture(std::string filePath);
-	};
-
-	class Renderer
-	{
-	public:
-		static void AddEntity(Entity& entity);
-		static void AddTerrain(Terrain& terrain);
-		static void Render(Light& sun);
-	};
-
 	class Window
 	{
 	public:
-		static void Update();
-		static bool ShouldClose();
-		static void VSync(bool option);
+		static bool shouldClose();
+		static void vSync(bool option);
 	};
 
 	class Input
@@ -51,7 +27,7 @@ public:
 		class Keyboard
 		{
 		public:
-			bool IsKeyDown(Key key);
+			bool isKeyDown(Key key);
 		};
 
 		class Mouse
@@ -61,18 +37,43 @@ public:
 		};
 	};
 
-	static bool IsInitialized()
+	class EntityFactory
+	{
+	public:
+		static Entity& createEntity();
+	};
+
+	class EntityEditor
+	{
+	public:
+		static void addPositionComponent(Entity& mTarget, glm::vec3 mValue);
+		static void addTransformationComponent(Entity& mTarget);
+		static void addMeshComponent(Entity& mTarget, std::string mFilePath);
+		static void addMaterialComponent(Entity& mTarget, std::string mFilePath, float mShineDamper, float mReflectivity);
+		static void addRenderComponent(Entity& mTarget);
+		static void addColorComponent(Entity& mTarget, glm::vec3 mValue);
+		static void addLightEmiterComponent(Entity& mTarget);
+	};
+
+	static void initialize(unsigned int width, unsigned int height, const char* title, bool fullscreen = false);
+	static void render();
+	static void update();
+	static bool isInitialized()
 	{
 		return m_initialized;
 	}
-	static void Initialize(unsigned int width, unsigned int height, const char* title, bool fullscreen = false);
-	static void Terminate();
+	static void terminate();
 
+private:
+	static glm::mat4 createProjectionMatrix();
 private:
 	static bool m_initialized;
 	static DataManager* m_loader;
 	static StaticShader* m_shader;
-	static TerrainShader* m_terrainShader;
-	static MasterRenderer* m_renderer;
 	static Camera* m_camera;
+	static EntityManager* m_entityManager;
+
+	static float m_EngineFoV;
+	static float m_NearRenderPlane;
+	static float m_FarRenderPlane;
 };

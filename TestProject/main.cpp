@@ -4,30 +4,25 @@
 
 int main()
 {
-	Engine::Initialize(1280, 720, "Game");
+	Engine::initialize(1280, 720, "TestWindow");
 
-	Mesh testMesh = Engine::Loader::LoadOBJ("E:/Test files/nfw/dragon.obj");
-	Material testMaterial = Engine::Loader::LoadMaterial("E:/Test files/nfw/dragon.png", 10, 1);
+	Entity& testEntity(Engine::EntityFactory::createEntity());
+	Engine::EntityEditor::addPositionComponent(testEntity, glm::vec3(0.0f, 0.0f, -10.0f));
+	Engine::EntityEditor::addTransformationComponent(testEntity);
+	Engine::EntityEditor::addMeshComponent(testEntity, "E:/Test files/nfw/dragon.obj");
+	Engine::EntityEditor::addMaterialComponent(testEntity,"E:/Test files/nfw/dragon.png", 10, 1);
+	Engine::EntityEditor::addRenderComponent(testEntity);
 
-	Model testModel(testMesh, testMaterial);
+	Entity& testLight(Engine::EntityFactory::createEntity());
+	Engine::EntityEditor::addLightEmiterComponent(testLight);
 
-	Entity testEntity(testModel, glm::vec3(0.0f, 0.0f, -50.0f), 0, 0, 0, 1);
-	Light testLight(glm::vec3(3000, 2000, 2000), glm::vec3(1,1,1));
-
-	Terrain testTerrain1(0, -1, Engine::Loader::LoadMaterial("E:/Test files/nfw/grass.png", 10, 1));
-	Terrain testTerrain2(1, -1, Engine::Loader::LoadMaterial("E:/Test files/nfw/grass.png", 10, 1));
-
-	Engine::Window::VSync(true);
-	while (!Engine::Window::ShouldClose())
+	Engine::Window::vSync(true);
+	while (!Engine::Window::shouldClose())
 	{
-		testEntity.IncreaseRotation(0.0f, 0.001f, 0.0f);
-		Engine::Renderer::AddEntity(testEntity);
-		Engine::Renderer::AddTerrain(testTerrain1);
-		Engine::Renderer::AddTerrain(testTerrain2);
-		Engine::Renderer::Render(testLight);
-		Engine::Window::Update();
+		Engine::render();
+		Engine::update();
 	}
 
-	Engine::Terminate();
+	Engine::terminate();
 	return 0;
 }

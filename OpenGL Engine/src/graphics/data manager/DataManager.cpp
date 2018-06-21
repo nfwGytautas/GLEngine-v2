@@ -1,33 +1,33 @@
 #include "DataManager.h"
-
+#include <iostream>
 #include <boost\filesystem.hpp>
 #include <SOIL\SOIL\SOIL.h>
-
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
-
+#include "OBJLoader.h"
 #include "..\gtypes\gTypes.h"
-
 #include "..\FrameworkAssert.h"
-#include "..\mesh\Mesh.h"
+#include "..\..\components\Entity.h"
+#include "..\..\components\PreDefinedComponents.h"
+#include "..\..\maths\Maths.h"
 
-
-#include <iostream>
-
-Mesh DataManager::LoadToVAO(std::vector<float> positions, std::vector<float> textureCoords, std::vector<float> normals, std::vector<unsigned int> indices)
+void DataManager::loadMesh(Entity& mTarget, std::string mFilePath)
 {
+	OBJLoader::LoadOBJ(mFilePath);
+
 	unsigned int vaoID = createVAO();
-	bindIndiceBuffer(indices);
-	storeDataInAttributes(AttributeLocation::Position, 3, positions);
-	storeDataInAttributes(AttributeLocation::UVs, 2, textureCoords);
-	storeDataInAttributes(AttributeLocation::Normal, 3, normals);
+	bindIndiceBuffer(OBJLoader::loadedIndices);
+	storeDataInAttributes(AttributeLocation::Position, 3, Maths::Vec3ToFloatVector(OBJLoader::loadedVertices));
+	storeDataInAttributes(AttributeLocation::UVs, 2, Maths::Vec2ToFloatVector(OBJLoader::loadedUVs));
+	storeDataInAttributes(AttributeLocation::Normal, 3, Maths::Vec3ToFloatVector(OBJLoader::loadedNormals));
 	unbindVAO();
-	return Mesh(vaoID, indices.size());
+
+	mTarget.addComponent<CMesh>(vaoID, OBJLoader::loadedIndices.size());
 }
 
-unsigned int DataManager::LoadTexture(std::string filePath)
+unsigned int DataManager::loadMaterial(std::string mFilePath)
 {
-	auto boostFilePath = boost::filesystem::path(filePath);
+	auto boostFilePath = boost::filesystem::path(mFilePath);
 	unsigned int textureID = 0;
 
 	unsigned int formatFlag = 0;
@@ -63,7 +63,7 @@ unsigned int DataManager::LoadTexture(std::string filePath)
 	return textureID;
 }
 
-void DataManager::CleanUp()
+void DataManager::cleanUp()
 {
 	for (unsigned int x : m_vaos)
 	{
