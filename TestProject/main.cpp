@@ -6,14 +6,14 @@ int main()
 {
 	Engine::initialize(1280, 720, "TestWindow");
 
-	Entity testEntity = Engine::EntityFactory::createEntity();
+	Entity& testEntity(Engine::EntityFactory::createEntity());
 	Engine::EntityEditor::addPositionComponent(testEntity, glm::vec3(0.0f, 0.0f, -50.0f));
 	Engine::EntityEditor::addTransformationComponent(testEntity);
 	Engine::EntityEditor::addMeshComponent(testEntity, "E:/Test files/nfw/dragon.obj");
 	Engine::EntityEditor::addMaterialComponent(testEntity,"E:/Test files/nfw/dragon.png", 10, 1);
 	Engine::EntityEditor::addRenderComponent(testEntity);
 
-	Entity testLight = Engine::EntityFactory::createEntity();
+	Entity& testLight(Engine::EntityFactory::createEntity());
 	Engine::EntityEditor::addLightEmiterComponent(testLight);
 
 	Engine::Window::vSync(true);
@@ -26,7 +26,6 @@ int main()
 	Engine::terminate();
 	return 0;
 }
-
 /*
 Engine::Initialize(1280, 720, "Game");
 

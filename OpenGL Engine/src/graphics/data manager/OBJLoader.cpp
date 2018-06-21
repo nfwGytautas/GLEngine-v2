@@ -4,6 +4,11 @@
 #include <Assimp\assimp\scene.h>
 #include <Assimp\assimp\postprocess.h>
 
+std::vector<glm::vec3> OBJLoader::loadedVertices;
+std::vector<glm::vec3> OBJLoader::loadedNormals;
+std::vector<glm::vec2> OBJLoader::loadedUVs;
+std::vector<unsigned int> OBJLoader::loadedIndices;
+
 void OBJLoader::LoadOBJ(std::string filePath)
 {
 	Assimp::Importer importer;

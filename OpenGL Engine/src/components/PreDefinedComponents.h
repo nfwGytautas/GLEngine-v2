@@ -44,7 +44,7 @@ struct CMaterial : Component
 	float shineDamper;
 	float reflectivity;
 
-	CMaterial(StaticShader* mShader, unsigned int mTextureID, float mShineDamper, float mReflectivity) : m_shader{ mShader }, m_textureID { mTextureID }, shineDamper{ mShineDamper }, reflectivity{ reflectivity } {}
+	CMaterial(StaticShader* mShader, unsigned int mTextureID, float mShineDamper, float mReflectivity) : m_shader{ mShader }, m_textureID { mTextureID }, shineDamper{ mShineDamper }, reflectivity{ mReflectivity } {}
 private:
 	StaticShader* m_shader;
 	unsigned int m_textureID;

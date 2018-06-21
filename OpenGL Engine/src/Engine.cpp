@@ -35,7 +35,10 @@ void Engine::initialize(unsigned int width, unsigned int height, const char* tit
 
 	GLCall(glEnable(GL_CULL_FACE));
 	GLCall(glCullFace(GL_BACK));
+
+	m_shader->Bind();
 	m_shader->LoadProjectionMatrix(createProjectionMatrix());
+	m_shader->Unbind();
 
 	m_initialized = true;
 	std::cout << "[Engine] Engine initialized!" << std::endl;
