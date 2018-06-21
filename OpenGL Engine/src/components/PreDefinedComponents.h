@@ -22,7 +22,7 @@ struct CTransformation : Component
 	void init() override;
 	void draw() override;
 
-	CTransformation(StaticShader* mShader) : m_shader{ mShader } {}
+	CTransformation(StaticShader* mShader, float mXRotation, float mYRotation, float mZRotation, float mScale) : m_shader{ mShader }, rotationX{ mXRotation }, rotationY{ mYRotation }, rotationZ{ mZRotation }, scale{ mScale } {}
 private:
 	StaticShader* m_shader;
 };

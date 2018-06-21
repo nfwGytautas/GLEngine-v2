@@ -141,7 +141,7 @@ void Engine::EntityEditor::addTransformationComponent(Entity& mTarget)
 	{
 		addPositionComponent(mTarget, glm::vec3(0, 0, 0));
 	}
-	mTarget.addComponent<CTransformation>(m_shader);
+	mTarget.addComponent<CTransformation>(m_shader, 0, 0, 0, 1);
 }
 void Engine::EntityEditor::addMeshComponent(Entity& mTarget, std::string mFilePath)
 {
