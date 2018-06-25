@@ -9,20 +9,24 @@
 #include "..\FrameworkAssert.h"
 #include "..\..\components\Entity.h"
 #include "..\..\components\PreDefinedComponents.h"
-#include "..\..\maths\Maths.h"
 
 void DataManager::loadMesh(Entity& mTarget, std::string mFilePath)
 {
-	OBJLoader::LoadOBJ(mFilePath);
+	if(OBJLoader::LoadOBJ(mFilePath))
+	{
+		unsigned int vaoID = createVAO();
+		bindIndiceBuffer(OBJLoader::loadedIndices);
+		storeDataInAttributes(AttributeLocation::Position, 3, OBJLoader::loadedVertices);
+		storeDataInAttributes(AttributeLocation::UVs, 2, OBJLoader::loadedUVs);
+		storeDataInAttributes(AttributeLocation::Normal, 3, OBJLoader::loadedNormals);
+		unbindVAO();
 
-	unsigned int vaoID = createVAO();
-	bindIndiceBuffer(OBJLoader::loadedIndices);
-	storeDataInAttributes(AttributeLocation::Position, 3, Maths::Vec3ToFloatVector(OBJLoader::loadedVertices));
-	storeDataInAttributes(AttributeLocation::UVs, 2, Maths::Vec2ToFloatVector(OBJLoader::loadedUVs));
-	storeDataInAttributes(AttributeLocation::Normal, 3, Maths::Vec3ToFloatVector(OBJLoader::loadedNormals));
-	unbindVAO();
-
-	mTarget.addComponent<CMesh>(vaoID, OBJLoader::loadedIndices.size());
+		mTarget.addComponent<CMesh>(vaoID, OBJLoader::loadedIndices.size());
+	}
+	else
+	{
+		mTarget.addComponent<CMesh>(m_fallbackMeshID, m_fallbackMeshVertexCount);
+	}
 }
 
 unsigned int DataManager::loadMaterial(std::string mFilePath)
@@ -50,7 +54,7 @@ unsigned int DataManager::loadMaterial(std::string mFilePath)
 	if (textureID == 0)
 	{
 		std::cout << "[Engine][Resource manager] SOIL loading error: " << SOIL_last_result() << std::endl;
-		return 0;
+		return m_fallbackTexture;
 	}
 	else
 	{
@@ -131,8 +135,83 @@ void DataManager::unbindVAO()
 	GLCall(glBindVertexArray(0));
 }
 
+std::vector<float> DataManager::fallbackTexture()
+{
+	std::vector<float> tempBuffer;
+	tempBuffer.reserve(8 * 8 * 8 * 8);
+	//Starts with pink block
+	bool drawPink = true;
+	//8 Lines
+	for (int i = 0; i < 8; i++)
+	{
+		// 8 Collumns
+		for (int j = 0; j < 8; j++)
+		{
+			//8 Pixels in a block
+			for (int k = 0; k < 8; k++)
+			{
+				//Alternating blocks
+				if (drawPink)
+				{
+					for (int z = 0; z < 8; z++)
+					{
+						//Pink pixel
+						tempBuffer.push_back(255);
+						tempBuffer.push_back(0);
+						tempBuffer.push_back(165);
+					}
+					drawPink = false;
+				}
+				else
+				{
+					for (int z = 0; z < 8; z++)
+					{
+						//Black pixel
+						tempBuffer.push_back(0);
+						tempBuffer.push_back(0);
+						tempBuffer.push_back(0);
+					}
+					drawPink = true;
+				}
+			}
+		}
+		drawPink = !drawPink;
+	}
+	m_textures.push_back(m_fallbackTexture);
+	return tempBuffer;
+}
+void DataManager::fallbackMesh()
+{
+	OBJLoader::loadFallbackMesh();
+}
+void DataManager::createFallbacks()
+{
+	//Fallback texture
+	GLCall(glGenTextures(1, &m_fallbackTexture));
+	glBindTexture(GL_TEXTURE_2D, m_fallbackTexture);
+	auto tempBuffer = fallbackTexture();
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 64, 64, 0, GL_RGB, GL_FLOAT, &tempBuffer[0]);
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+
+	//Fallback mesh
+	unsigned int vaoID = createVAO();
+	fallbackMesh();
+	bindIndiceBuffer(OBJLoader::loadedIndices);
+	storeDataInAttributes(AttributeLocation::Position, 3, OBJLoader::loadedVertices);
+	storeDataInAttributes(AttributeLocation::UVs, 2, OBJLoader::loadedUVs);
+	storeDataInAttributes(AttributeLocation::Normal, 3, OBJLoader::loadedNormals);
+	unbindVAO();
+
+	m_fallbackMeshID = vaoID;
+	m_fallbackMeshVertexCount = OBJLoader::loadedIndices.size();
+}
+
 DataManager::DataManager()
 {
+	createFallbacks();
 }
 DataManager::~DataManager()
 {
