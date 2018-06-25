@@ -5,10 +5,12 @@
 class OBJLoader
 {
 public:
-	static void LoadOBJ(std::string filePath);
-	static std::vector<glm::vec3> loadedVertices;
-	static std::vector<glm::vec3> loadedNormals;
-	static std::vector<glm::vec2> loadedUVs;
+	static bool LoadOBJ(std::string filePath);
+	static std::vector<float> loadedVertices;
+	static std::vector<float> loadedNormals;
+	static std::vector<float> loadedUVs;
 	static std::vector<unsigned int> loadedIndices;
+
+	static void loadFallbackMesh();
 };
 

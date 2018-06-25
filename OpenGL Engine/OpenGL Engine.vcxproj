@@ -38,6 +38,7 @@
     <ClInclude Include="src\graphics\shader\StaticShader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\algorithm\Algorithm.cpp" />
     <ClCompile Include="src\components\Component.cpp" />
     <ClCompile Include="src\components\EntityManager.cpp" />
     <ClCompile Include="src\components\PreDefinedComponents.cpp" />
