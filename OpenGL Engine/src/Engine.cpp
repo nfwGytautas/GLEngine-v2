@@ -5,9 +5,11 @@
 #include <glm\gtc\matrix_transform.hpp>
 #include "input\InputManager.h"
 #include "components\EntityManager.h"
+#include "graphics\gtypes\gTypes.h"
 #include "graphics\display\Display.h"
 #include "graphics\FrameworkAssert.h"
 #include "graphics\shader\StaticShader.h"
+#include "graphics\data manager\BatchManager.h"
 #include "graphics\data manager\DataManager.h"
 #include "graphics\data manager\OBJLoader.h"
 #include "graphics\display\Camera.h"
@@ -17,6 +19,9 @@ DataManager* Engine::m_loader = nullptr;
 StaticShader* Engine::m_shader = nullptr;
 Camera* Engine::m_camera = nullptr;
 EntityManager* Engine::m_entityManager = nullptr;
+BatchManager* Engine::m_batchManager = nullptr;
+
+CMaterial* Engine::RenderSystem::m_currentMaterial = nullptr;
 
 float Engine::m_EngineFoV = 70;
 float Engine::m_NearRenderPlane = 0.1f;
@@ -31,13 +36,14 @@ void Engine::initialize(unsigned int width, unsigned int height, const char* tit
 	m_loader = new DataManager();
 	m_shader = new StaticShader();
 	m_camera = new Camera();
-	m_entityManager = new EntityManager();
+	m_batchManager = new BatchManager();
+	m_entityManager = new EntityManager(m_batchManager);
 
 	GLCall(glEnable(GL_CULL_FACE));
 	GLCall(glCullFace(GL_BACK));
 
 	m_shader->Bind();
-	m_shader->LoadProjectionMatrix(createProjectionMatrix());
+	m_shader->loadProjectionMatrix(createProjectionMatrix());
 	m_shader->Unbind();
 
 	m_initialized = true;
@@ -48,14 +54,7 @@ void Engine::render()
 {
 	if (m_initialized)
 	{
-		GLCall(glEnable(GL_DEPTH_TEST));
-		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-		GLCall(glClearColor(0, 0.3f, 0.0f, 1));
-		m_shader->Bind();
-		//TODO: light and camera into entities with specific components
-		m_shader->LoadViewMatrix(*m_camera);
-		m_entityManager->draw();
-		m_shader->Unbind();
+		RenderSystem::render();		
 	}
 }
 
@@ -78,6 +77,7 @@ void Engine::terminate()
 	delete m_shader;
 	delete m_camera;
 	delete m_entityManager;
+	delete m_batchManager;
 
 	Display::DestroyDisplay();
 
@@ -128,12 +128,14 @@ Entity& Engine::EntityFactory::createEntity()
 {
 	return m_entityManager->addEntity();
 }
+
 //============================================================================================================================
 //ENTITY EDITOR
 //============================================================================================================================
 void Engine::EntityEditor::addPositionComponent(Entity& mTarget, glm::vec3 mValue)
 {
 	mTarget.addComponent<CPosition>(mValue);	
+	mTarget.addGroup(EntityGroups::StaticEntity);
 }
 void Engine::EntityEditor::addTransformationComponent(Entity& mTarget)
 {
@@ -141,16 +143,19 @@ void Engine::EntityEditor::addTransformationComponent(Entity& mTarget)
 	{
 		addPositionComponent(mTarget, glm::vec3(0, 0, 0));
 	}
-	mTarget.addComponent<CTransformation>(m_shader, 0, 0, 0, 1);
+	mTarget.addComponent<CTransformation>(0, 0, 0, 1);
 }
 void Engine::EntityEditor::addMeshComponent(Entity& mTarget, std::string mFilePath)
 {
-	m_loader->loadMesh(mTarget, mFilePath);
+	std::pair<unsigned int, unsigned int> result = m_loader->loadMesh(mFilePath);
+	m_batchManager->acknowledgeMesh(result.first);
+	mTarget.addComponent<CMesh>(result.first, result.second);
 }
 void Engine::EntityEditor::addMaterialComponent(Entity& mTarget, std::string mFilePath, float mShineDamper, float mReflectivity)
 {	
 	unsigned int materialID = m_loader->loadMaterial(mFilePath);
-	mTarget.addComponent<CMaterial>(m_shader, materialID, mShineDamper, mReflectivity);
+	m_batchManager->acknowledgeMaterial(materialID);
+	mTarget.addComponent<CMaterial>(materialID, mShineDamper, mReflectivity);
 }
 void Engine::EntityEditor::addRenderComponent(Entity& mTarget)
 {
@@ -175,5 +180,96 @@ void Engine::EntityEditor::addLightEmiterComponent(Entity& mTarget)
 	{
 		addColorComponent(mTarget, glm::vec3(1, 1, 1));
 	}
-	mTarget.addComponent<CLightEmiter>(m_shader);
+	mTarget.addComponent<CLightEmiter>();
+	mTarget.addGroup(EntityGroups::LightEmittingEntity);
+}
+
+//============================================================================================================================
+//RENDER SYSTEM
+//============================================================================================================================
+void Engine::RenderSystem::render()
+{
+	//Prepare for rendering
+	prepare();
+	m_shader->Bind();
+
+	//MAIN RENDER CODE
+	//================================================
+	m_shader->loadViewMatrix(*m_camera);
+
+	//Load all the lights
+	loadLights();
+
+	//Render entities
+	renderEntities();
+	
+	//================================================
+
+	m_shader->Unbind();
+}
+
+void Engine::RenderSystem::prepare()
+{
+	GLCall(glEnable(GL_DEPTH_TEST));
+	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+	GLCall(glClearColor(0, 0.3f, 0.0f, 1));
+}
+void Engine::RenderSystem::loadLights()
+{
+	auto lights = m_entityManager->getEntitiesByGroup(EntityGroups::LightEmittingEntity);
+	for (Entity* light : lights)
+	{
+		m_shader->loadLight(*light);
+	}
+}
+void Engine::RenderSystem::renderEntities()
+{
+	auto knownMeshes = m_batchManager->allKnownMeshes();
+	for (unsigned int meshID : knownMeshes)
+	{
+		auto sameMeshEntities = m_batchManager->getEntityBatch(meshID);
+		if(sameMeshEntities.size() != 0)
+		{
+			auto mesh = sameMeshEntities[0]->getComponent<CMesh>();
+			mesh.use();
+		}
+		else
+		{
+			continue;
+		}
+
+		GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
+		GLCall(glEnableVertexAttribArray(AttributeLocation::UVs));
+		GLCall(glEnableVertexAttribArray(AttributeLocation::Normal));
+		for (Entity* entity : sameMeshEntities)
+		{
+			if (entity->hasComponent<CMaterial>())
+			{
+				auto material = entity->getComponent<CMaterial>();
+				if (m_currentMaterial == nullptr)
+				{
+					material.use();
+					m_shader->loadShineVariables(material.shineDamper, material.reflectivity);
+					m_currentMaterial = &material;
+				}
+				else if(*m_currentMaterial != material)
+				{
+					material.use();
+					m_shader->loadShineVariables(material.shineDamper, material.reflectivity);
+					m_currentMaterial = &material;
+				}
+			}
+			if (entity->hasComponent<CTransformation>())
+			{
+				m_shader->loadTransformationMatrix(entity->getComponent<CTransformation>().transformationMatrix);
+			}
+			GLCall(glDrawElements(GL_TRIANGLES, entity->getComponent<CMesh>().vertexCount, GL_UNSIGNED_INT, (void*)0));
+		}
+		GLCall(glDisableVertexAttribArray(AttributeLocation::Position));
+		GLCall(glDisableVertexAttribArray(AttributeLocation::UVs));
+		GLCall(glDisableVertexAttribArray(AttributeLocation::Normal));
+		GLCall(glBindVertexArray(0));
+		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+		m_currentMaterial = nullptr;
+	}
 }

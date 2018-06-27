@@ -10,6 +10,7 @@ class StaticShader;
 class DataManager;
 class Camera;
 class EntityManager;
+class BatchManager;
 
 class Engine
 {
@@ -66,12 +67,31 @@ public:
 
 private:
 	static glm::mat4 createProjectionMatrix();
+
+	class RenderSystem
+	{
+	public:
+		static void render();
+	private:
+		static void prepare();
+		static void loadLights();
+		static void renderEntities();
+
+		static CMaterial* m_currentMaterial;
+	};
+
+	class UpdateSystem
+	{
+	public:
+		static void update();
+	};
 private:
 	static bool m_initialized;
 	static DataManager* m_loader;
 	static StaticShader* m_shader;
 	static Camera* m_camera;
 	static EntityManager* m_entityManager;
+	static BatchManager* m_batchManager;
 
 	static float m_EngineFoV;
 	static float m_NearRenderPlane;

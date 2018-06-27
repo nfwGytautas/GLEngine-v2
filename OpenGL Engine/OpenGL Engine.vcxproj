@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\graphics\data manager\BatchManager.h" />
     <ClInclude Include="src\components\EntityManager.h" />
     <ClInclude Include="src\components\PreDefinedComponents.h" />
     <ClInclude Include="src\components\Component.h" />
@@ -38,6 +39,7 @@
     <ClInclude Include="src\graphics\shader\StaticShader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\graphics\data manager\BatchManager.cpp" />
     <ClCompile Include="src\algorithm\Algorithm.cpp" />
     <ClCompile Include="src\components\Component.cpp" />
     <ClCompile Include="src\components\EntityManager.cpp" />

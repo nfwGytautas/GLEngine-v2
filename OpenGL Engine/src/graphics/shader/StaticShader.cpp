@@ -16,15 +16,15 @@ StaticShader::~StaticShader()
 {
 }
 
-void StaticShader::LoadTransformationMatrix(glm::mat4 matrix)
+void StaticShader::loadTransformationMatrix(glm::mat4 matrix)
 {
 	this->SetMatrix4fUniform(m_location_transformationMatrix, matrix);
 }
-void StaticShader::LoadProjectionMatrix(glm::mat4 matrix)
+void StaticShader::loadProjectionMatrix(glm::mat4 matrix)
 {
 	this->SetMatrix4fUniform(m_location_projectionMatrix, matrix);
 }
-void StaticShader::LoadViewMatrix(Camera& camera)
+void StaticShader::loadViewMatrix(Camera& camera)
 {
 	glm::mat4 viewMatrix = Maths::CreateViewMatrix(&camera);
 	this->SetMatrix4fUniform(m_location_viewMatrix, viewMatrix);
@@ -36,7 +36,7 @@ void StaticShader::loadLight(Entity& mLight)
 	this->SetVec3Uniform(m_location_lightPosition, position);
 	this->SetVec3Uniform(m_location_lightColor, color);
 }
-void StaticShader::LoadShineVariables(float damper, float reflectivity)
+void StaticShader::loadShineVariables(float damper, float reflectivity)
 {
 	this->SetFloatUniform(m_location_shineDamper, damper);
 	this->SetFloatUniform(m_location_reflectivity, reflectivity);

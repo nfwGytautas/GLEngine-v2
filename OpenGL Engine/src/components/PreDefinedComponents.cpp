@@ -2,9 +2,9 @@
 #include "Entity.h"
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
+#include "..\graphics\data manager\BatchManager.h"
 #include "..\graphics\FrameworkAssert.h"
 #include "..\graphics\gtypes\gTypes.h"
-#include "..\graphics\shader\StaticShader.h"
 #include "..\maths\Maths.h"
 
 void CTransformation::init()
@@ -12,45 +12,41 @@ void CTransformation::init()
 	cPosition = &entity->getComponent<CPosition>();
 }
 
-void CTransformation::draw()
+void CTransformation::update(float frameTime)
 {
-	m_shader->LoadTransformationMatrix
-	(
-		Maths::CreateTransformationMatrix(cPosition->value, glm::vec3(rotationX, rotationY, rotationZ), scale)
-	);
+	transformationMatrix = Maths::CreateTransformationMatrix(cPosition->value, glm::vec3(rotationX, rotationY, rotationZ), scale);
 }
 
-void CMesh::draw()
+void CMesh::use()
 {
 	GLCall(glBindVertexArray(m_vaoID));
-	GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
-	GLCall(glEnableVertexAttribArray(AttributeLocation::UVs));
-	GLCall(glEnableVertexAttribArray(AttributeLocation::Normal));	
 }
 
-void CMaterial::draw()
+size_t CMesh::hash() const
 {
-	m_shader->LoadShineVariables(shineDamper, reflectivity);
+	size_t res = 17;
+	res = res * 31 + std::hash<unsigned int>()(vertexCount);
+	res = res * 31 + std::hash<unsigned int>()(m_vaoID);
+	return res;
+}
+
+void CMaterial::use()
+{
 	GLCall(glActiveTexture(GL_TEXTURE0));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_textureID));
 }
 
-void CRenderer::draw()
+size_t CMaterial::hash() const
 {
-	GLCall(glDrawElements(GL_TRIANGLES, entity->getComponent<CMesh>().vertexCount, GL_UNSIGNED_INT, (void*)0));
-	GLCall(glDisableVertexAttribArray(AttributeLocation::Position));
-	GLCall(glDisableVertexAttribArray(AttributeLocation::UVs));
-	GLCall(glDisableVertexAttribArray(AttributeLocation::Normal));
-	GLCall(glBindVertexArray(0));
+	size_t res = 17;
+	res = res * 31 + std::hash<float>()(shineDamper);
+	res = res * 31 + std::hash<float>()(reflectivity);
+	res = res * 31 + std::hash<unsigned int>()(m_textureID);
+	return res;
 }
 
 void CLightEmiter::init()
 {
 	cPosition = &entity->getComponent<CPosition>();
 	cColor = &entity->getComponent<CColor>();
-}
-
-void CLightEmiter::draw()
-{
-	m_shader->loadLight(*entity);
 }

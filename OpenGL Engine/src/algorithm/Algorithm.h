@@ -13,7 +13,7 @@ std::vector<A> ArrayToVector(A(&array)[N])
 
 
 template<typename T>
-void split(const std::string &s, char delim, T result) {
+void tstringsplit(const std::string &s, char delim, T result) {
 	std::stringstream ss(s);
 	std::string item;
 	while (std::getline(ss, item, delim)) {
