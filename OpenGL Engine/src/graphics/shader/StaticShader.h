@@ -8,11 +8,11 @@ public:
 	StaticShader();
 	~StaticShader();
 
-	void LoadTransformationMatrix(glm::mat4 matrix);
-	void LoadProjectionMatrix(glm::mat4 matrix);
-	void LoadViewMatrix(Camera& camera);
+	void loadTransformationMatrix(glm::mat4 matrix);
+	void loadProjectionMatrix(glm::mat4 matrix);
+	void loadViewMatrix(Camera& camera);
 	void loadLight(Entity& mLight);
-	void LoadShineVariables(float damper, float reflectivity);
+	void loadShineVariables(float damper, float reflectivity);
 protected:
 	void BindAttributes() override; 
 	void GetAllUniformLocations() override;

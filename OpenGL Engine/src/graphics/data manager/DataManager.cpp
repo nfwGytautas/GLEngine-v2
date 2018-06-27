@@ -10,22 +10,33 @@
 #include "..\..\components\Entity.h"
 #include "..\..\components\PreDefinedComponents.h"
 
-void DataManager::loadMesh(Entity& mTarget, std::string mFilePath)
+std::pair<unsigned int, unsigned int> DataManager::loadMesh(std::string mFilePath)
 {
-	if(OBJLoader::LoadOBJ(mFilePath))
+	if(m_meshCache.find(mFilePath) == m_meshCache.end())
 	{
-		unsigned int vaoID = createVAO();
-		bindIndiceBuffer(OBJLoader::loadedIndices);
-		storeDataInAttributes(AttributeLocation::Position, 3, OBJLoader::loadedVertices);
-		storeDataInAttributes(AttributeLocation::UVs, 2, OBJLoader::loadedUVs);
-		storeDataInAttributes(AttributeLocation::Normal, 3, OBJLoader::loadedNormals);
-		unbindVAO();
+		if(OBJLoader::LoadOBJ(mFilePath))
+		{
+			unsigned int vaoID = createVAO();
+			bindIndiceBuffer(OBJLoader::loadedIndices);
+			storeDataInAttributes(AttributeLocation::Position, 3, OBJLoader::loadedVertices);
+			storeDataInAttributes(AttributeLocation::UVs, 2, OBJLoader::loadedUVs);
+			storeDataInAttributes(AttributeLocation::Normal, 3, OBJLoader::loadedNormals);
+			unbindVAO();
 
-		mTarget.addComponent<CMesh>(vaoID, OBJLoader::loadedIndices.size());
+			std::pair<unsigned int, unsigned int> result = std::make_pair(vaoID, OBJLoader::loadedIndices.size());
+			m_meshCache[mFilePath] = result;
+			return result;
+		}
+		else
+		{
+			std::pair<unsigned int, unsigned int> result = std::make_pair(m_fallbackMeshID, m_fallbackMeshVertexCount);
+			m_meshCache[mFilePath] = result;
+			return result;
+		}
 	}
 	else
 	{
-		mTarget.addComponent<CMesh>(m_fallbackMeshID, m_fallbackMeshVertexCount);
+		return m_meshCache[mFilePath];
 	}
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "Entity.h"
 
+class BatchManager;
 class EntityManager
 {
 public:
@@ -12,10 +13,10 @@ public:
 	void addToGroup(Entity* mEntity, Group mGroup);
 	std::vector<Entity*>& getEntitiesByGroup(Group mGroup);
 
-	EntityManager();
+	EntityManager(BatchManager* pManager);
 	~EntityManager();
 private:
 	std::vector<std::unique_ptr<Entity>> m_entities;
-
 	std::array<std::vector<Entity*>, maxGroups> m_groupedEntities;
+	BatchManager* m_bManager;
 };

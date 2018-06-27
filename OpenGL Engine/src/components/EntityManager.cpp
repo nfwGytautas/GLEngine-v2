@@ -1,5 +1,6 @@
 #include "EntityManager.h"
 #include <algorithm>
+#include "..\graphics\data manager\BatchManager.h"
 
 void EntityManager::refresh()
 {
@@ -27,6 +28,8 @@ void EntityManager::refresh()
 			}),
 		std::end(m_entities)
 	);
+
+	m_bManager->updateEntityBatch(m_entities);
 }
 
 void EntityManager::update(float frameTime)
@@ -63,7 +66,8 @@ std::vector<Entity*>& EntityManager::getEntitiesByGroup(Group mGroup)
 	return m_groupedEntities[mGroup];
 }
 
-EntityManager::EntityManager()
+EntityManager::EntityManager(BatchManager* pManager)
+	:m_bManager(pManager)
 {}
 EntityManager::~EntityManager()
 {

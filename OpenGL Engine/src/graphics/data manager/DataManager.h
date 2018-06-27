@@ -1,15 +1,16 @@
 #pragma once
+#include <unordered_map>
 #include <memory>
 #include <vector>
 #include <string>
-class Entity;
+#include <utility>
 class DataManager
 {
 public:
 	DataManager();
 	~DataManager();
 
-	void loadMesh(Entity& mTarget, std::string mFilePath);
+	std::pair<unsigned int, unsigned int> loadMesh(std::string mFilePath);
 	unsigned int loadMaterial(std::string mFilePath);
 
 	void cleanUp();
@@ -30,4 +31,6 @@ private:
 	unsigned int m_fallbackTexture;
 	unsigned int m_fallbackMeshID;
 	unsigned int m_fallbackMeshVertexCount;
+
+	std::unordered_map<std::string, std::pair<unsigned int, unsigned int>> m_meshCache;
 };

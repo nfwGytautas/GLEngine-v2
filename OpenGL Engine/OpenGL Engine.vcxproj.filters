@@ -66,6 +66,9 @@
     <ClInclude Include="src\components\EntityManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\data manager\BatchManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\graphics\data manager\DataManager.cpp">
@@ -111,6 +114,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\algorithm\Algorithm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\data manager\BatchManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

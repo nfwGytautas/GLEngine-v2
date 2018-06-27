@@ -2,7 +2,7 @@
 #include "Component.h"
 #include <glm/glm.hpp>
 
-class StaticShader;
+class BatchManager;
 
 struct CPosition : Component
 {
@@ -13,45 +13,73 @@ struct CPosition : Component
 };
 struct CTransformation : Component
 {
+	void init() override;
+	void update(float frameTime) override;
+
 	glm::mat4 transformationMatrix;
 	CPosition* cPosition;
 	//Could be seperate componenets
 	float rotationX, rotationY, rotationZ;
 	float scale;
 
-	void init() override;
-	void draw() override;
-
-	CTransformation(StaticShader* mShader, float mXRotation, float mYRotation, float mZRotation, float mScale) : m_shader{ mShader }, rotationX{ mXRotation }, rotationY{ mYRotation }, rotationZ{ mZRotation }, scale{ mScale } {}
-private:
-	StaticShader* m_shader;
+	CTransformation(float mXRotation, float mYRotation, float mZRotation, float mScale) : rotationX{ mXRotation }, rotationY{ mYRotation }, rotationZ{ mZRotation }, scale{ mScale } {}
 };
 struct CMesh : Component
 {
-	void draw() override;
+	void use();
 
 	unsigned int vertexCount;
 
 	CMesh(unsigned int mVaoID, unsigned int mVertexCount) : m_vaoID{ mVaoID }, vertexCount{ mVertexCount } {}
 
+	size_t hash() const;
+	bool operator==(const CMesh& mesh) const
+	{
+		if (hash() == mesh.hash())
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 private:
 	unsigned int m_vaoID;
+	friend BatchManager;
 };
 struct CMaterial : Component
 {
-	void draw() override;
+	void use();
 
 	float shineDamper;
 	float reflectivity;
 
-	CMaterial(StaticShader* mShader, unsigned int mTextureID, float mShineDamper, float mReflectivity) : m_shader{ mShader }, m_textureID { mTextureID }, shineDamper{ mShineDamper }, reflectivity{ mReflectivity } {}
+	CMaterial(unsigned int mTextureID, float mShineDamper, float mReflectivity): m_textureID { mTextureID }, shineDamper{ mShineDamper }, reflectivity{ mReflectivity } {}
+
+	size_t hash() const;
+	bool operator==(const CMaterial& mat) const
+	{
+		if (hash() == mat.hash())
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	bool operator!=(const CMaterial& mat) const
+	{
+		return !(*this == mat);
+	}
 private:
-	StaticShader* m_shader;
 	unsigned int m_textureID;
+	friend BatchManager;
 };
 struct CRenderer : Component
 {
-	void draw() override;
+	void loadSettings();
 
 	CRenderer() {}
 };
@@ -64,13 +92,9 @@ struct CColor : Component
 };
 struct CLightEmiter : Component
 {
+	void init() override;
+
 	CPosition* cPosition;
 	CColor* cColor;
-
-	void init() override;
-	void draw() override;
-
-	CLightEmiter(StaticShader* mShader) : m_shader{ mShader } {}
-private:
-	StaticShader* m_shader;
+	CLightEmiter() {};
 };
