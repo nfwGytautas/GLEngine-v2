@@ -5,6 +5,7 @@
 #include <bitset>
 #include <glm/glm.hpp>
 #include "Component.h"
+#include "EntityGroups.h"
 
 class EntityManager;
 class EntityBlueprint;

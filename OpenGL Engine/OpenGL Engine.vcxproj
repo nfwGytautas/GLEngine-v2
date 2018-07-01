@@ -19,11 +19,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\graphics\data manager\BatchManager.h" />
+    <ClInclude Include="src\components\EntityGroups.h" />
+    <ClInclude Include="src\components\preDefinedComponents\CColor.h" />
+    <ClInclude Include="src\components\preDefinedComponents\CLightEmiter.h" />
+    <ClInclude Include="src\components\preDefinedComponents\CMaterial.h" />
+    <ClInclude Include="src\components\preDefinedComponents\CMesh.h" />
+    <ClInclude Include="src\components\preDefinedComponents\CPosition.h" />
+    <ClInclude Include="src\components\preDefinedComponents\CRenderer.h" />
+    <ClInclude Include="src\components\preDefinedComponents\CTransformation.h" />
+    <ClInclude Include="src\data manager\BatchManager.h" />
     <ClInclude Include="src\components\EntityManager.h" />
     <ClInclude Include="src\components\PreDefinedComponents.h" />
     <ClInclude Include="src\components\Component.h" />
-    <ClInclude Include="src\graphics\data manager\OBJLoader.h" />
+    <ClInclude Include="src\data manager\OBJLoader.h" />
     <ClInclude Include="src\input\InputKeys.h" />
     <ClInclude Include="src\input\InputManager.h" />
     <ClInclude Include="src\graphics\display\Camera.h" />
@@ -32,26 +40,32 @@
     <ClInclude Include="src\graphics\shader\Shader.h" />
     <ClInclude Include="src\algorithm\Algorithm.h" />
     <ClInclude Include="src\Engine.h" />
-    <ClInclude Include="src\graphics\data manager\DataManager.h" />
+    <ClInclude Include="src\data manager\DataManager.h" />
     <ClInclude Include="src\graphics\display\Display.h" />
     <ClInclude Include="src\graphics\FrameworkAssert.h" />
     <ClInclude Include="src\graphics\gtypes\gTypes.h" />
     <ClInclude Include="src\graphics\shader\StaticShader.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\graphics\data manager\BatchManager.cpp" />
+    <ClCompile Include="src\components\preDefinedComponents\CColor.cpp" />
+    <ClCompile Include="src\components\preDefinedComponents\CLightEmiter.cpp" />
+    <ClCompile Include="src\components\preDefinedComponents\CMaterial.cpp" />
+    <ClCompile Include="src\components\preDefinedComponents\CMesh.cpp" />
+    <ClCompile Include="src\components\preDefinedComponents\CPosition.cpp" />
+    <ClCompile Include="src\components\preDefinedComponents\CRenderer.cpp" />
+    <ClCompile Include="src\components\preDefinedComponents\CTransformation.cpp" />
+    <ClCompile Include="src\data manager\BatchManager.cpp" />
     <ClCompile Include="src\algorithm\Algorithm.cpp" />
     <ClCompile Include="src\components\Component.cpp" />
     <ClCompile Include="src\components\EntityManager.cpp" />
-    <ClCompile Include="src\components\PreDefinedComponents.cpp" />
-    <ClCompile Include="src\graphics\data manager\OBJLoader.cpp" />
+    <ClCompile Include="src\data manager\OBJLoader.cpp" />
     <ClCompile Include="src\input\InputManager.cpp" />
     <ClCompile Include="src\graphics\display\Camera.cpp" />
     <ClCompile Include="src\components\Entity.cpp" />
     <ClCompile Include="src\maths\Maths.cpp" />
     <ClCompile Include="src\graphics\shader\Shader.cpp" />
     <ClCompile Include="src\Engine.cpp" />
-    <ClCompile Include="src\graphics\data manager\DataManager.cpp" />
+    <ClCompile Include="src\data manager\DataManager.cpp" />
     <ClCompile Include="src\graphics\display\Display.cpp" />
     <ClCompile Include="src\graphics\FrameworkAssert.cpp" />
     <ClCompile Include="src\graphics\shader\StaticShader.cpp" />

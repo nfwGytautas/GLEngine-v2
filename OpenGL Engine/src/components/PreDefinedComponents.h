@@ -1,100 +1,19 @@
 #pragma once
-#include "Component.h"
-#include <glm/glm.hpp>
+//==================================================================================================================================
+//ALL THE NEEDED HEADERS SO YOU FOR THE COMPONENT SYSTEM
+//==================================================================================================================================
+#include "Component.h"		//Base class that all components derive from
+#include "Entity.h"			//Class that uses these components
+#include "EntityGroups.h"	//Header containing all predefined entity groups
 
-class BatchManager;
+#include "preDefinedComponents\CPosition.h"			//Position component
+#include "preDefinedComponents\CColor.h"			//Color component
 
-struct CPosition : Component
-{
-	glm::vec3 value;
+#include "preDefinedComponents\CTransformation.h"	//Transformation component
 
-	CPosition() = default;
-	CPosition(const glm::vec3& mPosition) : value{ mPosition } {}
-};
-struct CTransformation : Component
-{
-	void init() override;
-	void update(float frameTime) override;
+#include "preDefinedComponents\CMesh.h"				//Mesh component
+#include "preDefinedComponents\CMaterial.h"			//Material component
 
-	glm::mat4 transformationMatrix;
-	CPosition* cPosition;
-	//Could be seperate componenets
-	float rotationX, rotationY, rotationZ;
-	float scale;
+#include "preDefinedComponents\CRenderer.h"			//Rendering component
 
-	CTransformation(float mXRotation, float mYRotation, float mZRotation, float mScale) : rotationX{ mXRotation }, rotationY{ mYRotation }, rotationZ{ mZRotation }, scale{ mScale } {}
-};
-struct CMesh : Component
-{
-	void use();
-
-	unsigned int vertexCount;
-
-	CMesh(unsigned int mVaoID, unsigned int mVertexCount) : m_vaoID{ mVaoID }, vertexCount{ mVertexCount } {}
-
-	size_t hash() const;
-	bool operator==(const CMesh& mesh) const
-	{
-		if (hash() == mesh.hash())
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-private:
-	unsigned int m_vaoID;
-	friend BatchManager;
-};
-struct CMaterial : Component
-{
-	void use();
-
-	float shineDamper;
-	float reflectivity;
-
-	CMaterial(unsigned int mTextureID, float mShineDamper, float mReflectivity): m_textureID { mTextureID }, shineDamper{ mShineDamper }, reflectivity{ mReflectivity } {}
-
-	size_t hash() const;
-	bool operator==(const CMaterial& mat) const
-	{
-		if (hash() == mat.hash())
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	bool operator!=(const CMaterial& mat) const
-	{
-		return !(*this == mat);
-	}
-private:
-	unsigned int m_textureID;
-	friend BatchManager;
-};
-struct CRenderer : Component
-{
-	void loadSettings();
-
-	CRenderer() {}
-};
-struct CColor : Component
-{
-	glm::vec3 value;
-
-	CColor() = default;
-	CColor(const glm::vec3& mColor) : value{ mColor } {}
-};
-struct CLightEmiter : Component
-{
-	void init() override;
-
-	CPosition* cPosition;
-	CColor* cColor;
-	CLightEmiter() {};
-};
+#include "preDefinedComponents\CLightEmiter.h"		//Light emiting component

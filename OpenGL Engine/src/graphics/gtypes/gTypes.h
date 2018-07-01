@@ -19,13 +19,3 @@ namespace ShaderPath
 	const char* const TerrainVertex = "E:/CV/OpenGL engine/OpenGL Engine/Shaders/v6/terrainVertex.shader";
 	const char* const TerrainFragment = "E:/CV/OpenGL engine/OpenGL Engine/Shaders/v6/terrainFragment.shader";
 }
-
-namespace EntityGroups
-{
-	enum EGroups : size_t
-	{
-		StaticEntity = 0,
-		DynamicEntity = 1,
-		LightEmittingEntity = 2,
-	};
-}

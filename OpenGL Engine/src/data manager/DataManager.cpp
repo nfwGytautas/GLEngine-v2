@@ -5,10 +5,10 @@
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 #include "OBJLoader.h"
-#include "..\gtypes\gTypes.h"
-#include "..\FrameworkAssert.h"
-#include "..\..\components\Entity.h"
-#include "..\..\components\PreDefinedComponents.h"
+#include "..\graphics\gtypes\gTypes.h"
+#include "..\graphics\FrameworkAssert.h"
+#include "..\components\Entity.h"
+#include "..\components\PreDefinedComponents.h"
 
 std::pair<unsigned int, unsigned int> DataManager::loadMesh(std::string mFilePath)
 {

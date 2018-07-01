@@ -1,6 +1,6 @@
 #include "BatchManager.h"
 #include <algorithm>
-#include "..\..\components\Entity.h"
+#include "..\components\Entity.h"
 
 BatchManager::BatchManager()
 {

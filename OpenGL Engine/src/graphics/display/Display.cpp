@@ -27,16 +27,16 @@ float Display::delta = 0.0f;
 
 bool Display::created = false;
 
-bool Display::Closed()
+bool Display::closed()
 {
 	return glfwWindowShouldClose(m_Window);
 }
-void Display::Clear()
+void Display::clear()
 {
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
-void Display::CreateDisplay(unsigned int width, unsigned int height, const char* title, bool fullscreen)
+void Display::createDisplay(unsigned int width, unsigned int height, const char* title, bool fullscreen)
 {
 	if(!created)
 	{
@@ -68,7 +68,7 @@ void Display::CreateDisplay(unsigned int width, unsigned int height, const char*
 			glfwMakeContextCurrent(m_Window);				
 
 			//Callbacks
-			InputManager::SetCallBacks(m_Window);
+			InputManager::setCallBacks(m_Window);
 
 			//Check for glew initialization status
 			if (glewInit() != GLEW_OK)
@@ -83,7 +83,7 @@ void Display::CreateDisplay(unsigned int width, unsigned int height, const char*
 			GLCall(glViewport(0, 0, m_Width, m_Height));
 
 			//Get variable for FPS counting
-			lastFrameTime = GetCurrentTime();
+			lastFrameTime = getCurrentTime();
 
 			//Finaly set that the window is created
 			created = true;
@@ -98,7 +98,7 @@ void Display::CreateDisplay(unsigned int width, unsigned int height, const char*
 		}
 	}
 }
-void Display::UpdateDisplay()
+void Display::updateDisplay()
 {
 	if (created)
 	{
@@ -109,18 +109,18 @@ void Display::UpdateDisplay()
 			std::cout << "[Engine][Display] OpenGL error: " << error << "\n";
 		}
 
-		InputManager::Update();
+		InputManager::update();
 
 		//Swap buffers
 		GLCall(glfwSwapBuffers(m_Window));
 
 		//Calculate FPS
-		double currentFrameTime = GetCurrentTime();
+		double currentFrameTime = getCurrentTime();
 		delta = float(currentFrameTime - lastFrameTime);
 		lastFrameTime = currentFrameTime;		
 	}
 }
-void Display::DestroyDisplay()
+void Display::destroyDisplay()
 {
 	//Destroy current display
 	glfwDestroyWindow(m_Window);
@@ -128,15 +128,14 @@ void Display::DestroyDisplay()
 	created = false;
 }
 
-void Display::SwitchVerticalSync(bool state)
+void Display::switchVerticalSync(bool state)
 {
 	if (state = true) GLCall(glfwSwapInterval(1));
 	else GLCall(glfwSwapInterval(0));
 }
 
-double Display::GetCurrentTime()
+double Display::getCurrentTime()
 {
 	//Get time in miliseconds
 	return glfwGetTime();
 }
-

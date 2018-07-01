@@ -2,7 +2,6 @@
 #include <string>
 #include <glm\glm.hpp>
 #include "algorithm\Algorithm.h"
-#include "components\Entity.h"
 #include "components\PreDefinedComponents.h"
 #include "input\InputKeys.h"
 
@@ -44,16 +43,11 @@ public:
 		static Entity& createEntity();
 	};
 
-	class EntityEditor
+	class Loader
 	{
 	public:
-		static void addPositionComponent(Entity& mTarget, glm::vec3 mValue);
-		static void addTransformationComponent(Entity& mTarget);
-		static void addMeshComponent(Entity& mTarget, std::string mFilePath);
-		static void addMaterialComponent(Entity& mTarget, std::string mFilePath, float mShineDamper, float mReflectivity);
-		static void addRenderComponent(Entity& mTarget);
-		static void addColorComponent(Entity& mTarget, glm::vec3 mValue);
-		static void addLightEmiterComponent(Entity& mTarget);
+		static std::pair<unsigned int, unsigned int> loadMesh(std::string filePath);
+		static unsigned int loadMaterial(std::string filePath);
 	};
 
 	static void initialize(unsigned int width, unsigned int height, const char* title, bool fullscreen = false);

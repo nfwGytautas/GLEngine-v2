@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-bool InputManager::Keyboard::IsKeyDown(Key key)
+bool InputManager::Keyboard::isKeyDown(Key key)
 {
 	int keyCode = (int)key;
 	if (keyCode == m_pressedKey || keyCode == m_heldKey)
@@ -19,13 +19,13 @@ bool InputManager::Keyboard::IsKeyDown(Key key)
 	}
 }
 
-void InputManager::SetCallBacks(GLFWwindow* context)
+void InputManager::setCallBacks(GLFWwindow* context)
 {
 	m_context = context;
-	GLCall(glfwSetKeyCallback(m_context, KeyCallback));
-	GLCall(glfwSetScrollCallback(m_context, ScrollCallback));
+	GLCall(glfwSetKeyCallback(m_context, keyCallback));
+	GLCall(glfwSetScrollCallback(m_context, scrollCallback));
 }
-void InputManager::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	try
 	{
@@ -45,7 +45,7 @@ void InputManager::KeyCallback(GLFWwindow* window, int key, int scancode, int ac
 		return;
 	}
 }
-void InputManager::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+void InputManager::scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	try
 	{
@@ -58,23 +58,23 @@ void InputManager::ScrollCallback(GLFWwindow* window, double xoffset, double yof
 		return;
 	}
 }
-void InputManager::Update()
+void InputManager::update()
 {
 	Keyboard::m_pressedKey = -1;
 	GLCall(glfwPollEvents());
 }
 
-void InputManager::Mouse::SetCursorPosition(double xpos, double ypos)
+void InputManager::Mouse::setCursorPosition(double xpos, double ypos)
 {
 	GLCall(glfwSetCursorPos(m_context, xpos, ypos));
 }
-void InputManager::Mouse::GetCursorPosition(double & xpos, double & ypos)
+void InputManager::Mouse::getCursorPosition(double & xpos, double & ypos)
 {
 	GLCall(glfwGetCursorPos(m_context, &xpos, &ypos));
 }
-void InputManager::Mouse::CenterCursorPosition()
+void InputManager::Mouse::centerCursorPosition()
 {
-	GLCall(glfwSetCursorPos(m_context, Display::GetWidth() / 2, Display::GetHeight() / 2));
+	GLCall(glfwSetCursorPos(m_context, Display::getWidth() / 2, Display::getHeight() / 2));
 }
 
 int InputManager::Keyboard::m_pressedKey = -1;

@@ -9,7 +9,7 @@ public:
 	class Keyboard
 	{
 	public:
-		static bool IsKeyDown(Key key);
+		static bool isKeyDown(Key key);
 	private:
 		static int m_pressedKey;
 		static int m_heldKey;
@@ -22,21 +22,21 @@ public:
 		static double ScrollOffsetX;
 		static double ScrollOffsetY;
 
-		static void SetCursorPosition(double xpos, double ypos);
-		static void GetCursorPosition(double& xpos, double& ypos);
-		static void CenterCursorPosition();
+		static void setCursorPosition(double xpos, double ypos);
+		static void getCursorPosition(double& xpos, double& ypos);
+		static void centerCursorPosition();
 
 	private:
 		friend class InputManager;
 	};
 
 public:
-	static void SetCallBacks(GLFWwindow* context);
+	static void setCallBacks(GLFWwindow* context);
 
-	static void Update();
+	static void update();
 private:
-	static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-	static void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 	static GLFWwindow* m_context;
 };

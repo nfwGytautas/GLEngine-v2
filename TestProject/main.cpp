@@ -7,29 +7,29 @@ int main()
 	Engine::initialize(1280, 720, "TestWindow");
 
 	Entity& testEntity1(Engine::EntityFactory::createEntity());
-	Engine::EntityEditor::addPositionComponent(testEntity1, glm::vec3(0.0f, 0.0f, -20.0f));
-	Engine::EntityEditor::addTransformationComponent(testEntity1);
+	testEntity1.addComponent<CPosition>(glm::vec3(0.0f, 0.0f, -20.0f));
+	testEntity1.addComponent<CTransformation>(0,0,0,1);
 	testEntity1.getComponent<CTransformation>().rotationX = 90;
-	Engine::EntityEditor::addMeshComponent(testEntity1, "E:/Test files/nfw/stall.obj");
-	Engine::EntityEditor::addMaterialComponent(testEntity1,"E:/Test files/nfw/stallTexture.png", 10, 1);
-	Engine::EntityEditor::addRenderComponent(testEntity1);
+	testEntity1.addComponent<CMesh>(Engine::Loader::loadMesh("E:/Test files/nfw/stall.obj"));
+	testEntity1.addComponent<CMaterial>(Engine::Loader::loadMaterial("E:/Test files/nfw/stallTexture.png"), 10, 1);
+	testEntity1.addComponent<CRenderer>();
 
 	Entity& testEntity2(Engine::EntityFactory::createEntity());
-	Engine::EntityEditor::addPositionComponent(testEntity2, glm::vec3(10.0f, 0.0f, -20.0f));
-	Engine::EntityEditor::addTransformationComponent(testEntity2);
-	Engine::EntityEditor::addMeshComponent(testEntity2, "E:/Test files/nfw/stall.obj");
-	Engine::EntityEditor::addMaterialComponent(testEntity2, "E:/Test files/nfw/stallTexture.png", 10, 1);
-	Engine::EntityEditor::addRenderComponent(testEntity2);
+	testEntity2.addComponent<CPosition>(glm::vec3(10.0f, 0.0f, -20.0f));
+	testEntity2.addComponent<CTransformation>(0, 0, 0, 1);
+	testEntity2.addComponent<CMesh>(Engine::Loader::loadMesh("E:/Test files/nfw/stall.obj"));
+	testEntity2.addComponent<CMaterial>(Engine::Loader::loadMaterial("E:/Test files/nfw/stallTexture.png"), 10, 1);
+	testEntity2.addComponent<CRenderer>();
 
 	Entity& testEntity3(Engine::EntityFactory::createEntity());
-	Engine::EntityEditor::addPositionComponent(testEntity3, glm::vec3(20.0f, 0.0f, -30.0f));
-	Engine::EntityEditor::addTransformationComponent(testEntity3);
-	Engine::EntityEditor::addMeshComponent(testEntity3, "E:/Test files/nfw/stall.obj");
-	Engine::EntityEditor::addMaterialComponent(testEntity3, "E:/Test files/nfw/stallTexture.png", 10, 1);
-	Engine::EntityEditor::addRenderComponent(testEntity3);
+	testEntity3.addComponent<CPosition>(glm::vec3(20.0f, 10.0f, -30.0f));
+	testEntity3.addComponent<CTransformation>(0, 0, 0, 1);
+	testEntity3.addComponent<CMesh>(Engine::Loader::loadMesh("E:/Test files/nfw/stall.obj"));
+	testEntity3.addComponent<CMaterial>(Engine::Loader::loadMaterial("E:/Test files/nfw/stallTexture.png"), 10, 1);
+	testEntity3.addComponent<CRenderer>();
 
 	Entity& testLight(Engine::EntityFactory::createEntity());
-	Engine::EntityEditor::addLightEmiterComponent(testLight);
+	testLight.addComponent<CLightEmiter>();
 
 	Engine::Window::vSync(true);
 	while (!Engine::Window::shouldClose())
