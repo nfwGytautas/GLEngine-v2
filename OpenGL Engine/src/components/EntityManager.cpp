@@ -1,6 +1,6 @@
 #include "EntityManager.h"
 #include <algorithm>
-#include "..\graphics\data manager\BatchManager.h"
+#include "..\data manager\BatchManager.h"
 
 void EntityManager::refresh()
 {

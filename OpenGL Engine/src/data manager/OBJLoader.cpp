@@ -4,7 +4,7 @@
 #include <Assimp\assimp\scene.h>
 #include <Assimp\assimp\postprocess.h>
 
-#include "..\..\maths\Maths.h"
+#include "..\maths\Maths.h"
 
 std::vector<float> OBJLoader::loadedVertices;
 std::vector<float> OBJLoader::loadedNormals;

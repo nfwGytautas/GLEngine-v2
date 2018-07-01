@@ -20,27 +20,27 @@ Camera::~Camera()
 void Camera::Move()
 {
 	double xpos, ypos;
-	InputManager::Mouse::GetCursorPosition(xpos, ypos);
-	InputManager::Mouse::CenterCursorPosition();
+	InputManager::Mouse::getCursorPosition(xpos, ypos);
+	InputManager::Mouse::centerCursorPosition();
 
 	m_horizontalAngle += 0.005f * /*deltaTime */ float(1280 / 2 - xpos);
 	m_verticalAngle += 0.005f * /*deltaTime */ float(720 / 2 - ypos);
 
-	if (InputManager::Keyboard::IsKeyDown(Key::KEY_W))
+	if (InputManager::Keyboard::isKeyDown(Key::KEY_W))
 	{
-		m_position += m_direction * Display::GetDelta() * 20.0f;
+		m_position += m_direction * Display::getDelta() * 20.0f;
 	}
-	else if (InputManager::Keyboard::IsKeyDown(Key::KEY_S))
+	else if (InputManager::Keyboard::isKeyDown(Key::KEY_S))
 	{
-		m_position -= m_direction * Display::GetDelta() * 20.0f;
+		m_position -= m_direction * Display::getDelta() * 20.0f;
 	}
-	else if (InputManager::Keyboard::IsKeyDown(Key::KEY_D))
+	else if (InputManager::Keyboard::isKeyDown(Key::KEY_D))
 	{
-		m_position += m_right * Display::GetDelta() * 20.0f;
+		m_position += m_right * Display::getDelta() * 20.0f;
 	}
-	else if (InputManager::Keyboard::IsKeyDown(Key::KEY_A))
+	else if (InputManager::Keyboard::isKeyDown(Key::KEY_A))
 	{
-		m_position -= m_right * Display::GetDelta() * 20.0f;
+		m_position -= m_right * Display::getDelta() * 20.0f;
 	}
 }
 
