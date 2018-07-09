@@ -1,15 +1,16 @@
 #include "Shader.h"
 
-#include <GL\glew.h>
-#include <GLFW\glfw3.h>
-#include "..\FrameworkAssert.h"
-
-#include <glm\glm.hpp>
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>
+
+#include <GL\glew.h>
+#include <GLFW\glfw3.h>
+#include <glm\glm.hpp>
+
+#include "..\FrameworkAssert.h"
+#include "..\gtypes\gTypes.h"
 
 Shader::Shader()
 {
@@ -17,6 +18,13 @@ Shader::Shader()
 Shader::~Shader()
 {
 	GLCall(glDeleteProgram(m_programID));
+}
+
+void Shader::bindAttributes()
+{
+	bindAttribute(AttributeLocation::Position, "position");
+	bindAttribute(AttributeLocation::UVs, "textureCoords");
+	bindAttribute(AttributeLocation::Normal, "normal");
 }
 
 void Shader::bindAttribute(unsigned int attribute, std::string variableName)
@@ -108,10 +116,10 @@ void Shader::loadShaders(std::string vertexPath, std::string fragmentPath)
 	m_programID = (unsigned int)glCreateProgram();
 	GLCall(glAttachShader(m_programID, VertexShaderID));
 	GLCall(glAttachShader(m_programID, FragmentShaderID));
-	BindAttributes();
+	bindAttributes();
 	GLCall(glLinkProgram(m_programID));
 	GLCall(glValidateProgram(m_programID));
-	GetAllUniformLocations();
+	getAllUniformLocations();
 
 	// Check the program
 	GLCall(glGetProgramiv(m_programID, GL_LINK_STATUS, &Result));
@@ -131,33 +139,37 @@ void Shader::loadShaders(std::string vertexPath, std::string fragmentPath)
 
 }
 
-void Shader::Bind()
+void Shader::bind()
 {
 	GLCall(glUseProgram(m_programID));
 }
-void Shader::Unbind()
+void Shader::unbind()
 {
 	GLCall(glUseProgram(0));
 }
 
-void Shader::SetFloatUniform(int location, float value)
+void Shader::setIntUniform(int location, int value)
+{
+	GLCall(glUniform1i(location, value));
+}
+void Shader::setFloatUniform(int location, float value)
 {
 	GLCall(glUniform1f(location, value));
 }
-void Shader::SetVec3Uniform(int location, glm::vec3 vector)
+void Shader::setVec3Uniform(int location, glm::vec3 vector)
 {
 	GLCall(glUniform3f(location, vector.x, vector.y, vector.z));
 }
-void Shader::SetBooleanUniform(int location, bool value)
+void Shader::setBooleanUniform(int location, bool value)
 {
 	float result = 0;
 	if (value)
 	{
 		result = 1;
 	}	
-	SetFloatUniform(location, value);
+	setFloatUniform(location, value);
 }
-void Shader::SetMatrix4fUniform(int location, glm::mat4 matrix)
+void Shader::setMatrix4fUniform(int location, glm::mat4 matrix)
 {
 	GLCall(glUniformMatrix4fv(location, 1, GL_FALSE, &matrix[0][0]));
 }

@@ -22,7 +22,7 @@ glm::mat4 Maths::CreateTransformationMatrix(glm::vec3 translation, glm::vec3 rot
 glm::mat4 Maths::CreateViewMatrix(Camera* camera)
 {	
 	//TODO: Clean this up, unnecesary indirection
-	return camera->ViewMatrix();
+	return camera->viewMatrix();
 }
 
 double Maths::DegreesToRadians(double degrees)

@@ -7,6 +7,8 @@
 #include "Component.h"
 #include "EntityGroups.h"
 
+#include <iostream>
+
 class EntityManager;
 class EntityBlueprint;
 
@@ -27,7 +29,10 @@ public:
 	template<typename T, typename... TArgs>
 	T& addComponent(TArgs&&... mArgs)
 	{
-		assert(!hasComponent<T>());
+		if (hasComponent<T>())
+		{
+			return getComponent<T>();
+		}
 
 		T* c(new T(std::forward <TArgs>(mArgs)...));
 		c->entity = this;

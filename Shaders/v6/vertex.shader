@@ -14,11 +14,17 @@ uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform vec3 lightPosition;
 
-void main(void){
+//CRenderer component uniforms
+uniform float cRenderer_tileCount;
 
+void main(void){
 	vec4 worldPosition = transformationMatrix * vec4(position,1.0);
 	gl_Position = projectionMatrix * viewMatrix * worldPosition;
-	pass_textureCoordinates = textureCoordinates;
+	if(cRenderer_tileCount == 0)
+	{
+		cRenderer_tileCount = 1;
+	}
+	pass_textureCoordinates = textureCoordinates * cRenderer_tileCount;
 	surfaceNormal = (transformationMatrix * vec4(normal, 0.0)).xyz; 
 	toLightVector = lightPosition - worldPosition.xyz;
 	toCameraVector = (inverse(viewMatrix) * vec4(0.0,0.0,0.0,1.0)).xyz - worldPosition.xyz;

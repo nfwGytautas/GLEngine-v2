@@ -73,18 +73,3 @@ EntityManager::~EntityManager()
 {
 	m_entities.clear();
 }
-
-void Entity::addGroup(Group mGroup) noexcept
-{
-	m_groupBitset[mGroup] = true;
-	m_manager.addToGroup(this, mGroup);
-}
-
-Entity::Entity(EntityManager& mManager)
-	:m_manager(mManager)
-{}
-
-Entity::~Entity()
-{
-	m_components.clear();
-}

@@ -17,3 +17,5 @@
 #include "preDefinedComponents\CRenderer.h"			//Rendering component
 
 #include "preDefinedComponents\CLightEmiter.h"		//Light emiting component
+
+#include "preDefinedComponents\CMultiTexture.h"		//Multi texture component

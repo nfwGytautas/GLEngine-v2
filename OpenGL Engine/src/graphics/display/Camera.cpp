@@ -44,7 +44,7 @@ void Camera::Move()
 	}
 }
 
-glm::mat4 Camera::ViewMatrix()
+glm::mat4 Camera::viewMatrix()
 {
 	//TODO: This method probably should be done elsewhere later
 

@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\components\preDefinedComponents\CMultiTexture.h" />
+    <ClInclude Include="src\graphics\shader\DynamicShader.h" />
     <ClInclude Include="src\components\EntityGroups.h" />
     <ClInclude Include="src\components\preDefinedComponents\CColor.h" />
     <ClInclude Include="src\components\preDefinedComponents\CLightEmiter.h" />
@@ -47,6 +49,8 @@
     <ClInclude Include="src\graphics\shader\StaticShader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\components\preDefinedComponents\CMultiTexture.cpp" />
+    <ClCompile Include="src\graphics\shader\DynamicShader.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CColor.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CLightEmiter.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CMaterial.cpp" />

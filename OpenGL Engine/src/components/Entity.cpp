@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include "EntityManager.h"
 
 void Entity::init()
 {
@@ -50,4 +51,19 @@ bool Entity::hasGroup(Group mGroup) const noexcept
 void Entity::delGroup(Group mGroup) noexcept
 {
 	m_groupBitset[mGroup] = false;
+}
+
+void Entity::addGroup(Group mGroup) noexcept
+{
+	m_groupBitset[mGroup] = true;
+	m_manager.addToGroup(this, mGroup);
+}
+
+Entity::Entity(EntityManager& mManager)
+	: m_manager(mManager)
+{}
+
+Entity::~Entity()
+{
+	m_components.clear();
 }
