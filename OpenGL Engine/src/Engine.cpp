@@ -8,20 +8,25 @@
 #include "graphics\gtypes\gTypes.h"
 #include "graphics\display\Display.h"
 #include "graphics\FrameworkAssert.h"
+#include "graphics\shader\DynamicShader.h"
 #include "graphics\shader\StaticShader.h"
 #include "graphics\display\Camera.h"
 #include "data manager\BatchManager.h"
 #include "data manager\DataManager.h"
 #include "data manager\OBJLoader.h"
+#include "maths\Maths.h"
 
 bool Engine::m_initialized = false;
 DataManager* Engine::m_loader = nullptr;
-StaticShader* Engine::m_shader = nullptr;
+DynamicShader* Engine::m_shader = nullptr;
 Camera* Engine::m_camera = nullptr;
 EntityManager* Engine::m_entityManager = nullptr;
 BatchManager* Engine::m_batchManager = nullptr;
 
+bool Engine::RenderSystem::m_usingDefaults = false;
 CMaterial* Engine::RenderSystem::m_currentMaterial = nullptr;
+
+glm::vec3 Engine::GameState::skyColor = glm::vec3(0.529f, 0.807f, 0.980f);
 
 float Engine::m_EngineFoV = 70;
 float Engine::m_NearRenderPlane = 0.1f;
@@ -34,17 +39,17 @@ void Engine::initialize(unsigned int width, unsigned int height, const char* tit
 {
 	Display::createDisplay(width, height, title, fullscreen);
 	m_loader = new DataManager();
-	m_shader = new StaticShader();
+	m_shader = new DynamicShader("E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/vertex.shader", "E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/fragment.shader");
 	m_camera = new Camera();
 	m_batchManager = new BatchManager();
-	m_entityManager = new EntityManager(m_batchManager);
+	m_entityManager = new EntityManager(m_batchManager);	
 
 	GLCall(glEnable(GL_CULL_FACE));
 	GLCall(glCullFace(GL_BACK));
 
-	m_shader->Bind();
-	m_shader->loadProjectionMatrix(createProjectionMatrix());
-	m_shader->Unbind();
+	m_shader->bind();
+	m_shader->setMatrix4fUniform("projectionMatrix", createProjectionMatrix());
+	m_shader->unbind();
 
 	m_initialized = true;
 	std::cout << "[Engine] Engine initialized!" << std::endl;
@@ -134,11 +139,65 @@ std::pair<unsigned int, unsigned int> Engine::Loader::loadMesh(std::string fileP
 	m_batchManager->acknowledgeMesh(result.first);
 	return result;
 }
+std::pair<unsigned int, unsigned int> Engine::Loader::createFlatMesh(unsigned int vertexCount, unsigned int size)
+{
+	unsigned int count = vertexCount * vertexCount;
+
+	std::vector<float> vertices;
+	vertices.resize(count * 3);
+
+	std::vector<float> normals;
+	normals.resize(count * 3);
+
+	std::vector<float> textureCoords;
+	textureCoords.resize(count * 2);
+
+	std::vector<unsigned int> indices;
+	indices.resize(6 * (vertexCount - 1) * (vertexCount - 1));
+
+	int vertexIndex = 0;
+	for (unsigned int i = 0; i < vertexCount; i++) {
+		for (unsigned int j = 0; j < vertexCount; j++) {
+			vertices[vertexIndex * 3] = (float)j / ((float)vertexCount - 1) * size;
+			vertices[vertexIndex * 3 + 1] = 0;
+			vertices[vertexIndex * 3 + 2] = (float)i / ((float)vertexCount - 1) * size;
+			normals[vertexIndex * 3] = 0;
+			normals[vertexIndex * 3 + 1] = 1;
+			normals[vertexIndex * 3 + 2] = 0;
+			textureCoords[vertexIndex * 2] = (float)j / ((float)vertexCount - 1);
+			textureCoords[vertexIndex * 2 + 1] = (float)i / ((float)vertexCount - 1);
+			vertexIndex++;
+		}
+	}
+
+	int index = 0;
+	for (unsigned int gz = 0; gz < vertexCount - 1; gz++) {
+		for (unsigned int gx = 0; gx < vertexCount - 1; gx++) {
+			int topLeft = (gz * vertexCount) + gx;
+			int topRight = topLeft + 1;
+			int bottomLeft = ((gz + 1) * vertexCount) + gx;
+			int bottomRight = bottomLeft + 1;
+			indices[index++] = topLeft;
+			indices[index++] = bottomLeft;
+			indices[index++] = topRight;
+			indices[index++] = topRight;
+			indices[index++] = bottomLeft;
+			indices[index++] = bottomRight;
+		}
+	}
+	auto result = m_loader->createMesh(vertices, normals, textureCoords, indices);
+	m_batchManager->acknowledgeMesh(result.first);
+	return result;
+}
 unsigned int Engine::Loader::loadMaterial(std::string filePath)
 {
 	auto result = m_loader->loadMaterial(filePath);
 	m_batchManager->acknowledgeMaterial(result);
 	return result;
+}
+unsigned int Engine::Loader::loadTexture(std::string filePath)
+{
+	return m_loader->loadMaterial(filePath);
 }
 
 //============================================================================================================================
@@ -148,11 +207,11 @@ void Engine::RenderSystem::render()
 {
 	//Prepare for rendering
 	prepare();
-	m_shader->Bind();
+	m_shader->bind();
 
 	//MAIN RENDER CODE
 	//================================================
-	m_shader->loadViewMatrix(*m_camera);
+	m_shader->setMatrix4fUniform("viewMatrix", m_camera->viewMatrix());
 
 	//Load all the lights
 	loadLights();
@@ -162,22 +221,25 @@ void Engine::RenderSystem::render()
 	
 	//================================================
 
-	m_shader->Unbind();
+	m_shader->unbind();
 }
 
 void Engine::RenderSystem::prepare()
 {
 	GLCall(glEnable(GL_DEPTH_TEST));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-	GLCall(glClearColor(0, 0.3f, 0.0f, 1));
+	GLCall(glClearColor(GameState::skyColor.r, GameState::skyColor.g, GameState::skyColor.b, 1));
 }
 void Engine::RenderSystem::loadLights()
 {
 	auto lights = m_entityManager->getEntitiesByGroup(EntityGroups::LightEmittingEntity);
 	for (Entity* light : lights)
 	{
-		m_shader->loadLight(*light);
+		m_shader->setVec3Uniform("lightColour", light->getComponent<CColor>().value);
+		m_shader->setVec3Uniform("lightPosition", light->getComponent<CPosition>().value);
 	}
+
+	m_shader->setVec3Uniform("skyColor", GameState::skyColor);
 }
 void Engine::RenderSystem::renderEntities()
 {
@@ -194,7 +256,6 @@ void Engine::RenderSystem::renderEntities()
 		{
 			continue;
 		}
-
 		GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
 		GLCall(glEnableVertexAttribArray(AttributeLocation::UVs));
 		GLCall(glEnableVertexAttribArray(AttributeLocation::Normal));
@@ -203,22 +264,36 @@ void Engine::RenderSystem::renderEntities()
 			if (entity->hasComponent<CMaterial>())
 			{
 				auto material = entity->getComponent<CMaterial>();
-				if (m_currentMaterial == nullptr)
+				if (m_currentMaterial == nullptr || *m_currentMaterial != material)
 				{
-					material.use();
-					m_shader->loadShineVariables(material.shineDamper, material.reflectivity);
-					m_currentMaterial = &material;
-				}
-				else if(*m_currentMaterial != material)
-				{
-					material.use();
-					m_shader->loadShineVariables(material.shineDamper, material.reflectivity);
+					GraphicsAPI::loadTexture(material.m_textureID);
+					m_shader->setFloatUniform("shineDamper", material.shineDamper);
+					m_shader->setFloatUniform("reflectivity", material.reflectivity);
 					m_currentMaterial = &material;
 				}
 			}
+			else if (entity->hasComponent<CMultiTexture>())
+			{
+				CMultiTexture pack = entity->getComponent<CMultiTexture>();
+				m_shader->setIntUniform("blendMap", 1);
+				GraphicsAPI::loadTexture(pack.textureBlendMap, 1);
+				m_shader->setIntUniform("backgroundTexture", 2);
+				GraphicsAPI::loadTexture(pack.background, 2);
+				m_shader->setIntUniform("rTexture", 3);
+				GraphicsAPI::loadTexture(pack.r, 3);
+				m_shader->setIntUniform("gTexture", 4);
+				GraphicsAPI::loadTexture(pack.g, 4);
+				m_shader->setIntUniform("bTexture", 5);
+				GraphicsAPI::loadTexture(pack.b, 5);
+			}
 			if (entity->hasComponent<CTransformation>())
 			{
-				m_shader->loadTransformationMatrix(entity->getComponent<CTransformation>().transformationMatrix);
+				m_shader->setMatrix4fUniform("transformationMatrix", entity->getComponent<CTransformation>().transformationMatrix);
+			}
+			loadDefaultRenderSettings();
+			if (entity->hasComponent<CRenderer>())
+			{
+				loadRenderSettings(entity);
 			}
 			GLCall(glDrawElements(GL_TRIANGLES, entity->getComponent<CMesh>().vertexCount, GL_UNSIGNED_INT, (void*)0));
 		}
@@ -229,4 +304,51 @@ void Engine::RenderSystem::renderEntities()
 		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 		m_currentMaterial = nullptr;
 	}
+}
+
+void Engine::RenderSystem::loadRenderSettings(Entity* entity)
+{
+	CRenderer cRenderer = entity->getComponent<CRenderer>();
+	m_shader->setFloatUniform("cRenderer_tileCount", cRenderer.tileCount);
+
+	if(cRenderer.transparent)
+	{
+		GLCall(glDisable(GL_CULL_FACE));
+	}
+
+	if (cRenderer.fakeLighting)
+	{
+		m_shader->setBooleanUniform("cRenderer_fakeLighting", true);
+	}
+
+	if (cRenderer.multiTexture)
+	{
+		m_shader->setBooleanUniform("cRenderer_multiTexture", true);
+	}
+
+	m_usingDefaults = false;
+}
+
+void Engine::RenderSystem::loadDefaultRenderSettings()
+{
+	if (!m_usingDefaults)
+	{
+		m_shader->setFloatUniform("cRenderer_tileCount", 1);
+
+		GLCall(glEnable(GL_CULL_FACE));
+		GLCall(glCullFace(GL_BACK));
+
+		m_shader->setBooleanUniform("cRenderer_fakeLighting", false);
+		m_shader->setBooleanUniform("cRenderer_multiTexture", false);
+	}
+
+	m_usingDefaults = true;
+}
+//============================================================================================================================
+//GRAPHICS API
+//============================================================================================================================
+void Engine::GraphicsAPI::loadTexture(unsigned int id, unsigned int slot)
+{
+	GLCall(glActiveTexture(GL_TEXTURE0 + slot));
+	GLCall(glBindTexture(GL_TEXTURE_2D, id));
 }

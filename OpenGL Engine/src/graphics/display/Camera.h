@@ -9,7 +9,7 @@ public:
 	~Camera();
 
 	void Move();
-	glm::mat4 ViewMatrix();
+	glm::mat4 viewMatrix();
 
 	//TODO: Move this to the engine
 	glm::vec3 GetPosition()

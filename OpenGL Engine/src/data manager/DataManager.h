@@ -11,6 +11,7 @@ public:
 	~DataManager();
 
 	std::pair<unsigned int, unsigned int> loadMesh(std::string mFilePath);
+	std::pair<unsigned int, unsigned int> createMesh(std::vector<float>& vertices, std::vector<float>& normals, std::vector<float>& textureCoords, std::vector<unsigned int>& indices);
 	unsigned int loadMaterial(std::string mFilePath);
 
 	void cleanUp();

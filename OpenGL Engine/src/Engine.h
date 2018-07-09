@@ -6,6 +6,7 @@
 #include "input\InputKeys.h"
 
 class StaticShader;
+class DynamicShader;
 class DataManager;
 class Camera;
 class EntityManager;
@@ -47,7 +48,14 @@ public:
 	{
 	public:
 		static std::pair<unsigned int, unsigned int> loadMesh(std::string filePath);
+		static std::pair<unsigned int, unsigned int> createFlatMesh(unsigned int vertexCount, unsigned int size);
 		static unsigned int loadMaterial(std::string filePath);
+		static unsigned int loadTexture(std::string filePath);
+	};
+
+	struct GameState
+	{
+		static glm::vec3 skyColor;
 	};
 
 	static void initialize(unsigned int width, unsigned int height, const char* title, bool fullscreen = false);
@@ -70,8 +78,11 @@ private:
 		static void prepare();
 		static void loadLights();
 		static void renderEntities();
+		static void loadRenderSettings(Entity* entity);
+		static void loadDefaultRenderSettings();
 
 		static CMaterial* m_currentMaterial;
+		static bool m_usingDefaults;
 	};
 
 	class UpdateSystem
@@ -79,10 +90,16 @@ private:
 	public:
 		static void update();
 	};
+
+	class GraphicsAPI
+	{
+	public:
+		static void loadTexture(unsigned int id, unsigned int slot = 0);
+	};
 private:
 	static bool m_initialized;
 	static DataManager* m_loader;
-	static StaticShader* m_shader;
+	static DynamicShader* m_shader;
 	static Camera* m_camera;
 	static EntityManager* m_entityManager;
 	static BatchManager* m_batchManager;

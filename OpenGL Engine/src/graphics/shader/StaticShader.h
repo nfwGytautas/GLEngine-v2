@@ -13,9 +13,9 @@ public:
 	void loadViewMatrix(Camera& camera);
 	void loadLight(Entity& mLight);
 	void loadShineVariables(float damper, float reflectivity);
+	void loadTileCount(unsigned int tilecount);
 protected:
-	void BindAttributes() override; 
-	void GetAllUniformLocations() override;
+	void getAllUniformLocations() override;
 private:
 	static const char* VERTEX_FILE;
 	static const char* FRAGMENT_FILE;
@@ -27,5 +27,5 @@ private:
 	int m_location_lightColor;
 	int m_location_shineDamper;
 	int m_location_reflectivity;
+	int m_location_cRenderer_tileCount;
 };
-

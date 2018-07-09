@@ -1,14 +1,5 @@
 #include "CMaterial.h"
 #include <functional>
-#include <GL\glew.h>
-#include <GLFW\glfw3.h>
-#include "..\..\graphics\FrameworkAssert.h"
-
-void CMaterial::use()
-{
-	GLCall(glActiveTexture(GL_TEXTURE0));
-	GLCall(glBindTexture(GL_TEXTURE_2D, m_textureID));
-}
 
 CMaterial::CMaterial(unsigned int mTextureID, float mShineDamper, float mReflectivity)
 	: m_textureID{ mTextureID }, shineDamper{ mShineDamper }, reflectivity{ mReflectivity } {}

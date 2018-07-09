@@ -18,37 +18,35 @@ StaticShader::~StaticShader()
 
 void StaticShader::loadTransformationMatrix(glm::mat4 matrix)
 {
-	this->SetMatrix4fUniform(m_location_transformationMatrix, matrix);
+	this->setMatrix4fUniform(m_location_transformationMatrix, matrix);
 }
 void StaticShader::loadProjectionMatrix(glm::mat4 matrix)
 {
-	this->SetMatrix4fUniform(m_location_projectionMatrix, matrix);
+	this->setMatrix4fUniform(m_location_projectionMatrix, matrix);
 }
 void StaticShader::loadViewMatrix(Camera& camera)
 {
 	glm::mat4 viewMatrix = Maths::CreateViewMatrix(&camera);
-	this->SetMatrix4fUniform(m_location_viewMatrix, viewMatrix);
+	this->setMatrix4fUniform(m_location_viewMatrix, viewMatrix);
 }
 void StaticShader::loadLight(Entity& mLight)
 {
 	glm::vec3 position = mLight.getComponent<CPosition>().value;
 	glm::vec3 color = mLight.getComponent<CColor>().value;
-	this->SetVec3Uniform(m_location_lightPosition, position);
-	this->SetVec3Uniform(m_location_lightColor, color);
+	this->setVec3Uniform(m_location_lightPosition, position);
+	this->setVec3Uniform(m_location_lightColor, color);
 }
 void StaticShader::loadShineVariables(float damper, float reflectivity)
 {
-	this->SetFloatUniform(m_location_shineDamper, damper);
-	this->SetFloatUniform(m_location_reflectivity, reflectivity);
+	this->setFloatUniform(m_location_shineDamper, damper);
+	this->setFloatUniform(m_location_reflectivity, reflectivity);
+}
+void StaticShader::loadTileCount(unsigned int tilecount)
+{
+	this->setFloatUniform(m_location_cRenderer_tileCount, tilecount);
 }
 
-void StaticShader::BindAttributes()
-{
-	this->bindAttribute(AttributeLocation::Position, "position");
-	this->bindAttribute(AttributeLocation::UVs,	"textureCoords");
-	this->bindAttribute(AttributeLocation::Normal, "normal");
-}
-void StaticShader::GetAllUniformLocations()
+void StaticShader::getAllUniformLocations()
 {
 	m_location_transformationMatrix = this->getUniformLocation("transformationMatrix");
 	m_location_projectionMatrix = this->getUniformLocation("projectionMatrix");
@@ -57,4 +55,5 @@ void StaticShader::GetAllUniformLocations()
 	m_location_lightColor = this->getUniformLocation("lightColour");
 	m_location_shineDamper = this->getUniformLocation("shineDamper");
 	m_location_reflectivity = this->getUniformLocation("reflectivity");
+	m_location_cRenderer_tileCount = this->getUniformLocation("cRenderer_tileCount");
 }

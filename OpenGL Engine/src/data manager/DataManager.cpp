@@ -40,6 +40,19 @@ std::pair<unsigned int, unsigned int> DataManager::loadMesh(std::string mFilePat
 	}
 }
 
+std::pair<unsigned int, unsigned int> DataManager::createMesh(std::vector<float>& vertices, std::vector<float>& normals, std::vector<float>& textureCoords, std::vector<unsigned int>& indices)
+{
+	unsigned int vaoID = createVAO();
+	bindIndiceBuffer(indices);
+	storeDataInAttributes(AttributeLocation::Position, 3, vertices);
+	storeDataInAttributes(AttributeLocation::UVs, 2, textureCoords);
+	storeDataInAttributes(AttributeLocation::Normal, 3, normals);
+	unbindVAO();
+
+	std::pair<unsigned int, unsigned int> result = std::make_pair(vaoID, indices.size());
+	return result;
+}
+
 unsigned int DataManager::loadMaterial(std::string mFilePath)
 {
 	auto boostFilePath = boost::filesystem::path(mFilePath);

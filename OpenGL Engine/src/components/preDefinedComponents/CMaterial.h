@@ -2,11 +2,10 @@
 #include "..\Component.h"
 //Dependencies
 class BatchManager;
+class Engine;
 
 struct CMaterial : Component
 {
-	void use();
-
 	float shineDamper;
 	float reflectivity;
 
@@ -31,4 +30,5 @@ struct CMaterial : Component
 private:
 	unsigned int m_textureID;
 	friend BatchManager;
+	friend Engine;
 };
