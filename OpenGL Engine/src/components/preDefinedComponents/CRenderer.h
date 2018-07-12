@@ -14,4 +14,6 @@ struct CRenderer : Component
 	bool multiTexture;
 
 	CRenderer() : tileCount(1), transparent(false), fakeLighting(false), multiTexture(false) {}
+
+	virtual CRenderer* clone() { return new CRenderer(*this); }
 };

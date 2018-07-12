@@ -6,24 +6,21 @@ int main()
 {
 	Engine::initialize(1280, 720, "TestWindow");
 
-	Entity& testEntity1(Engine::EntityFactory::createEntity());
-	testEntity1.addComponent<CPosition>(glm::vec3(0.0f, 0.0f, -20.0f));
-	testEntity1.addComponent<CTransformation>(0,0,0,1);
-	testEntity1.getComponent<CTransformation>().rotationX = 90;
-	testEntity1.addComponent<CMesh>(Engine::Loader::loadMesh("E:/Test files/nfw/stall.obj"));
-	testEntity1.addComponent<CMaterial>(Engine::Loader::loadMaterial("E:/Test files/nfw/stallTexture.png"), 10, 1);
+	EntityBlueprint& stallBlueprint(Engine::EntityFactory::newBlueprint());
+	stallBlueprint.addComponent<CPosition>(glm::vec3(0.0f, 0.0f, 0.0f));
+	stallBlueprint.addComponent<CTransformation>(0, 0, 0, 1);
+	stallBlueprint.addComponent<CMesh>(Engine::Loader::loadMesh("E:/Test files/nfw/stall.obj"));
+	stallBlueprint.addComponent<CMaterial>(Engine::Loader::loadMaterial("E:/Test files/nfw/stallTexture.png"), 10, 1);
 
-	Entity& testEntity2(Engine::EntityFactory::createEntity());
-	testEntity2.addComponent<CPosition>(glm::vec3(10.0f, 0.0f, -20.0f));
-	testEntity2.addComponent<CTransformation>(0, 0, 0, 1);
-	testEntity2.addComponent<CMesh>(Engine::Loader::loadMesh("E:/Test files/nfw/stall.obj"));
-	testEntity2.addComponent<CMaterial>(Engine::Loader::loadMaterial("E:/Test files/nfw/stallTexture.png"), 10, 1);
+	Entity& stallEntity1(Engine::EntityFactory::createEntity(stallBlueprint));
+	stallEntity1.getComponent<CPosition>().value = glm::vec3(0.0f, 0.0f, -20.0f);
+	stallEntity1.getComponent<CTransformation>().rotationX = 90;
 
-	Entity& testEntity3(Engine::EntityFactory::createEntity());
-	testEntity3.addComponent<CPosition>(glm::vec3(20.0f, 10.0f, -30.0f));
-	testEntity3.addComponent<CTransformation>(0, 0, 0, 1);
-	testEntity3.addComponent<CMesh>(Engine::Loader::loadMesh("E:/Test files/nfw/stall.obj"));
-	testEntity3.addComponent<CMaterial>(Engine::Loader::loadMaterial("E:/Test files/nfw/stallTexture.png"), 10, 1);
+	Entity& stallEntity2(Engine::EntityFactory::createEntity(stallBlueprint));
+	stallEntity2.getComponent<CPosition>().value = glm::vec3(10.0f, 0.0f, -20.0f);
+
+	Entity& stallEntity3(Engine::EntityFactory::createEntity(stallBlueprint));
+	stallEntity3.getComponent<CPosition>().value = glm::vec3(20.0f, 10.0f, -30.0f);
 
 	Entity& testTerrain1(Engine::EntityFactory::createEntity());
 	testTerrain1.addComponent<CPosition>(glm::vec3(0,0,0));

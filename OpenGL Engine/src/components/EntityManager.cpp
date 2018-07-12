@@ -1,6 +1,7 @@
 #include "EntityManager.h"
 #include <algorithm>
 #include "..\data manager\BatchManager.h"
+#include "EntityBlueprint.h"
 
 void EntityManager::refresh()
 {
@@ -56,6 +57,22 @@ Entity& EntityManager::addEntity()
 	return *e;
 }
 
+Entity & EntityManager::addEntity(EntityBlueprint& mBlueprint)
+{
+	Entity* e(new Entity(*this, mBlueprint));
+	std::unique_ptr<Entity> uPtr{ e };
+	m_entities.emplace_back(std::move(uPtr));
+	return *e;
+}
+
+EntityBlueprint& EntityManager::addBlueprint()
+{
+	EntityBlueprint* e(new EntityBlueprint(*this));
+	std::unique_ptr<EntityBlueprint> uPtr{ e };
+	m_blueprints.emplace_back(std::move(uPtr));
+	return *e;
+}
+
 void EntityManager::addToGroup(Entity * mEntity, Group mGroup)
 {
 	m_groupedEntities[mGroup].emplace_back(mEntity);
@@ -72,4 +89,5 @@ EntityManager::EntityManager(BatchManager* pManager)
 EntityManager::~EntityManager()
 {
 	m_entities.clear();
+	m_blueprints.clear();
 }

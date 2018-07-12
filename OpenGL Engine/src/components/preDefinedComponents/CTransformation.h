@@ -16,4 +16,6 @@ struct CTransformation : Component
 	float scale;
 
 	CTransformation(float mXRotation, float mYRotation, float mZRotation, float mScale);
+
+	virtual CTransformation* clone() { return new CTransformation(*this); }
 };

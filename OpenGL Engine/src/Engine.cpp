@@ -130,6 +130,16 @@ Entity& Engine::EntityFactory::createEntity()
 	return m_entityManager->addEntity();
 }
 
+Entity& Engine::EntityFactory::createEntity(EntityBlueprint& mBlueprint)
+{
+	return m_entityManager->addEntity(mBlueprint);
+}
+
+EntityBlueprint& Engine::EntityFactory::newBlueprint()
+{
+	return m_entityManager->addBlueprint();
+}
+
 //============================================================================================================================
 //LOADER
 //============================================================================================================================

@@ -7,14 +7,12 @@
 #include "Component.h"
 #include "EntityGroups.h"
 
-#include <iostream>
+static const size_t maxComponents = 32;
+static const size_t maxGroups = 32;
+using Group = size_t;
 
 class EntityManager;
 class EntityBlueprint;
-
-constexpr size_t maxComponents{ 32 };
-constexpr size_t maxGroups{ 32 };
-using Group = size_t;
 class Entity
 {
 public:
@@ -65,21 +63,8 @@ public:
 	void delGroup(Group mGroup) noexcept;
 
 	Entity(EntityManager& mManager);
+	Entity(EntityManager& mManager, EntityBlueprint& mBlueprint);
 	~Entity();
-private:
-	using ComponentID = size_t;
-	static inline ComponentID getUniqueComponentID() noexcept
-	{
-		static ComponentID lastID{ 0u };
-		return lastID++;
-	}
-	template<typename T>
-	static inline ComponentID getComponentTypeID() noexcept
-	{
-		static_assert(std::is_base_of<Component, T>::value, "T must inherit from Component");
-		static ComponentID typeID{ getUniqueComponentID() };
-		return typeID;
-	}	
 private:
 	EntityManager& m_manager;
 
@@ -93,5 +78,7 @@ private:
 
 	using GroupBitset = std::bitset<maxGroups>;
 	GroupBitset m_groupBitset;
+
+	friend EntityBlueprint;
 };
 

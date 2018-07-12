@@ -9,4 +9,6 @@ struct CColor : Component
 
 	CColor() = default;
 	CColor(const glm::vec3& mColor) : value{ mColor } {}
+
+	virtual CColor* clone() { return new CColor(*this); }
 };

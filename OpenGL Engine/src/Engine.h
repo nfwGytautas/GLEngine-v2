@@ -2,6 +2,10 @@
 #include <string>
 #include <glm\glm.hpp>
 #include "algorithm\Algorithm.h"
+#include "components\Component.h"
+#include "components\Entity.h"
+#include "components\EntityBlueprint.h"
+#include "components\EntityGroups.h"
 #include "components\PreDefinedComponents.h"
 #include "input\InputKeys.h"
 
@@ -42,6 +46,8 @@ public:
 	{
 	public:
 		static Entity& createEntity();
+		static Entity& createEntity(EntityBlueprint& mBlueprint);
+		static EntityBlueprint& newBlueprint();
 	};
 
 	class Loader
