@@ -14,5 +14,8 @@ struct CMultiTexture : Component
 
 	CMultiTexture();
 	~CMultiTexture();
+
+
+	virtual CMultiTexture* clone() { return new CMultiTexture(*this); }
 };
 

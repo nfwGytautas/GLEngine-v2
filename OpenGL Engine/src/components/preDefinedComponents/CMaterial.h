@@ -27,6 +27,8 @@ struct CMaterial : Component
 	{
 		return !(*this == mat);
 	}
+
+	virtual CMaterial* clone() { return new CMaterial(*this); }
 private:
 	unsigned int m_textureID;
 	friend BatchManager;

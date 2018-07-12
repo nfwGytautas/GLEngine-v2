@@ -25,6 +25,8 @@ struct CMesh : Component
 			return false;
 		}
 	}
+
+	virtual CMesh* clone() { return new CMesh(*this); }
 private:
 	unsigned int m_vaoID;
 	friend BatchManager;

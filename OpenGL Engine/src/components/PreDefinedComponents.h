@@ -1,11 +1,4 @@
 #pragma once
-//==================================================================================================================================
-//ALL THE NEEDED HEADERS SO YOU FOR THE COMPONENT SYSTEM
-//==================================================================================================================================
-#include "Component.h"		//Base class that all components derive from
-#include "Entity.h"			//Class that uses these components
-#include "EntityGroups.h"	//Header containing all predefined entity groups
-
 #include "preDefinedComponents\CPosition.h"			//Position component
 #include "preDefinedComponents\CColor.h"			//Color component
 

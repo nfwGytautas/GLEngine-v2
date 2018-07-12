@@ -11,4 +11,6 @@ struct CLightEmiter : Component
 	CPosition* cPosition;
 	CColor* cColor;
 	CLightEmiter() {};
+
+	virtual CLightEmiter* clone() { return new CLightEmiter(*this); }
 };

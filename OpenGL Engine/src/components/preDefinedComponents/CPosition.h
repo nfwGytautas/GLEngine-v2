@@ -11,4 +11,6 @@ struct CPosition : Component
 
 	CPosition() = default;
 	CPosition(const glm::vec3& mPosition);
+
+	virtual CPosition* clone() { return new CPosition(*this); }
 };
