@@ -9,6 +9,9 @@ BatchManager::~BatchManager()
 {
 }
 
+//============================================================================================================================
+//MESHES & MATERIALS
+//============================================================================================================================
 void BatchManager::acknowledgeMaterial(unsigned int id)
 {
 	if(std::find(m_knownMaterials.begin(), m_knownMaterials.end(), id) == m_knownMaterials.end())
@@ -16,7 +19,6 @@ void BatchManager::acknowledgeMaterial(unsigned int id)
 		m_knownMaterials.push_back(id);
 	}
 }
-
 void BatchManager::acknowledgeMesh(unsigned int id)
 {
 	if (std::find(m_knownMeshes.begin(), m_knownMeshes.end(), id) == m_knownMeshes.end())
@@ -42,7 +44,6 @@ void BatchManager::addEntity(Entity* entity)
 		}
 	}
 }
-
 void BatchManager::updateEntityBatch(const std::vector<std::unique_ptr<Entity>>& pEntities)
 {
 	clearEntityBatch();
@@ -51,7 +52,6 @@ void BatchManager::updateEntityBatch(const std::vector<std::unique_ptr<Entity>>&
 		addEntity(e.get());
 	}
 }
-
 void BatchManager::clearEntityBatch()
 {
 	m_entityBatch.clear();
@@ -61,12 +61,10 @@ std::vector<Entity*>& BatchManager::getEntityBatch(unsigned int materialID)
 {
 	return m_entityBatch[materialID];
 }
-
 std::vector<unsigned int>& BatchManager::allKnownMaterials()
 {
 	return m_knownMaterials;
 }
-
 std::vector<unsigned int>& BatchManager::allKnownMeshes()
 {
 	return m_knownMeshes;

@@ -3,11 +3,10 @@
 //Dependencies
 #include <utility>
 class BatchManager;
+class Engine;
 
 struct CMesh : Component
 {
-	void use();
-
 	unsigned int vertexCount;
 
 	CMesh(unsigned int mVaoID, unsigned int mVertexCount);
@@ -30,4 +29,5 @@ struct CMesh : Component
 private:
 	unsigned int m_vaoID;
 	friend BatchManager;
+	friend Engine;
 };

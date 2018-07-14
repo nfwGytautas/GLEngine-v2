@@ -114,9 +114,9 @@ void Display::updateDisplay()
 		//Swap buffers
 		GLCall(glfwSwapBuffers(m_Window));
 
-		//Calculate FPS
+		//Calculate delta
 		double currentFrameTime = getCurrentTime();
-		delta = float(currentFrameTime - lastFrameTime);
+		delta = float((currentFrameTime - lastFrameTime) / 1000);
 		lastFrameTime = currentFrameTime;		
 	}
 }
@@ -136,6 +136,6 @@ void Display::switchVerticalSync(bool state)
 
 double Display::getCurrentTime()
 {
-	//Get time in miliseconds
-	return glfwGetTime();
+	//Get time in seconds
+	return glfwGetTime() * 1000;
 }

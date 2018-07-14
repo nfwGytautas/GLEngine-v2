@@ -2,6 +2,7 @@
 #include "InputKeys.h"
 
 struct GLFWwindow;
+class Engine;
 
 class InputManager
 {
@@ -39,5 +40,8 @@ private:
 	static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 	static GLFWwindow* m_context;
+
+	static Key getKey();
+	friend Engine;
 };
 

@@ -12,3 +12,5 @@
 #include "preDefinedComponents\CLightEmiter.h"		//Light emiting component
 
 #include "preDefinedComponents\CMultiTexture.h"		//Multi texture component
+
+#include "preDefinedComponents\CInput.h"			//Input component

@@ -1,10 +1,10 @@
 #include "InputManager.h"
-#include "..\graphics\display\Display.h"
-
-#include "..\graphics\FrameworkAssert.h"
-#include <GLFW\glfw3.h>
-
 #include <iostream>
+#include <GLFW\glfw3.h>
+#include "..\graphics\display\Display.h"
+#include "..\graphics\FrameworkAssert.h"
+#include "..\Engine.h"
+
 
 bool InputManager::Keyboard::isKeyDown(Key key)
 {
@@ -56,6 +56,24 @@ void InputManager::scrollCallback(GLFWwindow* window, double xoffset, double yof
 	{
 		std::cout << "[Engine][InputManager] Exception caught." << "ScrollCallback(unknown)" << "\n";
 		return;
+	}
+}
+Key InputManager::getKey()
+{
+	if (Keyboard::m_heldKey == -1)
+	{
+		if (Keyboard::m_pressedKey != -1)
+		{
+			return (Key)Keyboard::m_pressedKey;
+		}
+		else
+		{
+			return Key::KEY_UNKNOWN;
+		}
+	}
+	else
+	{
+		return (Key)Keyboard::m_heldKey;
 	}
 }
 void InputManager::update()

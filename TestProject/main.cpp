@@ -56,6 +56,36 @@ int main()
 	testLight.addComponent<CLightEmiter>();
 	testLight.getComponent<CPosition>().value = glm::vec3(20000, 40000, 20000);
 
+	Entity& testPlayer(Engine::EntityFactory::createEntity());
+	testPlayer.addComponent<CPosition>(glm::vec3(50, 0, 50));
+	testPlayer.addComponent<CTransformation>(0, 0, 0, 1);
+	testPlayer.addComponent<CMesh>(Engine::Loader::loadMesh("E:/Test files/nfw/person.obj"));
+	testPlayer.addComponent<CMaterial>(Engine::Loader::loadMaterial("E:/Test files/nfw/playerTexture.png"), 10, 0);
+	testPlayer.addComponent<CInput>();
+	CInput& input = testPlayer.getComponent<CInput>();
+	InputBehavior aBehavior = [](Entity& mEntity) { mEntity.getComponent<CTransformation>().rotationY += (160 * Engine::deltaTime()); };
+	InputBehavior dBehavior = [](Entity& mEntity) { mEntity.getComponent<CTransformation>().rotationY -= (160 * Engine::deltaTime()); };
+	InputBehavior wBehavior = [](Entity& mEntity) 
+	{ 
+		float distance = 50 * Engine::deltaTime(); 
+		float dx = (float) (distance * std::sin(Maths::DegreesToRadians(mEntity.getComponent<CTransformation>().rotationY)));
+		float dz = (float) (distance * std::cos(Maths::DegreesToRadians(mEntity.getComponent<CTransformation>().rotationY)));
+		mEntity.getComponent<CPosition>().value.x += dx;
+		mEntity.getComponent<CPosition>().value.z += dz;
+	};
+	InputBehavior sBehavior = [](Entity& mEntity)
+	{
+		float distance = -50 * Engine::deltaTime();
+		float dx = distance * (float) (std::sin(Maths::DegreesToRadians(mEntity.getComponent<CTransformation>().rotationY)));
+		float dz = distance * (float) (std::cos(Maths::DegreesToRadians(mEntity.getComponent<CTransformation>().rotationY)));
+		mEntity.getComponent<CPosition>().value.x += dx;
+		mEntity.getComponent<CPosition>().value.z += dz;	
+	};
+	input.reactsTo(Key::KEY_W, wBehavior);
+	input.reactsTo(Key::KEY_S, sBehavior);
+	input.reactsTo(Key::KEY_A, aBehavior);
+	input.reactsTo(Key::KEY_D, dBehavior);
+
 	Engine::Window::vSync(true);
 	while (!Engine::Window::shouldClose())
 	{

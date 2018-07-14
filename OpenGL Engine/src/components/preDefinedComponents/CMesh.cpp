@@ -1,14 +1,6 @@
 #include "CMesh.h"
 #include <functional>
-#include <GL\glew.h>
-#include <GLFW\glfw3.h>
-#include "..\..\graphics\FrameworkAssert.h"
 #include "..\..\data manager\BatchManager.h"
-
-void CMesh::use()
-{
-	GLCall(glBindVertexArray(m_vaoID));
-}
 
 CMesh::CMesh(unsigned int mVaoID, unsigned int mVertexCount)
 	: m_vaoID{ mVaoID }, vertexCount{ mVertexCount }

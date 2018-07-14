@@ -65,10 +65,7 @@ void Engine::update()
 {
 	if (m_initialized)
 	{
-		m_camera->Move();
-		Display::updateDisplay();
-		m_entityManager->refresh();
-		m_entityManager->update(Display::getDelta());
+		UpdateSystem::update();
 	}
 }
 void Engine::terminate()
@@ -85,6 +82,10 @@ void Engine::terminate()
 
 	m_initialized = false;
 	std::cout << "[Engine] Engine terminated!" << std::endl;
+}
+float Engine::deltaTime()
+{
+	return Display::getDelta();
 }
 glm::mat4 Engine::createProjectionMatrix()
 {
@@ -260,7 +261,7 @@ void Engine::RenderSystem::renderEntities()
 		if(sameMeshEntities.size() != 0)
 		{
 			auto mesh = sameMeshEntities[0]->getComponent<CMesh>();
-			mesh.use();
+			GraphicsAPI::loadVAO(mesh.m_vaoID);
 		}
 		else
 		{
@@ -338,7 +339,6 @@ void Engine::RenderSystem::loadRenderSettings(Entity* entity)
 
 	m_usingDefaults = false;
 }
-
 void Engine::RenderSystem::loadDefaultRenderSettings()
 {
 	if (!m_usingDefaults)
@@ -355,10 +355,38 @@ void Engine::RenderSystem::loadDefaultRenderSettings()
 	m_usingDefaults = true;
 }
 //============================================================================================================================
+//UPDATE SYSTEM
+//============================================================================================================================
+void Engine::UpdateSystem::update()
+{
+	Display::updateDisplay();
+	m_entityManager->refresh();
+
+	//Change to another component
+	m_camera->Move();
+
+	updateEntitiesWithInput();
+
+	//Kinda redundant now
+	m_entityManager->update(Display::getDelta());
+}
+void Engine::UpdateSystem::updateEntitiesWithInput()
+{
+	auto inputEntities = m_entityManager->getEntitiesByGroup(EntityGroups::HasInput);
+	for (Entity* e : inputEntities)
+	{
+		e->getComponent<CInput>().react(InputManager::getKey());
+	}
+}
+//============================================================================================================================
 //GRAPHICS API
 //============================================================================================================================
 void Engine::GraphicsAPI::loadTexture(unsigned int id, unsigned int slot)
 {
 	GLCall(glActiveTexture(GL_TEXTURE0 + slot));
 	GLCall(glBindTexture(GL_TEXTURE_2D, id));
+}
+void Engine::GraphicsAPI::loadVAO(unsigned int id)
+{
+	GLCall(glBindVertexArray(id));
 }
