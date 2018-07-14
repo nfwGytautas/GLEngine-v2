@@ -10,7 +10,7 @@
 #include <glm\gtc\matrix_transform.hpp>
 
 Camera::Camera()
-	:m_position(glm::vec3(0,1,5))
+	:m_position(glm::vec3(0,10,5))
 {
 }
 Camera::~Camera()
@@ -26,7 +26,7 @@ void Camera::Move()
 	m_horizontalAngle += 0.005f * /*deltaTime */ float(1280 / 2 - xpos);
 	m_verticalAngle += 0.005f * /*deltaTime */ float(720 / 2 - ypos);
 
-	if (InputManager::Keyboard::isKeyDown(Key::KEY_W))
+	/*if (InputManager::Keyboard::isKeyDown(Key::KEY_W))
 	{
 		m_position += m_direction * Display::getDelta() * 20.0f;
 	}
@@ -41,7 +41,7 @@ void Camera::Move()
 	else if (InputManager::Keyboard::isKeyDown(Key::KEY_A))
 	{
 		m_position -= m_right * Display::getDelta() * 20.0f;
-	}
+	}*/
 }
 
 glm::mat4 Camera::viewMatrix()

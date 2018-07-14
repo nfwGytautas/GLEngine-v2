@@ -11,7 +11,7 @@ public:
 	//Clears the screen
 	static void clear();
 
-	//Returns calculated delta
+	//Returns calculated delta in miliseconds
 	static inline float getDelta() { return delta; }
 	//Returns window width
 	static inline unsigned int getWidth() { return m_Width; }

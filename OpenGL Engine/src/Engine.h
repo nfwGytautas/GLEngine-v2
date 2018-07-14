@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <glm\glm.hpp>
+#include "maths\Maths.h"
 #include "algorithm\Algorithm.h"
 #include "components\Component.h"
 #include "components\Entity.h"
@@ -72,6 +73,7 @@ public:
 		return m_initialized;
 	}
 	static void terminate();
+	static float deltaTime();
 
 private:
 	static glm::mat4 createProjectionMatrix();
@@ -95,12 +97,15 @@ private:
 	{
 	public:
 		static void update();
+	private:
+		static void updateEntitiesWithInput();
 	};
 
 	class GraphicsAPI
 	{
 	public:
 		static void loadTexture(unsigned int id, unsigned int slot = 0);
+		static void loadVAO(unsigned int id);
 	};
 private:
 	static bool m_initialized;

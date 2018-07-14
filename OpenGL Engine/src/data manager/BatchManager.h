@@ -10,6 +10,7 @@ public:
 	BatchManager();
 	~BatchManager();
 
+	//Meshes & Materials
 	void acknowledgeMaterial(unsigned int id);
 	void acknowledgeMesh(unsigned int id);
 
@@ -20,8 +21,8 @@ public:
 	std::vector<unsigned int>& allKnownMaterials();
 	std::vector<unsigned int>& allKnownMeshes();
 
-	void cleanUp();
 
+	void cleanUp();
 private:
 	void clearEntityBatch();
 private:
