@@ -13,11 +13,14 @@ void CInput::init()
 	entity->addGroup(EntityGroups::HasInput);
 }
 
-void CInput::react(const Key& mKey)
+void CInput::react(const std::vector<Key>& mKeys)
 {
-	if (m_behaviors.find(mKey) != m_behaviors.end())
+	for(unsigned int i = 0; i < mKeys.size(); i++)
 	{
-		m_behaviors[mKey](*entity);
+		if (m_behaviors.find(mKeys[i]) != m_behaviors.end())
+		{
+			m_behaviors[mKeys[i]](*entity);
+		}
 	}
 }
 

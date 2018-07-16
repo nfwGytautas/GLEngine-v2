@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "InputKeys.h"
 
 struct GLFWwindow;
@@ -12,9 +13,7 @@ public:
 	public:
 		static bool isKeyDown(Key key);
 	private:
-		static int m_pressedKey;
-		static int m_heldKey;
-
+		static bool m_pressedKeys[349];
 		friend class InputManager;
 	};
 	class Mouse
@@ -41,7 +40,7 @@ private:
 
 	static GLFWwindow* m_context;
 
-	static Key getKey();
+	static std::vector<Key> getKey();
 	friend Engine;
 };
 

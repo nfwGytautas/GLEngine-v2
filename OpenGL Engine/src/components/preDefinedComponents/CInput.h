@@ -16,7 +16,7 @@ struct CInput : Component
 
 	bool curentlyEnabled;
 
-	void react(const Key& mKey);
+	void react(const std::vector<Key>& mKeys);
 	void reactsTo(Key mKey, InputBehavior mBehavior);
 private:
 	std::unordered_map<Key, InputBehavior> m_behaviors;

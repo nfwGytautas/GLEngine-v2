@@ -7,7 +7,7 @@
 enum class Key
 {
 	/* The unknown key */
-	 KEY_UNKNOWN            =-1,
+	 KEY_UNKNOWN            =1,
 								
 	/* Printable keys */		
 	 KEY_SPACE              =32,

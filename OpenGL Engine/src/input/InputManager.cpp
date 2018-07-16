@@ -5,18 +5,14 @@
 #include "..\graphics\FrameworkAssert.h"
 #include "..\Engine.h"
 
+bool InputManager::Keyboard::m_pressedKeys[349] = { false };
+double InputManager::Mouse::ScrollOffsetX = 0;
+double InputManager::Mouse::ScrollOffsetY = 0;
+GLFWwindow* InputManager::m_context = nullptr;
 
 bool InputManager::Keyboard::isKeyDown(Key key)
 {
-	int keyCode = (int)key;
-	if (keyCode == m_pressedKey || keyCode == m_heldKey)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return m_pressedKeys[(int)key];
 }
 
 void InputManager::setCallBacks(GLFWwindow* context)
@@ -31,12 +27,11 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 	{
 		if (action == GLFW_PRESS)
 		{
-			Keyboard::m_pressedKey = key;
-			Keyboard::m_heldKey = key;
+			Keyboard::m_pressedKeys[key] = true;
 		}
 		else if (action == GLFW_RELEASE)
 		{
-			Keyboard::m_heldKey = -1;
+			Keyboard::m_pressedKeys[key] = false;
 		}
 	}
 	catch (...)
@@ -58,27 +53,20 @@ void InputManager::scrollCallback(GLFWwindow* window, double xoffset, double yof
 		return;
 	}
 }
-Key InputManager::getKey()
+std::vector<Key> InputManager::getKey()
 {
-	if (Keyboard::m_heldKey == -1)
+	std::vector<Key> result;
+	for (unsigned int i = 0; i < 349; i++)
 	{
-		if (Keyboard::m_pressedKey != -1)
+		if (Keyboard::m_pressedKeys[i] == true)
 		{
-			return (Key)Keyboard::m_pressedKey;
-		}
-		else
-		{
-			return Key::KEY_UNKNOWN;
+			result.push_back((Key)i);
 		}
 	}
-	else
-	{
-		return (Key)Keyboard::m_heldKey;
-	}
+	return result;
 }
 void InputManager::update()
 {
-	Keyboard::m_pressedKey = -1;
 	GLCall(glfwPollEvents());
 }
 
@@ -94,13 +82,3 @@ void InputManager::Mouse::centerCursorPosition()
 {
 	GLCall(glfwSetCursorPos(m_context, Display::getWidth() / 2, Display::getHeight() / 2));
 }
-
-int InputManager::Keyboard::m_pressedKey = -1;
-int InputManager::Keyboard::m_heldKey = -1;
-
-double InputManager::Mouse::ScrollOffsetX = 0;
-double InputManager::Mouse::ScrollOffsetY = 0;
-
-GLFWwindow* InputManager::m_context = nullptr;
-
-
