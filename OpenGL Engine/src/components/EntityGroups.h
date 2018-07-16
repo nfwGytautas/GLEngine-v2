@@ -7,6 +7,7 @@ namespace EntityGroups
 		StaticEntity = 0,
 		DynamicEntity = 1,
 		LightEmittingEntity = 2,
-		HasInput = 3
+		HasInput = 3,
+		HasPhysics = 4
 	};
 }

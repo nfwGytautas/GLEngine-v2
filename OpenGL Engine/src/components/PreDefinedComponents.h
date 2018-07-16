@@ -14,3 +14,4 @@
 #include "preDefinedComponents\CMultiTexture.h"		//Multi texture component
 
 #include "preDefinedComponents\CInput.h"			//Input component
+#include "preDefinedComponents\CPhysics.h"			//Physics component

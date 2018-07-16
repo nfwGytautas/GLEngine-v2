@@ -62,9 +62,16 @@ int main()
 	testPlayer.addComponent<CMesh>(Engine::Loader::loadMesh("E:/Test files/nfw/person.obj"));
 	testPlayer.addComponent<CMaterial>(Engine::Loader::loadMaterial("E:/Test files/nfw/playerTexture.png"), 10, 0);
 	testPlayer.addComponent<CInput>();
+	testPlayer.addComponent<CPhysics>().affectedByGravity = true;
 	CInput& input = testPlayer.getComponent<CInput>();
-	InputBehavior aBehavior = [](Entity& mEntity) { mEntity.getComponent<CTransformation>().rotationY += (160 * Engine::deltaTime()); };
-	InputBehavior dBehavior = [](Entity& mEntity) { mEntity.getComponent<CTransformation>().rotationY -= (160 * Engine::deltaTime()); };
+	InputBehavior aBehavior = [](Entity& mEntity) 
+	{ 
+		mEntity.getComponent<CTransformation>().rotationY += (160 * Engine::deltaTime());
+	};
+	InputBehavior dBehavior = [](Entity& mEntity) 
+	{
+		mEntity.getComponent<CTransformation>().rotationY -= (160 * Engine::deltaTime()); 
+	};
 	InputBehavior wBehavior = [](Entity& mEntity) 
 	{ 
 		float distance = 50 * Engine::deltaTime(); 
@@ -81,10 +88,20 @@ int main()
 		mEntity.getComponent<CPosition>().value.x += dx;
 		mEntity.getComponent<CPosition>().value.z += dz;	
 	};
+	InputBehavior spaceBehavior = [](Entity& mEntity) 
+	{
+		if(mEntity.getComponent<CPosition>().value.y <= 0)
+		{
+			mEntity.getComponent<CPhysics>().velocity.y = 30;
+		}
+	};
 	input.reactsTo(Key::KEY_W, wBehavior);
 	input.reactsTo(Key::KEY_S, sBehavior);
 	input.reactsTo(Key::KEY_A, aBehavior);
 	input.reactsTo(Key::KEY_D, dBehavior);
+	input.reactsTo(Key::KEY_SPACE, spaceBehavior);
+
+	Entity& testCamera(Engine::EntityFactory::createEntity());
 
 	Engine::Window::vSync(true);
 	while (!Engine::Window::shouldClose())

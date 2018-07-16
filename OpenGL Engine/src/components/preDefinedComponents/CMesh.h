@@ -3,7 +3,7 @@
 //Dependencies
 #include <utility>
 class BatchManager;
-class Engine;
+class GraphicsAPI;
 
 struct CMesh : Component
 {
@@ -29,5 +29,5 @@ struct CMesh : Component
 private:
 	unsigned int m_vaoID;
 	friend BatchManager;
-	friend Engine;
+	friend GraphicsAPI;
 };

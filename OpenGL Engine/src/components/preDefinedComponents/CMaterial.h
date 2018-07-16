@@ -2,7 +2,7 @@
 #include "..\Component.h"
 //Dependencies
 class BatchManager;
-class Engine;
+class GraphicsAPI;
 
 struct CMaterial : Component
 {
@@ -32,5 +32,5 @@ struct CMaterial : Component
 private:
 	unsigned int m_textureID;
 	friend BatchManager;
-	friend Engine;
+	friend GraphicsAPI;
 };

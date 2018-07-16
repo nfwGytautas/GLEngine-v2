@@ -3,7 +3,7 @@
 #include "InputKeys.h"
 
 struct GLFWwindow;
-class Engine;
+class UpdateSystem;
 
 class InputManager
 {
@@ -41,6 +41,6 @@ private:
 	static GLFWwindow* m_context;
 
 	static std::vector<Key> getKey();
-	friend Engine;
+	friend UpdateSystem;
 };
 
