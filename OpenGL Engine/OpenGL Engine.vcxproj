@@ -19,9 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\systems\physics\PhysicsSystem.h" />
+    <ClInclude Include="src\components\preDefinedComponents\CPhysics.h" />
     <ClInclude Include="src\components\preDefinedComponents\CInput.h" />
     <ClInclude Include="src\components\EntityBlueprint.h" />
     <ClInclude Include="src\components\preDefinedComponents\CMultiTexture.h" />
+    <ClInclude Include="src\graphics\api\GraphicsAPI.h" />
     <ClInclude Include="src\graphics\shader\DynamicShader.h" />
     <ClInclude Include="src\components\EntityGroups.h" />
     <ClInclude Include="src\components\preDefinedComponents\CColor.h" />
@@ -49,11 +52,17 @@
     <ClInclude Include="src\graphics\FrameworkAssert.h" />
     <ClInclude Include="src\graphics\gtypes\gTypes.h" />
     <ClInclude Include="src\graphics\shader\StaticShader.h" />
+    <ClInclude Include="src\Settings.h" />
+    <ClInclude Include="src\systems\render\RenderSystem.h" />
+    <ClInclude Include="src\systems\update\UpdateSystem.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\systems\physics\PhysicsSystem.cpp" />
+    <ClCompile Include="src\components\preDefinedComponents\CPhysics.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CInput.cpp" />
     <ClCompile Include="src\components\EntityBlueprint.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CMultiTexture.cpp" />
+    <ClCompile Include="src\graphics\api\GraphicsAPI.cpp" />
     <ClCompile Include="src\graphics\shader\DynamicShader.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CColor.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CLightEmiter.cpp" />
@@ -77,6 +86,9 @@
     <ClCompile Include="src\graphics\display\Display.cpp" />
     <ClCompile Include="src\graphics\FrameworkAssert.cpp" />
     <ClCompile Include="src\graphics\shader\StaticShader.cpp" />
+    <ClCompile Include="src\Settings.cpp" />
+    <ClCompile Include="src\systems\render\RenderSystem.cpp" />
+    <ClCompile Include="src\systems\update\UpdateSystem.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

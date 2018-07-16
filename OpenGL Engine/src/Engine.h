@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <glm\glm.hpp>
+#include "Settings.h"
 #include "maths\Maths.h"
 #include "algorithm\Algorithm.h"
 #include "components\Component.h"
@@ -16,6 +17,9 @@ class DataManager;
 class Camera;
 class EntityManager;
 class BatchManager;
+class RenderSystem;
+class UpdateSystem;
+class PhysicsSystem;
 
 class Engine
 {
@@ -60,11 +64,6 @@ public:
 		static unsigned int loadTexture(std::string filePath);
 	};
 
-	struct GameState
-	{
-		static glm::vec3 skyColor;
-	};
-
 	static void initialize(unsigned int width, unsigned int height, const char* title, bool fullscreen = false);
 	static void render();
 	static void update();
@@ -77,36 +76,6 @@ public:
 
 private:
 	static glm::mat4 createProjectionMatrix();
-
-	class RenderSystem
-	{
-	public:
-		static void render();
-	private:
-		static void prepare();
-		static void loadLights();
-		static void renderEntities();
-		static void loadRenderSettings(Entity* entity);
-		static void loadDefaultRenderSettings();
-
-		static CMaterial* m_currentMaterial;
-		static bool m_usingDefaults;
-	};
-
-	class UpdateSystem
-	{
-	public:
-		static void update();
-	private:
-		static void updateEntitiesWithInput();
-	};
-
-	class GraphicsAPI
-	{
-	public:
-		static void loadTexture(unsigned int id, unsigned int slot = 0);
-		static void loadVAO(unsigned int id);
-	};
 private:
 	static bool m_initialized;
 	static DataManager* m_loader;
@@ -114,6 +83,9 @@ private:
 	static Camera* m_camera;
 	static EntityManager* m_entityManager;
 	static BatchManager* m_batchManager;
+	static RenderSystem* m_renderSystem;
+	static UpdateSystem* m_updateSystem;
+	static PhysicsSystem* m_physicsSystem;
 
 	static float m_EngineFoV;
 	static float m_NearRenderPlane;
