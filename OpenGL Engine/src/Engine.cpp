@@ -10,7 +10,6 @@
 #include "graphics\gtypes\gTypes.h"
 #include "graphics\FrameworkAssert.h"
 #include "graphics\shader\DynamicShader.h"
-#include "graphics\display\Camera.h"
 #include "data manager\BatchManager.h"
 #include "data manager\DataManager.h"
 #include "data manager\OBJLoader.h"
@@ -22,7 +21,6 @@
 bool Engine::m_initialized = false;
 DataManager* Engine::m_loader = nullptr;
 DynamicShader* Engine::m_shader = nullptr;
-Camera* Engine::m_camera = nullptr;
 EntityManager* Engine::m_entityManager = nullptr;
 BatchManager* Engine::m_batchManager = nullptr;
 RenderSystem* Engine::m_renderSystem = nullptr;
@@ -41,14 +39,11 @@ void Engine::initialize(unsigned int width, unsigned int height, const char* tit
 	Display::createDisplay(width, height, title, fullscreen);
 	m_loader = new DataManager();
 	m_shader = new DynamicShader("E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/vertex.shader", "E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/fragment.shader");
-	m_camera = new Camera();
 	m_batchManager = new BatchManager();
 	m_entityManager = new EntityManager(m_batchManager);	
 	m_renderSystem = new RenderSystem(m_shader, m_entityManager, m_batchManager);
-	m_renderSystem->selectViewport(m_camera);
 	m_physicsSystem = new PhysicsSystem(m_entityManager);
 	m_updateSystem = new UpdateSystem(m_entityManager, m_physicsSystem);
-	m_updateSystem->selectViewport(m_camera);
 
 	GLCall(glEnable(GL_CULL_FACE));
 	GLCall(glCullFace(GL_BACK));
@@ -60,13 +55,26 @@ void Engine::initialize(unsigned int width, unsigned int height, const char* tit
 	m_initialized = true;
 	std::cout << "[Engine] Engine initialized!" << std::endl;
 }
+void Engine::render()
+{
+	if (m_initialized)
+	{
+		m_renderSystem->render();
+	}
+}
+void Engine::update()
+{
+	if (m_initialized)
+	{
+		m_updateSystem->update();
+	}
+}
 void Engine::terminate()
 {
 	m_loader->cleanUp();
 
 	delete m_loader;
 	delete m_shader;
-	delete m_camera;
 	delete m_entityManager;
 	delete m_batchManager;
 	delete m_renderSystem;
@@ -98,19 +106,9 @@ float Engine::deltaTime()
 {
 	return Display::getDelta();
 }
-void Engine::render()
+void Engine::setCamera(Entity& mEntity)
 {
-	if (m_initialized)
-	{
-		m_renderSystem->render();
-	}
-}
-void Engine::update()
-{
-	if (m_initialized)
-	{
-		m_updateSystem->update();
-	}
+
 }
 //============================================================================================================================
 //WINDOW

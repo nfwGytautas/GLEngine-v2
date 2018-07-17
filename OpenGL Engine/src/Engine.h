@@ -14,7 +14,6 @@
 class StaticShader;
 class DynamicShader;
 class DataManager;
-class Camera;
 class EntityManager;
 class BatchManager;
 class RenderSystem;
@@ -74,13 +73,13 @@ public:
 	static void terminate();
 	static float deltaTime();
 
+	static void setCamera(Entity& mEntity);
 private:
 	static glm::mat4 createProjectionMatrix();
 private:
 	static bool m_initialized;
 	static DataManager* m_loader;
 	static DynamicShader* m_shader;
-	static Camera* m_camera;
 	static EntityManager* m_entityManager;
 	static BatchManager* m_batchManager;
 	static RenderSystem* m_renderSystem;

@@ -24,9 +24,9 @@ void StaticShader::loadProjectionMatrix(glm::mat4 matrix)
 {
 	this->setMatrix4fUniform(m_location_projectionMatrix, matrix);
 }
-void StaticShader::loadViewMatrix(Camera& camera)
+void StaticShader::loadViewMatrix(const Entity& mEntity)
 {
-	glm::mat4 viewMatrix = Maths::CreateViewMatrix(&camera);
+	glm::mat4 viewMatrix = mEntity.getComponent<CCamera>().viewMatrix;
 	this->setMatrix4fUniform(m_location_viewMatrix, viewMatrix);
 }
 void StaticShader::loadLight(Entity& mLight)

@@ -14,7 +14,7 @@ int main()
 
 	Entity& stallEntity1(Engine::EntityFactory::createEntity(stallBlueprint));
 	stallEntity1.getComponent<CPosition>().value = glm::vec3(0.0f, 0.0f, -20.0f);
-	stallEntity1.getComponent<CTransformation>().rotationX = 90;
+	stallEntity1.getComponent<CTransformation>().rotationX = 90.0f;
 
 	Entity& stallEntity2(Engine::EntityFactory::createEntity(stallBlueprint));
 	stallEntity2.getComponent<CPosition>().value = glm::vec3(10.0f, 0.0f, -20.0f);
@@ -23,13 +23,13 @@ int main()
 	stallEntity3.getComponent<CPosition>().value = glm::vec3(20.0f, 10.0f, -30.0f);
 
 	Entity& testTerrain1(Engine::EntityFactory::createEntity());
-	testTerrain1.addComponent<CPosition>(glm::vec3(0,0,0));
+	testTerrain1.addComponent<CPosition>(glm::vec3(0, 0, 0));
 	testTerrain1.addComponent<CTransformation>(0, 0, 0, 1);
 	testTerrain1.addComponent<CMesh>(Engine::Loader::createFlatMesh(128, 800));
 	CMultiTexture& pack = testTerrain1.addComponent<CMultiTexture>();
 	pack.background = Engine::Loader::loadTexture("E:/Test files/nfw/grassy.png");
 	pack.r = Engine::Loader::loadTexture("E:/Test files/nfw/mud.png");
-	pack.g = Engine::Loader::loadTexture("E:/Test files/nfw/grassFlowers.png"); 
+	pack.g = Engine::Loader::loadTexture("E:/Test files/nfw/grassFlowers.png");
 	pack.b = Engine::Loader::loadTexture("E:/Test files/nfw/path.png");
 	pack.textureBlendMap = Engine::Loader::loadTexture("E:/Test files/nfw/blendMap.png");
 	testTerrain1.addComponent<CRenderer>().fakeLighting = true;
@@ -64,33 +64,33 @@ int main()
 	testPlayer.addComponent<CInput>();
 	testPlayer.addComponent<CPhysics>().affectedByGravity = true;
 	CInput& input = testPlayer.getComponent<CInput>();
-	InputBehavior aBehavior = [](Entity& mEntity) 
-	{ 
+	InputBehavior aBehavior = [](Entity& mEntity)
+	{
 		mEntity.getComponent<CTransformation>().rotationY += (160 * Engine::deltaTime());
 	};
-	InputBehavior dBehavior = [](Entity& mEntity) 
+	InputBehavior dBehavior = [](Entity& mEntity)
 	{
-		mEntity.getComponent<CTransformation>().rotationY -= (160 * Engine::deltaTime()); 
+		mEntity.getComponent<CTransformation>().rotationY -= (160 * Engine::deltaTime());
 	};
-	InputBehavior wBehavior = [](Entity& mEntity) 
-	{ 
-		float distance = 50 * Engine::deltaTime(); 
-		float dx = (float) (distance * std::sin(Maths::DegreesToRadians(mEntity.getComponent<CTransformation>().rotationY)));
-		float dz = (float) (distance * std::cos(Maths::DegreesToRadians(mEntity.getComponent<CTransformation>().rotationY)));
+	InputBehavior wBehavior = [](Entity& mEntity)
+	{
+		float distance = 50 * Engine::deltaTime();
+		float dx = (float)(distance * std::sin(Maths::DegreesToRadians(mEntity.getComponent<CTransformation>().rotationY)));
+		float dz = (float)(distance * std::cos(Maths::DegreesToRadians(mEntity.getComponent<CTransformation>().rotationY)));
 		mEntity.getComponent<CPosition>().value.x += dx;
 		mEntity.getComponent<CPosition>().value.z += dz;
 	};
 	InputBehavior sBehavior = [](Entity& mEntity)
 	{
 		float distance = -50 * Engine::deltaTime();
-		float dx = distance * (float) (std::sin(Maths::DegreesToRadians(mEntity.getComponent<CTransformation>().rotationY)));
-		float dz = distance * (float) (std::cos(Maths::DegreesToRadians(mEntity.getComponent<CTransformation>().rotationY)));
+		float dx = distance * (float)(std::sin(Maths::DegreesToRadians(mEntity.getComponent<CTransformation>().rotationY)));
+		float dz = distance * (float)(std::cos(Maths::DegreesToRadians(mEntity.getComponent<CTransformation>().rotationY)));
 		mEntity.getComponent<CPosition>().value.x += dx;
-		mEntity.getComponent<CPosition>().value.z += dz;	
+		mEntity.getComponent<CPosition>().value.z += dz;
 	};
-	InputBehavior spaceBehavior = [](Entity& mEntity) 
+	InputBehavior spaceBehavior = [](Entity& mEntity)
 	{
-		if(mEntity.getComponent<CPosition>().value.y <= 0)
+		if (mEntity.getComponent<CPosition>().value.y <= 0)
 		{
 			mEntity.getComponent<CPhysics>().velocity.y = 30;
 		}
@@ -102,6 +102,10 @@ int main()
 	input.reactsTo(Key::KEY_SPACE, spaceBehavior);
 
 	Entity& testCamera(Engine::EntityFactory::createEntity());
+	testCamera.addComponent<CPosition>(glm::vec3(0,10,5));
+	testCamera.addComponent<CTransformation>(0,0,0,1);
+	testCamera.addComponent<CCamera>();
+	Settings::camera = &testCamera.getComponent<CCamera>();
 
 	Engine::Window::vSync(true);
 	while (!Engine::Window::shouldClose())
