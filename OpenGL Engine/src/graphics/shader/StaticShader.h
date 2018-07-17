@@ -1,7 +1,6 @@
 #pragma once
 #include "Shader.h"
 class Entity;
-class Camera;
 class StaticShader : public Shader
 {
 public:
@@ -10,7 +9,7 @@ public:
 
 	void loadTransformationMatrix(glm::mat4 matrix);
 	void loadProjectionMatrix(glm::mat4 matrix);
-	void loadViewMatrix(Camera& camera);
+	void loadViewMatrix(const Entity& mEntity);
 	void loadLight(Entity& mLight);
 	void loadShineVariables(float damper, float reflectivity);
 	void loadTileCount(unsigned int tilecount);

@@ -13,5 +13,7 @@ struct CPhysics : Component
 	bool affectedByGravity;
 
 	glm::vec3 velocity;
+
+	virtual CPhysics* clone() { return new CPhysics(*this); }
 };
 

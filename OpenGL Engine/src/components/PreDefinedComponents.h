@@ -15,3 +15,4 @@
 
 #include "preDefinedComponents\CInput.h"			//Input component
 #include "preDefinedComponents\CPhysics.h"			//Physics component
+#include "preDefinedComponents\CCamera.h"			//Camera component

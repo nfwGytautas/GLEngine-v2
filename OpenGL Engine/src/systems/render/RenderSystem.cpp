@@ -4,7 +4,6 @@
 #include "..\..\Settings.h"
 #include "..\..\graphics\FrameworkAssert.h"
 #include "..\..\graphics\shader\DynamicShader.h"
-#include "..\..\graphics\display\Camera.h"
 #include "..\..\components\EntityManager.h"
 #include "..\..\components\Entity.h"
 #include "..\..\components\PreDefinedComponents.h"
@@ -20,7 +19,7 @@ void RenderSystem::render()
 
 	//MAIN RENDER CODE
 	//================================================
-	m_shader->setMatrix4fUniform("viewMatrix", m_camera->viewMatrix());
+	m_shader->setMatrix4fUniform("viewMatrix", Settings::camera->viewMatrix);
 
 	//Load all the lights
 	loadLights();
@@ -31,11 +30,6 @@ void RenderSystem::render()
 	//================================================
 
 	m_shader->unbind();
-}
-
-void RenderSystem::selectViewport(Camera* mCamera)
-{
-	m_camera = mCamera;
 }
 
 RenderSystem::RenderSystem(DynamicShader* mShader, EntityManager* mEntityManager, BatchManager* mBatchManager)

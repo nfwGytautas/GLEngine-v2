@@ -8,6 +8,7 @@ namespace EntityGroups
 		DynamicEntity = 1,
 		LightEmittingEntity = 2,
 		HasInput = 3,
-		HasPhysics = 4
+		HasPhysics = 4,
+		Camera = 5
 	};
 }

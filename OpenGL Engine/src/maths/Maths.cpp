@@ -3,8 +3,6 @@
 #include <glm\gtx\transform.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 
-#include "..\graphics\display\Camera.h"
-
 #include <iostream>
 
 glm::mat4 Maths::CreateTransformationMatrix(glm::vec3 translation, glm::vec3 rotation, float scale)
@@ -19,12 +17,6 @@ glm::mat4 Maths::CreateTransformationMatrix(glm::vec3 translation, glm::vec3 rot
 	glm::mat4 returnMatrix = translationMatrix * rotationMatrix * scaleMatrix;
 
 	return returnMatrix;
-}
-
-glm::mat4 Maths::CreateViewMatrix(Camera* camera)
-{	
-	//TODO: Clean this up, unnecesary indirection
-	return camera->viewMatrix();
 }
 
 double Maths::DegreesToRadians(double degrees)

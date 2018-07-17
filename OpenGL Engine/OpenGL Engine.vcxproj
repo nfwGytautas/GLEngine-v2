@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\components\preDefinedComponents\CCamera.h" />
     <ClInclude Include="src\systems\physics\PhysicsSystem.h" />
     <ClInclude Include="src\components\preDefinedComponents\CPhysics.h" />
     <ClInclude Include="src\components\preDefinedComponents\CInput.h" />
@@ -41,7 +42,6 @@
     <ClInclude Include="src\data manager\OBJLoader.h" />
     <ClInclude Include="src\input\InputKeys.h" />
     <ClInclude Include="src\input\InputManager.h" />
-    <ClInclude Include="src\graphics\display\Camera.h" />
     <ClInclude Include="src\components\Entity.h" />
     <ClInclude Include="src\maths\Maths.h" />
     <ClInclude Include="src\graphics\shader\Shader.h" />
@@ -57,6 +57,7 @@
     <ClInclude Include="src\systems\update\UpdateSystem.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\components\preDefinedComponents\CCamera.cpp" />
     <ClCompile Include="src\systems\physics\PhysicsSystem.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CPhysics.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CInput.cpp" />
@@ -77,7 +78,6 @@
     <ClCompile Include="src\components\EntityManager.cpp" />
     <ClCompile Include="src\data manager\OBJLoader.cpp" />
     <ClCompile Include="src\input\InputManager.cpp" />
-    <ClCompile Include="src\graphics\display\Camera.cpp" />
     <ClCompile Include="src\components\Entity.cpp" />
     <ClCompile Include="src\maths\Maths.cpp" />
     <ClCompile Include="src\graphics\shader\Shader.cpp" />

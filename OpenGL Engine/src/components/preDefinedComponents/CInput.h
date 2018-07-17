@@ -18,6 +18,8 @@ struct CInput : Component
 
 	void react(const std::vector<Key>& mKeys);
 	void reactsTo(Key mKey, InputBehavior mBehavior);
+
+	virtual CInput* clone() { return new CInput(*this); }
 private:
 	std::unordered_map<Key, InputBehavior> m_behaviors;
 };
