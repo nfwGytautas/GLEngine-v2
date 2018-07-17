@@ -1,10 +1,6 @@
-# GLEngine-v2
-
-Second iteration of the GLEngine
-
-First iteration was know as nfwFrameWork, but it became to cluttered and complicated for no reason, so this is a revamp of it.
-
-Development started at: 2018-06-08
+# SGE (Simple Graphics Engine)
+* Development started at: 2018-06-08
+* First usable release: 2018-07-17
 
 
 **ENGINE USES OR USED TO USE THESE LIBRARIES**:
