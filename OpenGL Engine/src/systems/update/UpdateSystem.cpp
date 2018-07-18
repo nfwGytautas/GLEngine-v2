@@ -8,6 +8,7 @@
 #include "..\..\components\EntityManager.h"
 #include "..\..\input\InputManager.h"
 #include "..\physics\PhysicsSystem.h"
+#include "..\..\algorithm\Algorithm.h"
 
 void UpdateSystem::update()
 {
@@ -31,6 +32,7 @@ void UpdateSystem::updateEntitiesWithInput()
 	for (Entity* e : inputEntities)
 	{
 		e->getComponent<CInput>().react(InputManager::getKey());
+		e->getComponent<CInput>().reactToMouse();
 	}
 }
 void UpdateSystem::updateEntitiesWithPhysics()
@@ -44,34 +46,39 @@ void UpdateSystem::updateEntitiesWithCameras()
 	for (Entity* e : cameraEntities)
 	{
 		CCamera& cameraComponent = e->getComponent<CCamera>();
+		glm::vec3 target = cameraComponent.cPosition->value;
+		clamp(cameraComponent.pitch, 89.0f, -89.0f);
+
+		if (e->hasGroup(EntityGroups::HasHook))
+		{
+			float horizontalDistance = cameraComponent.distanceToHook * cos(glm::radians(cameraComponent.pitch));
+			float verticalDistance = cameraComponent.distanceToHook * sin(glm::radians(cameraComponent.pitch));
+
+			float fullAngle = cameraComponent.m_hookedTo->getComponent<CTransformation>().rotationY + cameraComponent.angleAroundHook;
+			float offsetX = (float) horizontalDistance * sin(glm::radians(fullAngle));
+			float offsetZ = (float) horizontalDistance * cos(glm::radians(fullAngle));
+
+			cameraComponent.cPosition->value.x = cameraComponent.m_hookedTo->getComponent<CPosition>().value.x - offsetX;
+			cameraComponent.cPosition->value.z = cameraComponent.m_hookedTo->getComponent<CPosition>().value.z - offsetZ;
+			cameraComponent.cPosition->value.y = cameraComponent.m_hookedTo->getComponent<CPosition>().value.y + verticalDistance;
+
+			cameraComponent.yaw = 180 - (fullAngle);
+
+			target = cameraComponent.m_hookedTo->getComponent<CPosition>().value;
+		}
 
 		cameraComponent.m_direction = glm::vec3(
-			cos(cameraComponent.m_verticalAngle) * sin(cameraComponent.m_horizontalAngle),
-			sin(cameraComponent.m_verticalAngle),
-			cos(cameraComponent.m_verticalAngle) * cos(cameraComponent.m_horizontalAngle)
+			cos(glm::radians(cameraComponent.pitch)) * cos(glm::radians(cameraComponent.yaw)),
+			sin(glm::radians(cameraComponent.pitch)),
+			cos(glm::radians(cameraComponent.pitch)) * sin(glm::radians(cameraComponent.yaw))
 		);
-
-		cameraComponent.m_right = glm::vec3(
-			sin(cameraComponent.m_horizontalAngle - 3.14f / 2.0f),
-			0,
-			cos(cameraComponent.m_horizontalAngle - 3.14f / 2.0f)
-		);
-
-		glm::vec3 up = glm::cross(cameraComponent.m_right, cameraComponent.m_direction);
 
 		glm::mat4 ViewMatrix = glm::lookAt(
 			cameraComponent.cPosition->value,
-			cameraComponent.cPosition->value + cameraComponent.m_direction,
-			up
+			target + cameraComponent.m_direction,
+			glm::vec3(0.0, 1.0, 0.0)
 		);
 
 		cameraComponent.viewMatrix = ViewMatrix;
-
-		double xpos, ypos;
-		InputManager::Mouse::getCursorPosition(xpos, ypos);
-		InputManager::Mouse::centerCursorPosition();
-
-		cameraComponent.m_horizontalAngle += 0.005f * /*deltaTime */ float(1280 / 2 - xpos);
-		cameraComponent.m_verticalAngle += 0.005f * /*deltaTime */ float(720 / 2 - ypos);
 	}
 }

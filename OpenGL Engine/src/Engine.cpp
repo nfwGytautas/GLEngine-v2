@@ -37,6 +37,7 @@ float Engine::m_FarRenderPlane = 1000.0f;
 void Engine::initialize(unsigned int width, unsigned int height, const char* title, bool fullscreen)
 {
 	Display::createDisplay(width, height, title, fullscreen);
+	InputManager::Mouse::centerCursorPosition();
 	m_loader = new DataManager();
 	m_shader = new DynamicShader("E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/vertex.shader", "E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/fragment.shader");
 	m_batchManager = new BatchManager();
@@ -110,6 +111,7 @@ void Engine::setCamera(Entity& mEntity)
 {
 
 }
+
 //============================================================================================================================
 //WINDOW
 //============================================================================================================================
@@ -129,6 +131,26 @@ bool Engine::Input::Keyboard::isKeyDown(Key key)
 {
 	return InputManager::Keyboard::isKeyDown(key);
 }
+bool Engine::Input::Mouse::isMouseKeyDown(MouseKey key)
+{
+	return InputManager::Mouse::isMouseKeyDown(key);
+}
+
+float Engine::Input::Mouse::getScrollY()
+{
+	return InputManager::Mouse::getScrollAmountY();
+}
+
+float Engine::Input::Mouse::getMovedY()
+{
+	return InputManager::Mouse::getYOffset() * Settings::cameraSensetivity;
+}
+
+float Engine::Input::Mouse::getMovedX()
+{
+	return InputManager::Mouse::getXOffset() * Settings::cameraSensetivity;
+}
+
 
 //============================================================================================================================
 //ENTITY FACTORY

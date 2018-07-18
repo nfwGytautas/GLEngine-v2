@@ -25,3 +25,16 @@ void tstringsplit(const std::string &s, char delim, T result) {
 }
 
 std::vector<std::string> ssplit(const std::string &s, char delim);
+
+template<typename T>
+void clamp(T& valueToClamp, T maxValue, T minValue)
+{
+	if(valueToClamp > maxValue)
+	{ 
+		valueToClamp = maxValue;
+	}
+	else if (valueToClamp < minValue)
+	{
+		valueToClamp = minValue;
+	}
+}

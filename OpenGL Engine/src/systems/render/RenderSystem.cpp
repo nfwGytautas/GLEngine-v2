@@ -1,4 +1,5 @@
 #include "RenderSystem.h"
+#include <iostream>
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 #include "..\..\Settings.h"
@@ -19,6 +20,11 @@ void RenderSystem::render()
 
 	//MAIN RENDER CODE
 	//================================================
+	if (Settings::camera == nullptr)
+	{
+		std::cout << "[Engine][Renderer] No specified camera!" << std::endl;
+		return;
+	}
 	m_shader->setMatrix4fUniform("viewMatrix", Settings::camera->viewMatrix);
 
 	//Load all the lights
