@@ -101,11 +101,28 @@ int main()
 	input.reactsTo(Key::KEY_D, dBehavior);
 	input.reactsTo(Key::KEY_SPACE, spaceBehavior);
 
+	InputBehavior mouseBehavior = [](Entity& mEntity) 
+	{
+		mEntity.getComponent<CCamera>().distanceToHook += (Engine::Input::Mouse::getScrollY());
+
+		if (Engine::Input::Mouse::isMouseKeyDown(MouseKey::BUTTON_RIGHT))
+		{
+			mEntity.getComponent<CCamera>().pitch += Engine::Input::Mouse::getMovedY();
+		}
+
+		if (Engine::Input::Mouse::isMouseKeyDown(MouseKey::BUTTON_LEFT))
+		{
+			mEntity.getComponent<CCamera>().angleAroundHook += Engine::Input::Mouse::getMovedX();
+		}
+	};
 	Entity& testCamera(Engine::EntityFactory::createEntity());
 	testCamera.addComponent<CPosition>(glm::vec3(0,10,5));
 	testCamera.addComponent<CTransformation>(0,0,0,1);
-	testCamera.addComponent<CCamera>();
+	testCamera.addComponent<CCamera>().hookTo(&testPlayer, 50, 0);
+	testCamera.addComponent<CCamera>().pitch = 30;
+	testCamera.addComponent<CInput>().reactsToMouse(mouseBehavior);
 	Settings::camera = &testCamera.getComponent<CCamera>();
+
 
 	Engine::Window::vSync(true);
 	while (!Engine::Window::shouldClose())
@@ -117,3 +134,11 @@ int main()
 	Engine::terminate();
 	return 0;
 }
+
+//Move to input component
+/*double xpos, ypos;
+InputManager::Mouse::getCursorPosition(xpos, ypos);
+InputManager::Mouse::centerCursorPosition();
+
+cameraComponent.m_horizontalAngle += 0.005f * /*deltaTime */ //float(1280 / 2 - xpos);
+//cameraComponent.m_verticalAngle += 0.005f * /*deltaTime */ float(720 / 2 - ypos);*/

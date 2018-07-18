@@ -42,7 +42,10 @@ public:
 		class Mouse
 		{
 		public:
-
+			static bool isMouseKeyDown(MouseKey key);
+			static float getScrollY();
+			static float getMovedY();
+			static float getMovedX();
 		};
 	};
 

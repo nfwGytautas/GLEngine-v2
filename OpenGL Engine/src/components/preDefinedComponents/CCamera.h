@@ -11,17 +11,21 @@ struct CCamera : Component
 	CPosition* cPosition;
 
 	void init() override;
+	void hookTo(Entity* mEntity, float mDistanceToHook, float mAngleAroundHook);
+
+	float distanceToHook;
+	float angleAroundHook;
+	float pitch = 0.0f;
+	float yaw = 0.0f;
 
 	virtual CCamera* clone() { return new CCamera(*this); }
 private:
 	glm::vec3 m_direction;
-	glm::vec3 m_right;
-
-	float m_horizontalAngle = 180.0f;
-	float m_verticalAngle = 0.0f;
 
 	float m_moveSpeed = 3.0f;
 	float m_lookSpeed = 0.005f;
+
+	Entity* m_hookedTo;
 
 	friend UpdateSystem;
 };

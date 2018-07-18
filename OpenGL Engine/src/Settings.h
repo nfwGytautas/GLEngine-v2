@@ -8,4 +8,5 @@ struct Settings
 	static glm::vec3 skyColor;
 	static float gravity;
 	static CCamera* camera;
+	static float cameraSensetivity;
 };

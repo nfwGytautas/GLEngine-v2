@@ -14,13 +14,18 @@ struct CInput : Component
 
 	void init() override;
 
-	bool curentlyEnabled;
+	bool enabled;
 
+	//Most likely will change after event system is implemented
 	void react(const std::vector<Key>& mKeys);
+	void reactToMouse();
 	void reactsTo(Key mKey, InputBehavior mBehavior);
+	void reactsToMouse(InputBehavior mBehavior);
 
 	virtual CInput* clone() { return new CInput(*this); }
 private:
 	std::unordered_map<Key, InputBehavior> m_behaviors;
+	InputBehavior m_mouseBehavior;
+	bool m_hasMouseBehavior;
 };
 
