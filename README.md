@@ -7,7 +7,8 @@
 * Graphics Library Framework (glfw3) http://www.glfw.org/
 * OpenGL Extension Wrangler Library (glew) http://glew.sourceforge.net/
 * OpenGL Mathematics https://glm.g-truc.net/0.9.9/index.html
-* Simple OpenGL Image Library (SOIL) https://www.lonesock.net/soil.html
+* STB Image https://github.com/nothings/stb
+* ~~Simple OpenGL Image Library (SOIL) https://www.lonesock.net/soil.html~~
 * The Open-Asset-Importer-Lib (Assimp) http://www.assimp.org/
 * Boost C++ Libraries (boost) https://www.boost.org/ 
   * Filesystem https://www.boost.org/doc/libs/1_67_0/libs/filesystem/doc/index.htm
