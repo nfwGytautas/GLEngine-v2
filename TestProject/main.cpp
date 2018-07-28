@@ -134,11 +134,3 @@ int main()
 	Engine::terminate();
 	return 0;
 }
-
-//Move to input component
-/*double xpos, ypos;
-InputManager::Mouse::getCursorPosition(xpos, ypos);
-InputManager::Mouse::centerCursorPosition();
-
-cameraComponent.m_horizontalAngle += 0.005f * /*deltaTime */ //float(1280 / 2 - xpos);
-//cameraComponent.m_verticalAngle += 0.005f * /*deltaTime */ float(720 / 2 - ypos);*/

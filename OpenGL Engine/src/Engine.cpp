@@ -140,17 +140,14 @@ float Engine::Input::Mouse::getScrollY()
 {
 	return InputManager::Mouse::getScrollAmountY();
 }
-
 float Engine::Input::Mouse::getMovedY()
 {
 	return InputManager::Mouse::getYOffset() * Settings::cameraSensetivity;
 }
-
 float Engine::Input::Mouse::getMovedX()
 {
 	return InputManager::Mouse::getXOffset() * Settings::cameraSensetivity;
 }
-
 
 //============================================================================================================================
 //ENTITY FACTORY
