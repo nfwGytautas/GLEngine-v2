@@ -12,6 +12,7 @@ public:
 
 	std::pair<unsigned int, unsigned int> loadMesh(std::string mFilePath);
 	std::pair<unsigned int, unsigned int> createMesh(std::vector<float>& vertices, std::vector<float>& normals, std::vector<float>& textureCoords, std::vector<unsigned int>& indices);
+	unsigned int loadImage(std::string mFilePath);
 	unsigned int loadMaterial(std::string mFilePath);
 
 	void cleanUp();
@@ -20,9 +21,7 @@ private:
 	void storeDataInAttributes(unsigned int location, unsigned int dataSize, std::vector<float> positions);
 	void bindIndiceBuffer(std::vector<unsigned int> indices);
 	void unbindVAO();
-
-	std::vector<float> fallbackTexture();
-	void fallbackMesh();
+	void textureSetup();
 	void createFallbacks();
 private:
 	std::vector<unsigned int> m_vaos;
@@ -34,4 +33,6 @@ private:
 	unsigned int m_fallbackMeshVertexCount;
 
 	std::unordered_map<std::string, std::pair<unsigned int, unsigned int>> m_meshCache;
+	std::unordered_map<std::string, unsigned int> m_imageCache;
+	std::unordered_map<std::string, unsigned int> m_materialCache;
 };
