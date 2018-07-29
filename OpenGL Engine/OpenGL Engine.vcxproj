@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\data manager\stb_image.h" />
     <ClInclude Include="src\data manager\ImageLoader.h" />
     <ClInclude Include="src\components\preDefinedComponents\CCamera.h" />
     <ClInclude Include="src\systems\physics\PhysicsSystem.h" />
@@ -61,7 +60,6 @@
   <ItemGroup>
     <ClCompile Include="src\data manager\ImageLoader.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CCamera.cpp" />
-    <ClCompile Include="src\data manager\stb_image.cpp" />
     <ClCompile Include="src\systems\physics\PhysicsSystem.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CPhysics.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CInput.cpp" />

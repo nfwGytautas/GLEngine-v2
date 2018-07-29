@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include "stb_image.h"
 
 class ImageLoader
 {

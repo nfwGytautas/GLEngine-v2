@@ -62,9 +62,19 @@ public:
 	public:
 		static std::pair<unsigned int, unsigned int> loadMesh(std::string filePath);
 		static std::pair<unsigned int, unsigned int> createFlatMesh(unsigned int vertexCount, unsigned int size);
-		static std::pair<unsigned int, unsigned int> createHeightMappedMesh(std::string mHeightMapFilePath, float mMaxHeight, unsigned int size, std::vector<std::vector<float>>& mCalculatedHeights);
+		static std::pair<unsigned int, unsigned int> createHeightMappedMesh(std::string mHeightMapFilePath, float mMaxHeight, unsigned int size, continuous2DArray<float>& mCalculatedHeights);
 		static unsigned int loadMaterial(std::string filePath);
 		static unsigned int loadTexture(std::string filePath);
+	};
+
+	class Systems
+	{
+	public:
+		class Physics
+		{
+		public:
+			static float heightAtPoint(float X, float Z);
+		};
 	};
 
 	static void initialize(unsigned int width, unsigned int height, const char* title, bool fullscreen = false);
@@ -78,7 +88,7 @@ public:
 	static float deltaTime();
 
 	static void setCamera(Entity& mEntity);
-	static void markAsGround(Entity& mEntity, std::vector<std::vector<float>>& mHeightMap, float mGroundSize);
+	static void markAsGround(Entity& mEntity, continuous2DArray<float>& mHeightMap, float mGroundSize);
 private:
 	static glm::mat4 createProjectionMatrix();
 private:
