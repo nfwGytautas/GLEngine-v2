@@ -25,7 +25,7 @@ int main()
 	Entity& testTerrain1(Engine::EntityFactory::createEntity());
 	testTerrain1.addComponent<CPosition>(glm::vec3(0, 0, 0));
 	testTerrain1.addComponent<CTransformation>(0, 0, 0, 1);
-	std::vector<std::vector<float>> calculatedHeights;
+	continuous2DArray<float> calculatedHeights;
 	testTerrain1.addComponent<CMesh>(Engine::Loader::createHeightMappedMesh("E:/Test files/nfw/heightMap.png", 20, 800, calculatedHeights));
 	CMultiTexture& pack = testTerrain1.addComponent<CMultiTexture>();
 	pack.background = Engine::Loader::loadTexture("E:/Test files/nfw/grassy.png");
@@ -92,7 +92,8 @@ int main()
 	};
 	InputBehavior spaceBehavior = [](Entity& mEntity)
 	{
-		if (mEntity.getComponent<CPosition>().value.y <= 0)
+		CPosition& position = mEntity.getComponent<CPosition>();
+		if(position.value.y <= Engine::Systems::Physics::heightAtPoint(position.value.x, position.value.z)) 
 		{
 			mEntity.getComponent<CPhysics>().velocity.y = 30;
 		}

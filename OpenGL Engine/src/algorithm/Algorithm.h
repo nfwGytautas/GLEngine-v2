@@ -39,3 +39,54 @@ void clamp(T& valueToClamp, T maxValue, T minValue)
 	}
 }
 
+template<class T>
+class continuous2DArray
+{
+public:
+	continuous2DArray()
+		:m_rCount(0), m_cLength(0)
+	{
+	}
+	continuous2DArray(unsigned int mRowCount, unsigned int mCollumnLength)
+		:m_rCount(mRowCount), m_cLength(mCollumnLength)
+	{
+		m_array.resize(mCollumnLength * mRowCount);
+	}
+
+	void resize(unsigned int mRowCount)
+	{
+		resize(mRowCount, mRowCount);
+	}
+
+	void resize(unsigned int mRowCount, unsigned int mCollumnLength)
+	{
+		m_rCount = mRowCount;
+		m_cLength = mCollumnLength;
+		m_array.resize(m_cLength * m_rCount);
+	}
+
+	T& get(unsigned int mRowIndex, unsigned int mColIndex)
+	{
+		return m_array[mRowIndex * m_cLength + mColIndex];
+	}
+
+	inline T& operator()(unsigned int mRowIndex, unsigned int mColIndex)
+	{
+		return get(mRowIndex, mColIndex);
+	}
+
+	unsigned int rowCount() const
+	{
+		return m_rCount;
+	}
+
+	unsigned int colCount() const
+	{
+		return m_cLength;
+	}
+
+private:
+	std::vector<T> m_array;
+	unsigned int m_rCount;
+	unsigned int m_cLength;
+};

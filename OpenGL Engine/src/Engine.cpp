@@ -111,7 +111,7 @@ void Engine::setCamera(Entity& mEntity)
 {
 
 }
-void Engine::markAsGround(Entity & mEntity, std::vector<std::vector<float>>& mHeightMap, float mGroundSize)
+void Engine::markAsGround(Entity & mEntity, continuous2DArray<float>& mHeightMap, float mGroundSize)
 {
 	mEntity.addGroup(EntityGroups::IsGround);
 	m_physicsSystem->registerHeightMap(mHeightMap, mGroundSize);
@@ -185,7 +185,7 @@ std::pair<unsigned int, unsigned int> Engine::Loader::createFlatMesh(unsigned in
 	m_batchManager->acknowledgeMesh(result.first);
 	return result;
 }
-std::pair<unsigned int, unsigned int> Engine::Loader::createHeightMappedMesh(std::string mHeightMapFilePath, float mMaxHeight, unsigned int size, std::vector<std::vector<float>>& mCalculatedHeights)
+std::pair<unsigned int, unsigned int> Engine::Loader::createHeightMappedMesh(std::string mHeightMapFilePath, float mMaxHeight, unsigned int size, continuous2DArray<float>& mCalculatedHeights)
 {
 	auto result = m_loader->createHeightMappedMesh(mHeightMapFilePath, mMaxHeight, size, mCalculatedHeights);
 	m_batchManager->acknowledgeMesh(result.first);
@@ -200,4 +200,12 @@ unsigned int Engine::Loader::loadMaterial(std::string filePath)
 unsigned int Engine::Loader::loadTexture(std::string filePath)
 {
 	return m_loader->loadMaterial(filePath);
+}
+
+//============================================================================================================================
+//SYSTEMS
+//============================================================================================================================
+float Engine::Systems::Physics::heightAtPoint(float X, float Z)
+{
+	return m_physicsSystem->getHeightAtPoint(X, Z);
 }

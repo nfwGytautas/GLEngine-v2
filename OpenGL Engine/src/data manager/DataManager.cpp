@@ -105,7 +105,7 @@ std::pair<unsigned int, unsigned int> DataManager::createFlatMesh(unsigned int v
 	return result;
 }
 
-std::pair<unsigned int, unsigned int> DataManager::createHeightMappedMesh(std::string mHeightMapFilePath, float mMaxHeight, unsigned int size, std::vector<std::vector<float>>& mCalculatedHeights)
+std::pair<unsigned int, unsigned int> DataManager::createHeightMappedMesh(std::string mHeightMapFilePath, float mMaxHeight, unsigned int size, continuous2DArray<float>& mCalculatedHeights)
 {
 	float MAX_PIXEL_COLOR = 256 * 256 * 256;
 	auto boostFilePath = boost::filesystem::path(mHeightMapFilePath);
@@ -143,18 +143,12 @@ std::pair<unsigned int, unsigned int> DataManager::createHeightMappedMesh(std::s
 	indices.resize(6 * (vertexCount - 1) * (vertexCount - 1));
 	int vertexIndex = 0;
 	mCalculatedHeights.resize(vertexCount);
-	for (unsigned int i = 0; i < vertexCount; i++)
-	{
-		std::vector<float> pushResult;
-		pushResult.resize(vertexCount);
-		mCalculatedHeights[i] = pushResult;
-	}
 	float height = 0;	
 	for (unsigned int i = 0; i < vertexCount; i++) {
 		for (unsigned int j = 0; j < vertexCount; j++) {
 			vertices[vertexIndex * 3] = (float)j / ((float)vertexCount - 1) * size;
 			height = getHeight(j, i, heightMap, MAX_PIXEL_COLOR, mMaxHeight);
-			mCalculatedHeights[j][i] = height;
+			mCalculatedHeights(j, i) = height;
 			vertices[vertexIndex * 3 + 1] = height;
 			vertices[vertexIndex * 3 + 2] = (float)i / ((float)vertexCount - 1) * size;
 			glm::vec3 normal = calculateNormal(j, i, heightMap, MAX_PIXEL_COLOR, mMaxHeight);

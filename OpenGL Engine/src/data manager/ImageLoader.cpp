@@ -2,6 +2,9 @@
 #include <vector>
 #include <iostream>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb image\stb_image.h"
+
 unsigned char* ImageLoader::imageBuffer = nullptr;
 int ImageLoader::width = 0;
 int ImageLoader::height = 0;
