@@ -10,6 +10,7 @@ namespace EntityGroups
 		HasInput = 3,
 		HasPhysics = 4,
 		Camera = 5,
-		HasHook = 6
+		HasHook = 6,
+		IsGround = 7
 	};
 }
