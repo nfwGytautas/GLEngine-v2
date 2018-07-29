@@ -25,16 +25,18 @@ int main()
 	Entity& testTerrain1(Engine::EntityFactory::createEntity());
 	testTerrain1.addComponent<CPosition>(glm::vec3(0, 0, 0));
 	testTerrain1.addComponent<CTransformation>(0, 0, 0, 1);
-	testTerrain1.addComponent<CMesh>(Engine::Loader::createFlatMesh(128, 800));
+	std::vector<std::vector<float>> calculatedHeights;
+	testTerrain1.addComponent<CMesh>(Engine::Loader::createHeightMappedMesh("E:/Test files/nfw/heightMap.png", 20, 800, calculatedHeights));
 	CMultiTexture& pack = testTerrain1.addComponent<CMultiTexture>();
 	pack.background = Engine::Loader::loadTexture("E:/Test files/nfw/grassy.png");
 	pack.r = Engine::Loader::loadTexture("E:/Test files/nfw/mud.png");
 	pack.g = Engine::Loader::loadTexture("E:/Test files/nfw/grassFlowers.png");
 	pack.b = Engine::Loader::loadTexture("E:/Test files/nfw/path.png");
 	pack.textureBlendMap = Engine::Loader::loadTexture("E:/Test files/nfw/blendMap.png");
-	testTerrain1.addComponent<CRenderer>().fakeLighting = true;
-	testTerrain1.getComponent<CRenderer>().tileCount = 40;
+	testTerrain1.addComponent<CRenderer>().tileCount = 40;
 	testTerrain1.getComponent<CRenderer>().multiTexture = true;
+	testTerrain1.getComponent<CRenderer>().disableSpecular = true;
+	Engine::markAsGround(testTerrain1, calculatedHeights, 800);
 
 	Entity& testTransparent1(Engine::EntityFactory::createEntity());
 	testTransparent1.addComponent<CPosition>(glm::vec3(20, 0, 10));

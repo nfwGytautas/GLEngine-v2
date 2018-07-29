@@ -145,6 +145,11 @@ void RenderSystem::loadRenderSettings(Entity* entity)
 		m_shader->setBooleanUniform("cRenderer_multiTexture", true);
 	}
 
+	if (cRenderer.disableSpecular)
+	{
+		m_shader->setBooleanUniform("cRenderer_disableSpecular", true);
+	}
+
 	m_usingDefaults = false;
 }
 void RenderSystem::loadDefaultRenderSettings()
@@ -158,6 +163,7 @@ void RenderSystem::loadDefaultRenderSettings()
 
 		m_shader->setBooleanUniform("cRenderer_fakeLighting", false);
 		m_shader->setBooleanUniform("cRenderer_multiTexture", false);
+		m_shader->setBooleanUniform("cRenderer_disableSpecular", false);
 	}
 
 	m_usingDefaults = true;

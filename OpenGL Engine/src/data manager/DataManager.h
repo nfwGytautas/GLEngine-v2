@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 #include <utility>
+#include <glm\glm.hpp>
+
 class DataManager
 {
 public:
@@ -12,8 +14,12 @@ public:
 
 	std::pair<unsigned int, unsigned int> loadMesh(std::string mFilePath);
 	std::pair<unsigned int, unsigned int> createMesh(std::vector<float>& vertices, std::vector<float>& normals, std::vector<float>& textureCoords, std::vector<unsigned int>& indices);
-	unsigned int loadImage(std::string mFilePath);
+	std::pair<unsigned int, unsigned int> createFlatMesh(unsigned int vertexCount, unsigned int size);
+	std::pair<unsigned int, unsigned int> createHeightMappedMesh(std::string mHeightMapFilePath, float mMaxHeight, unsigned int size, std::vector<std::vector<float>>& mCalculatedHeights);
+
 	unsigned int loadMaterial(std::string mFilePath);
+
+	
 
 	void cleanUp();
 private:
@@ -23,6 +29,8 @@ private:
 	void unbindVAO();
 	void textureSetup();
 	void createFallbacks();
+	glm::vec3 calculateNormal(int x, int y, std::vector<glm::vec3>& mHeightMap, float maxPixelColor, int mMaxHeight);
+	float getHeight(int x, int y, std::vector<glm::vec3>& mHeightMap, float maxPixelColor, int mMaxHeight);
 private:
 	std::vector<unsigned int> m_vaos;
 	std::vector<unsigned int> m_vbos;
@@ -33,6 +41,5 @@ private:
 	unsigned int m_fallbackMeshVertexCount;
 
 	std::unordered_map<std::string, std::pair<unsigned int, unsigned int>> m_meshCache;
-	std::unordered_map<std::string, unsigned int> m_imageCache;
 	std::unordered_map<std::string, unsigned int> m_materialCache;
 };

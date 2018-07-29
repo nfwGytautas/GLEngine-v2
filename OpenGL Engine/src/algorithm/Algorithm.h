@@ -38,3 +38,4 @@ void clamp(T& valueToClamp, T maxValue, T minValue)
 		valueToClamp = minValue;
 	}
 }
+

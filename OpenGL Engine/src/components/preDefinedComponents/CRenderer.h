@@ -12,8 +12,10 @@ struct CRenderer : Component
 	bool fakeLighting;
 	//If true shader uses multitexture textures
 	bool multiTexture;
+	//If true specular lighting will be disabled
+	bool disableSpecular;
 
-	CRenderer() : tileCount(1), transparent(false), fakeLighting(false), multiTexture(false) {}
+	CRenderer() : tileCount(1), transparent(false), fakeLighting(false), multiTexture(false), disableSpecular(false) {}
 
 	virtual CRenderer* clone() { return new CRenderer(*this); }
 };

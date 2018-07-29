@@ -84,8 +84,8 @@ void InputManager::mouseMoveCallback(GLFWwindow* window, double xpos, double ypo
 {
 	try
 	{
-		Mouse::m_xoffset = (float) xpos - Mouse::m_lastX;
-		Mouse::m_yoffset = (float) ypos - Mouse::m_lastY;
+		Mouse::m_xoffset = (float) (xpos - Mouse::m_lastX);
+		Mouse::m_yoffset = (float) (ypos - Mouse::m_lastY);
 		Mouse::m_lastX = xpos;
 		Mouse::m_lastY = ypos;
 	}

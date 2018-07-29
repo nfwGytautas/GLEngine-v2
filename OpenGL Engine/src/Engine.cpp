@@ -111,6 +111,11 @@ void Engine::setCamera(Entity& mEntity)
 {
 
 }
+void Engine::markAsGround(Entity & mEntity, std::vector<std::vector<float>>& mHeightMap, float mGroundSize)
+{
+	mEntity.addGroup(EntityGroups::IsGround);
+	m_physicsSystem->registerHeightMap(mHeightMap, mGroundSize);
+}
 
 //============================================================================================================================
 //WINDOW
@@ -176,51 +181,13 @@ std::pair<unsigned int, unsigned int> Engine::Loader::loadMesh(std::string fileP
 }
 std::pair<unsigned int, unsigned int> Engine::Loader::createFlatMesh(unsigned int vertexCount, unsigned int size)
 {
-	unsigned int count = vertexCount * vertexCount;
-
-	std::vector<float> vertices;
-	vertices.resize(count * 3);
-
-	std::vector<float> normals;
-	normals.resize(count * 3);
-
-	std::vector<float> textureCoords;
-	textureCoords.resize(count * 2);
-
-	std::vector<unsigned int> indices;
-	indices.resize(6 * (vertexCount - 1) * (vertexCount - 1));
-
-	int vertexIndex = 0;
-	for (unsigned int i = 0; i < vertexCount; i++) {
-		for (unsigned int j = 0; j < vertexCount; j++) {
-			vertices[vertexIndex * 3] = (float)j / ((float)vertexCount - 1) * size;
-			vertices[vertexIndex * 3 + 1] = 0;
-			vertices[vertexIndex * 3 + 2] = (float)i / ((float)vertexCount - 1) * size;
-			normals[vertexIndex * 3] = 0;
-			normals[vertexIndex * 3 + 1] = 1;
-			normals[vertexIndex * 3 + 2] = 0;
-			textureCoords[vertexIndex * 2] = (float)j / ((float)vertexCount - 1);
-			textureCoords[vertexIndex * 2 + 1] = (float)i / ((float)vertexCount - 1);
-			vertexIndex++;
-		}
-	}
-
-	int index = 0;
-	for (unsigned int gz = 0; gz < vertexCount - 1; gz++) {
-		for (unsigned int gx = 0; gx < vertexCount - 1; gx++) {
-			int topLeft = (gz * vertexCount) + gx;
-			int topRight = topLeft + 1;
-			int bottomLeft = ((gz + 1) * vertexCount) + gx;
-			int bottomRight = bottomLeft + 1;
-			indices[index++] = topLeft;
-			indices[index++] = bottomLeft;
-			indices[index++] = topRight;
-			indices[index++] = topRight;
-			indices[index++] = bottomLeft;
-			indices[index++] = bottomRight;
-		}
-	}
-	auto result = m_loader->createMesh(vertices, normals, textureCoords, indices);
+	auto result = m_loader->createFlatMesh(vertexCount, size);
+	m_batchManager->acknowledgeMesh(result.first);
+	return result;
+}
+std::pair<unsigned int, unsigned int> Engine::Loader::createHeightMappedMesh(std::string mHeightMapFilePath, float mMaxHeight, unsigned int size, std::vector<std::vector<float>>& mCalculatedHeights)
+{
+	auto result = m_loader->createHeightMappedMesh(mHeightMapFilePath, mMaxHeight, size, mCalculatedHeights);
 	m_batchManager->acknowledgeMesh(result.first);
 	return result;
 }
