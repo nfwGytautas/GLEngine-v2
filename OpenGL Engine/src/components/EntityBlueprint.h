@@ -21,7 +21,6 @@ public:
 			return getComponent<T>();
 		}
 		T* c(new T(std::forward <TArgs>(mArgs)...));
-		m_components.emplace_back(c);
 		m_componentArray[getComponentTypeID<T>()] = c;
 		m_componentBitset[getComponentTypeID<T>()] = true;
 		return *c;
@@ -41,8 +40,6 @@ public:
 	}
 private:
 	EntityManager& m_manager;
-
-	std::vector<Component*> m_components;
 
 	using ComponentBitset = std::bitset<maxComponents>;
 	using ComponentArray = std::array<Component*, maxComponents>;

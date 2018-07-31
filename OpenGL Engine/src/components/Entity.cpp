@@ -3,30 +3,32 @@
 
 void Entity::init()
 {
-	for (auto& c : m_components)
+	for (unsigned int i = 0; i < maxComponents; i++)
 	{
-		c->init();
+		if(m_componentArray[i] != nullptr) 
+		{
+			m_componentArray[i]->init();
+		}
 	}
 }
 void Entity::update(float frameTime)
 {
-	for (auto& c : m_components)
+	for (unsigned int i = 0; i < maxComponents; i++)
 	{
-		c->update(frameTime);
+		if (m_componentArray[i] != nullptr)
+		{
+			m_componentArray[i]->update(frameTime);
+		}
 	}
 }
 void Entity::draw()
 {
-	for (auto& c : m_components)
+	for (unsigned int i = 0; i < maxComponents; i++)
 	{
-		c->draw();
-	}
-}
-void Entity::handleMessage(const char * message)
-{
-	for (auto& c : m_components)
-	{
-		c->handleMessage(message);
+		if (m_componentArray[i] != nullptr)
+		{
+			m_componentArray[i]->draw();
+		}
 	}
 }
 
@@ -55,7 +57,12 @@ void Entity::addGroup(Group mGroup) noexcept
 
 Entity::Entity(EntityManager& mManager)
 	: m_manager(mManager)
-{}
+{
+	for (unsigned int i = 0; i < maxComponents; i++)
+	{
+		m_componentArray[i] = nullptr;
+	}
+}
 Entity::Entity(EntityManager& mManager, EntityBlueprint& mBlueprint)
 	: m_manager(mManager)
 {
@@ -63,22 +70,23 @@ Entity::Entity(EntityManager& mManager, EntityBlueprint& mBlueprint)
 
 	for (unsigned int i = 0; i < maxComponents; i++)
 	{
+		m_componentArray[i] = nullptr;
 		if (mBlueprint.m_componentArray[i] != nullptr)
-		{
-			if (m_componentArray[i] != nullptr)
-			{
-				delete m_componentArray[i];
-			}			
-			Component* comp = mBlueprint.m_components[i]->clone();
+		{		
+			Component* comp = mBlueprint.m_componentArray[i]->clone();
 			comp->entity = this;
 			comp->init();
-			std::unique_ptr<Component> uPtr{ comp };
-			m_components.emplace_back(std::move(uPtr));
 			m_componentArray[i] = comp;
 		}
 	}
 }
 Entity::~Entity()
 {
-	m_components.clear();
+	for (unsigned int i = 0; i < maxComponents; i++)
+	{
+		if (m_componentArray[i] != nullptr)
+		{
+			delete m_componentArray[i];
+		}
+	}
 }

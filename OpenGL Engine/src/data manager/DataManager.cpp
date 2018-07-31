@@ -1,5 +1,6 @@
 #include "DataManager.h"
 #include <iostream>
+#include <thread>
 #include <boost\filesystem.hpp>
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
@@ -10,6 +11,29 @@
 #include "..\graphics\FrameworkAssert.h"
 #include "..\components\Entity.h"
 #include "..\components\PreDefinedComponents.h"
+
+void calculateIndices(std::vector<unsigned int>& mIndices, unsigned int mVertexCount)
+{
+	int index = 0;
+	for (unsigned int gz = 0; gz < mVertexCount - 1; gz++) {
+		for (unsigned int gx = 0; gx < mVertexCount - 1; gx++) {
+			int topLeft = (gz * mVertexCount) + gx;
+			int topRight = topLeft + 1;
+			int bottomLeft = ((gz + 1) * mVertexCount) + gx;
+			int bottomRight = bottomLeft + 1;
+			mIndices[index++] = topLeft;
+			mIndices[index++] = bottomLeft;
+			mIndices[index++] = topRight;
+			mIndices[index++] = topRight;
+			mIndices[index++] = bottomLeft;
+			mIndices[index++] = bottomRight;
+		}
+	}
+}
+void calculateVBO()
+{
+
+}
 
 std::pair<unsigned int, unsigned int> DataManager::loadMesh(std::string mFilePath)
 {
@@ -56,6 +80,10 @@ std::pair<unsigned int, unsigned int> DataManager::createMesh(std::vector<float>
 
 std::pair<unsigned int, unsigned int> DataManager::createFlatMesh(unsigned int vertexCount, unsigned int size)
 {
+	std::vector<unsigned int> indices;
+	indices.resize(6 * (vertexCount - 1) * (vertexCount - 1));
+
+	std::thread indiceCalc(calculateIndices, std::ref(indices), std::ref(vertexCount));
 
 	unsigned int count = vertexCount * vertexCount;
 
@@ -67,9 +95,6 @@ std::pair<unsigned int, unsigned int> DataManager::createFlatMesh(unsigned int v
 
 	std::vector<float> textureCoords;
 	textureCoords.resize(count * 2);
-
-	std::vector<unsigned int> indices;
-	indices.resize(6 * (vertexCount - 1) * (vertexCount - 1));
 
 	int vertexIndex = 0;
 	for (unsigned int i = 0; i < vertexCount; i++) {
@@ -86,31 +111,24 @@ std::pair<unsigned int, unsigned int> DataManager::createFlatMesh(unsigned int v
 		}
 	}
 
-	int index = 0;
-	for (unsigned int gz = 0; gz < vertexCount - 1; gz++) {
-		for (unsigned int gx = 0; gx < vertexCount - 1; gx++) {
-			int topLeft = (gz * vertexCount) + gx;
-			int topRight = topLeft + 1;
-			int bottomLeft = ((gz + 1) * vertexCount) + gx;
-			int bottomRight = bottomLeft + 1;
-			indices[index++] = topLeft;
-			indices[index++] = bottomLeft;
-			indices[index++] = topRight;
-			indices[index++] = topRight;
-			indices[index++] = bottomLeft;
-			indices[index++] = bottomRight;
-		}
-	}
+	indiceCalc.join();
+
 	auto result = createMesh(vertices, normals, textureCoords, indices);
 	return result;
 }
 
 std::pair<unsigned int, unsigned int> DataManager::createHeightMappedMesh(std::string mHeightMapFilePath, float mMaxHeight, unsigned int size, continuous2DArray<float>& mCalculatedHeights)
 {
-	float MAX_PIXEL_COLOR = 256 * 256 * 256;
 	auto boostFilePath = boost::filesystem::path(mHeightMapFilePath);
 	ImageLoader::loadImage(boostFilePath.string(), boostFilePath.extension().string());
 	unsigned int vertexCount = ImageLoader::height;
+
+	std::vector<unsigned int> indices;
+	indices.resize(6 * (vertexCount - 1) * (vertexCount - 1));
+
+	std::thread indiceCalc(calculateIndices, std::ref(indices), std::ref(vertexCount));
+
+	float MAX_PIXEL_COLOR = 256 * 256 * 256;
 	std::vector<glm::vec3> heightMap;
 	heightMap.resize(ImageLoader::height * ImageLoader::width);
 
@@ -139,8 +157,7 @@ std::pair<unsigned int, unsigned int> DataManager::createHeightMappedMesh(std::s
 	normals.resize(count * 3);
 	std::vector<float> textureCoords;
 	textureCoords.resize(count * 2);
-	std::vector<unsigned int> indices;
-	indices.resize(6 * (vertexCount - 1) * (vertexCount - 1));
+	
 	int vertexIndex = 0;
 	mCalculatedHeights.resize(vertexCount);
 	float height = 0;	
@@ -161,22 +178,10 @@ std::pair<unsigned int, unsigned int> DataManager::createHeightMappedMesh(std::s
 		}
 	}
 
-	int index = 0;
-	for (unsigned int gz = 0; gz < vertexCount - 1; gz++) {
-		for (unsigned int gx = 0; gx < vertexCount - 1; gx++) {
-			int topLeft = (gz * vertexCount) + gx;
-			int topRight = topLeft + 1;
-			int bottomLeft = ((gz + 1) * vertexCount) + gx;
-			int bottomRight = bottomLeft + 1;
-			indices[index++] = topLeft;
-			indices[index++] = bottomLeft;
-			indices[index++] = topRight;
-			indices[index++] = topRight;
-			indices[index++] = bottomLeft;
-			indices[index++] = bottomRight;
-		}
-	}
 	ImageLoader::freeData();
+
+	indiceCalc.join();
+
 	auto result = createMesh(vertices, normals, textureCoords, indices);
 	return result;
 }

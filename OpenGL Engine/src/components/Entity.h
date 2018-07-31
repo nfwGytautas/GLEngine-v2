@@ -34,9 +34,6 @@ public:
 
 		T* c(new T(std::forward <TArgs>(mArgs)...));
 		c->entity = this;
-		std::unique_ptr<Component> uPtr{ c };
-		m_components.emplace_back(std::move(uPtr));
-
 		m_componentArray[getComponentTypeID<T>()] = c;
 		m_componentBitset[getComponentTypeID<T>()] = true;
 
@@ -69,7 +66,6 @@ private:
 	EntityManager& m_manager;
 
 	bool m_alive{ true };
-	std::vector<std::unique_ptr<Component>> m_components;
 
 	using ComponentBitset = std::bitset<maxComponents>;
 	using ComponentArray = std::array<Component*, maxComponents>;

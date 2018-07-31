@@ -34,6 +34,10 @@ void DynamicShader::setFloatUniform(const std::string& name, float v0)
 {
 	GLCall(glUniform1f(getUniformLocation(name), v0));
 }
+void DynamicShader::setVec2Uniform(const std::string & name, const glm::vec2 & vec0)
+{
+	GLCall(glUniform2f(getUniformLocation(name), vec0.x, vec0.y));
+}
 void DynamicShader::setVec3Uniform(const std::string& name, const glm::vec3& vec0)
 {
 	GLCall(glUniform3f(getUniformLocation(name), vec0.x, vec0.y, vec0.z));

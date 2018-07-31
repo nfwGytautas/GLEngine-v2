@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\components\preDefinedComponents\CRenderer.h" />
     <ClInclude Include="src\data manager\ImageLoader.h" />
     <ClInclude Include="src\components\preDefinedComponents\CCamera.h" />
     <ClInclude Include="src\systems\physics\PhysicsSystem.h" />
@@ -34,7 +35,6 @@
     <ClInclude Include="src\components\preDefinedComponents\CMaterial.h" />
     <ClInclude Include="src\components\preDefinedComponents\CMesh.h" />
     <ClInclude Include="src\components\preDefinedComponents\CPosition.h" />
-    <ClInclude Include="src\components\preDefinedComponents\CRenderer.h" />
     <ClInclude Include="src\components\preDefinedComponents\CTransformation.h" />
     <ClInclude Include="src\data manager\BatchManager.h" />
     <ClInclude Include="src\components\EntityManager.h" />
