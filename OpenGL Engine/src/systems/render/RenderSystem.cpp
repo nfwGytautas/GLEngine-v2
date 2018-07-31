@@ -85,7 +85,7 @@ void RenderSystem::renderEntities()
 				auto material = entity->getComponent<CMaterial>();
 				if (m_currentMaterial == nullptr || *m_currentMaterial != material)
 				{
-					GraphicsAPI::bindTexture(material);
+					GraphicsAPI::bindTexture(material);		
 					m_shader->setFloatUniform("shineDamper", material.shineDamper);
 					m_shader->setFloatUniform("reflectivity", material.reflectivity);
 					m_currentMaterial = &material;
@@ -150,6 +150,17 @@ void RenderSystem::loadRenderSettings(Entity* entity)
 		m_shader->setBooleanUniform("cRenderer_disableSpecular", true);
 	}
 
+	if (cRenderer.hasAtlas)
+	{
+		m_shader->setFloatUniform("cRenderer_numberOfRows", cRenderer.atlasRowCount);
+		int column = cRenderer.atlasIndex % cRenderer.atlasRowCount;
+		float xOffSet = (float)column / (float) cRenderer.atlasRowCount;
+		int row = cRenderer.atlasIndex / cRenderer.atlasRowCount;
+		float yOffSet = (float)row / (float)cRenderer.atlasRowCount;
+		glm::vec2 textureOffset(xOffSet, yOffSet);
+		m_shader->setVec2Uniform("uv_offset", textureOffset);
+	}
+
 	m_usingDefaults = false;
 }
 void RenderSystem::loadDefaultRenderSettings()
@@ -157,6 +168,8 @@ void RenderSystem::loadDefaultRenderSettings()
 	if (!m_usingDefaults)
 	{
 		m_shader->setFloatUniform("cRenderer_tileCount", 1);
+		m_shader->setFloatUniform("cRenderer_numberOfRows", 1);
+		m_shader->setVec2Uniform("uv_offset", glm::vec2(0,0));
 
 		GLCall(glEnable(GL_CULL_FACE));
 		GLCall(glCullFace(GL_BACK));

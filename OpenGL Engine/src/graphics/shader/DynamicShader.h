@@ -15,6 +15,7 @@ public:
 	void setBooleanUniform(const std::string& name, bool v0);
 	void setIntUniform(const std::string& name, int v0);
 	void setFloatUniform(const std::string& name, float v0);
+	void setVec2Uniform(const std::string& name, const glm::vec2& vec0);
 	void setVec3Uniform(const std::string& name, const glm::vec3& vec0);
 	void setMatrix4fUniform(const std::string& name, const glm::mat4& m0);
 private:

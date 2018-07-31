@@ -2,7 +2,6 @@
 
 #include <string>
 
-//TODO: Create my own math library
 #include <glm\glm.hpp>
 
 class Shader
@@ -25,6 +24,7 @@ public:
 
 	void setIntUniform(int location, int value);
 	void setFloatUniform(int location, float value);
+	void setVec2Uniform(int location, glm::vec2 vector);
 	void setVec3Uniform(int location, glm::vec3 vector);
 	void setBooleanUniform(int location, bool value);
 	void setMatrix4fUniform(int location, glm::mat4 matrix);

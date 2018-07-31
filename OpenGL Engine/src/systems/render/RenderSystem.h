@@ -1,9 +1,11 @@
 #pragma once
+
 struct CMaterial;
 class DynamicShader;
 class BatchManager;
 class Entity;
 class EntityManager;
+
 class RenderSystem
 {
 public:

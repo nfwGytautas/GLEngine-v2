@@ -5,13 +5,18 @@
 EntityBlueprint::EntityBlueprint(EntityManager& mManager)
 	: m_manager(mManager)
 {
+	for (unsigned int i = 0; i < maxComponents; i++)
+	{
+		m_componentArray[i] = nullptr;
+	}
 }
 EntityBlueprint::~EntityBlueprint()
 {
-	for (unsigned int i = 0; i < m_components.size(); i++)
+	for (unsigned int i = 0; i < maxComponents; i++)
 	{
-		delete m_components[i];
+		if(m_componentArray[i] != nullptr)
+		{
+			delete m_componentArray[i];
+		}
 	}
-
-	m_components.clear();
 }

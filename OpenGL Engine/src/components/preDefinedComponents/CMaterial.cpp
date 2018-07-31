@@ -10,5 +10,6 @@ size_t CMaterial::hash() const
 	res = res * 31 + std::hash<float>()(shineDamper);
 	res = res * 31 + std::hash<float>()(reflectivity);
 	res = res * 31 + std::hash<unsigned int>()(m_textureID);
+
 	return res;
 }

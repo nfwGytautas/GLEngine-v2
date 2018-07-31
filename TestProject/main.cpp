@@ -46,13 +46,29 @@ int main()
 	testTransparent1.addComponent<CRenderer>().transparent = true;
 	testTransparent1.getComponent<CRenderer>().fakeLighting = true;
 
-	Entity& testTransparent2(Engine::EntityFactory::createEntity());
-	testTransparent2.addComponent<CPosition>(glm::vec3(20, 0, 50));
-	testTransparent2.addComponent<CTransformation>(0, 0, 0, 1);
-	testTransparent2.addComponent<CMesh>(Engine::Loader::loadMesh("E:/Test files/nfw/fern.obj"));
-	testTransparent2.addComponent<CMaterial>(Engine::Loader::loadMaterial("E:/Test files/nfw/fern.png"), 10, 0);
-	testTransparent2.addComponent<CRenderer>().transparent = true;
-	testTransparent2.getComponent<CRenderer>().fakeLighting = true;
+	EntityBlueprint& fernBlueprint(Engine::EntityFactory::newBlueprint());
+	fernBlueprint.addComponent<CPosition>(glm::vec3(0.0f, 0.0f, 0.0f));
+	fernBlueprint.addComponent<CTransformation>(0, 0, 0, 1);
+	fernBlueprint.addComponent<CMesh>(Engine::Loader::loadMesh("E:/Test files/nfw/fern.obj"));
+	fernBlueprint.addComponent<CMaterial>(Engine::Loader::loadMaterial("E:/Test files/nfw/fernAtlas.png"), 10, 0);
+	CRenderer& renderComponent = fernBlueprint.addComponent<CRenderer>();
+	renderComponent.transparent = true;
+	renderComponent.fakeLighting = true;
+	renderComponent.hasAtlas = true;
+	renderComponent.atlasRowCount = 2;
+
+	Entity& fern1(Engine::EntityFactory::createEntity(fernBlueprint));
+	fern1.getComponent<CPosition>().value = glm::vec3(20, 0, 50);
+	fern1.getComponent<CRenderer>().atlasIndex = 0;
+	Entity& fern2(Engine::EntityFactory::createEntity(fernBlueprint));
+	fern2.getComponent<CPosition>().value = glm::vec3(10, 0, 50);
+	fern2.getComponent<CRenderer>().atlasIndex = 1;
+	Entity& fern3(Engine::EntityFactory::createEntity(fernBlueprint));
+	fern3.getComponent<CPosition>().value = glm::vec3(0, 0, 50);
+	fern3.getComponent<CRenderer>().atlasIndex = 2;
+	Entity& fern4(Engine::EntityFactory::createEntity(fernBlueprint));
+	fern4.getComponent<CPosition>().value = glm::vec3(-10, 0, 50);
+	fern4.getComponent<CRenderer>().atlasIndex = 3;
 
 	Entity& testLight(Engine::EntityFactory::createEntity());
 	testLight.addComponent<CLightEmiter>();

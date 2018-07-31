@@ -156,6 +156,10 @@ void Shader::setFloatUniform(int location, float value)
 {
 	GLCall(glUniform1f(location, value));
 }
+void Shader::setVec2Uniform(int location, glm::vec2 vector)
+{
+	GLCall(glUniform2f(location, vector.x, vector.y));
+}
 void Shader::setVec3Uniform(int location, glm::vec3 vector)
 {
 	GLCall(glUniform3f(location, vector.x, vector.y, vector.z));
