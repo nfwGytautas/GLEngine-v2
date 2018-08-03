@@ -30,8 +30,8 @@ private:
 	void unbindVAO();
 	void textureSetup();
 	void createFallbacks();
-	glm::vec3 calculateNormal(int x, int y, std::vector<glm::vec3>& mHeightMap, float maxPixelColor, int mMaxHeight);
-	float getHeight(int x, int y, std::vector<glm::vec3>& mHeightMap, float maxPixelColor, int mMaxHeight);
+	glm::vec3 calculateNormal(int x, int y, std::vector<glm::vec3>& mHeightMap, float maxPixelColor, float mMaxHeight);
+	float getHeight(int x, int y, std::vector<glm::vec3>& mHeightMap, float maxPixelColor, float mMaxHeight);
 private:
 	std::vector<unsigned int> m_vaos;
 	std::vector<unsigned int> m_vbos;

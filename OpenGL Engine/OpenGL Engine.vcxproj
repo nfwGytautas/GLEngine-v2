@@ -19,12 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\components\preDefinedComponents\CInput.h" />
+    <ClInclude Include="src\systems\event\EventSystem.h" />
+    <ClInclude Include="src\systems\event\PreDefinedEvents.h" />
+    <ClInclude Include="src\systems\event\Event.h" />
     <ClInclude Include="src\components\preDefinedComponents\CRenderer.h" />
     <ClInclude Include="src\data manager\ImageLoader.h" />
     <ClInclude Include="src\components\preDefinedComponents\CCamera.h" />
     <ClInclude Include="src\systems\physics\PhysicsSystem.h" />
     <ClInclude Include="src\components\preDefinedComponents\CPhysics.h" />
-    <ClInclude Include="src\components\preDefinedComponents\CInput.h" />
     <ClInclude Include="src\components\EntityBlueprint.h" />
     <ClInclude Include="src\components\preDefinedComponents\CMultiTexture.h" />
     <ClInclude Include="src\graphics\api\GraphicsAPI.h" />
@@ -52,17 +55,19 @@
     <ClInclude Include="src\graphics\display\Display.h" />
     <ClInclude Include="src\graphics\FrameworkAssert.h" />
     <ClInclude Include="src\graphics\gtypes\gTypes.h" />
-    <ClInclude Include="src\graphics\shader\StaticShader.h" />
     <ClInclude Include="src\Settings.h" />
     <ClInclude Include="src\systems\render\RenderSystem.h" />
     <ClInclude Include="src\systems\update\UpdateSystem.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\components\preDefinedComponents\CInput.cpp" />
+    <ClCompile Include="src\systems\event\EventSystem.cpp" />
+    <ClCompile Include="src\systems\event\PreDefinedEvents.cpp" />
+    <ClCompile Include="src\systems\event\Event.cpp" />
     <ClCompile Include="src\data manager\ImageLoader.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CCamera.cpp" />
     <ClCompile Include="src\systems\physics\PhysicsSystem.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CPhysics.cpp" />
-    <ClCompile Include="src\components\preDefinedComponents\CInput.cpp" />
     <ClCompile Include="src\components\EntityBlueprint.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CMultiTexture.cpp" />
     <ClCompile Include="src\graphics\api\GraphicsAPI.cpp" />
@@ -87,7 +92,6 @@
     <ClCompile Include="src\data manager\DataManager.cpp" />
     <ClCompile Include="src\graphics\display\Display.cpp" />
     <ClCompile Include="src\graphics\FrameworkAssert.cpp" />
-    <ClCompile Include="src\graphics\shader\StaticShader.cpp" />
     <ClCompile Include="src\Settings.cpp" />
     <ClCompile Include="src\systems\render\RenderSystem.cpp" />
     <ClCompile Include="src\systems\update\UpdateSystem.cpp" />

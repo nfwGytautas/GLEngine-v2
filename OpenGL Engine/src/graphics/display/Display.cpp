@@ -107,9 +107,7 @@ void Display::updateDisplay()
 		if (error != GL_NO_ERROR)
 		{
 			std::cout << "[Engine][Display] OpenGL error: " << error << "\n";
-		}
-
-		InputManager::update();
+		}		
 
 		//Swap buffers
 		GLCall(glfwSwapBuffers(m_Window));

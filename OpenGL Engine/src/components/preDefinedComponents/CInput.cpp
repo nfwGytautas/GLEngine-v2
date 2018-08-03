@@ -1,47 +1,26 @@
 #include "CInput.h"
+#include "..\..\Engine.h"
 #include "..\Entity.h"
-
-#include <iostream>
+#include "..\..\systems\event\EventSystem.h"
 
 CInput::CInput()
-	: enabled(true), m_hasMouseBehavior(false)
-{
-}
+{}
 
 void CInput::init()
 {
 	entity->addGroup(EntityGroups::HasInput);
 }
 
-void CInput::react(const std::vector<Key>& mKeys)
+void CInput::subscribe(const EventType& mType, EventBehavior& mBehavior)
 {
-	if(enabled)
+	Engine::Systems::Event::subscribe(mType, this);
+	m_reactions[mType] = mBehavior;
+}
+
+void CInput::react(const Event& mEvent)
+{
+	if (m_reactions.find(mEvent.type()) != m_reactions.end())
 	{
-		for(unsigned int i = 0; i < mKeys.size(); i++)
-		{
-			if (m_behaviors.find(mKeys[i]) != m_behaviors.end())
-			{
-				m_behaviors[mKeys[i]](*entity);
-			}
-		}
+		m_reactions[mEvent.type()](*entity, mEvent);
 	}
-}
-
-void CInput::reactToMouse()
-{
-	if(m_hasMouseBehavior)
-	{
-		m_mouseBehavior(*entity);
-	}
-}
-
-void CInput::reactsTo(Key mKey, InputBehavior mBehavior)
-{
-	m_behaviors[mKey] = mBehavior;
-}
-
-void CInput::reactsToMouse(InputBehavior mBehavior)
-{
-	m_mouseBehavior = mBehavior;
-	m_hasMouseBehavior = true;
 }

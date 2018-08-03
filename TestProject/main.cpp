@@ -79,67 +79,116 @@ int main()
 	testPlayer.addComponent<CTransformation>(0, 0, 0, 1);
 	testPlayer.addComponent<CMesh>(Engine::Loader::loadMesh("E:/Test files/nfw/person.obj"));
 	testPlayer.addComponent<CMaterial>(Engine::Loader::loadMaterial("E:/Test files/nfw/playerTexture.png"), 10, 0);
-	testPlayer.addComponent<CInput>();
 	testPlayer.addComponent<CPhysics>().affectedByGravity = true;
-	CInput& input = testPlayer.getComponent<CInput>();
-	InputBehavior aBehavior = [](Entity& mEntity)
+	CInput& input = testPlayer.addComponent<CInput>();
+	EventBehavior keyDownBehavior = [](Entity& mEntity, const Event& e)
 	{
-		mEntity.getComponent<CTransformation>().rotationY += (160 * Engine::deltaTime());
-	};
-	InputBehavior dBehavior = [](Entity& mEntity)
-	{
-		mEntity.getComponent<CTransformation>().rotationY -= (160 * Engine::deltaTime());
-	};
-	InputBehavior wBehavior = [](Entity& mEntity)
-	{
-		float distance = 50 * Engine::deltaTime();
-		float dx = (float)(distance * std::sin(Maths::DegreesToRadians(mEntity.getComponent<CTransformation>().rotationY)));
-		float dz = (float)(distance * std::cos(Maths::DegreesToRadians(mEntity.getComponent<CTransformation>().rotationY)));
-		mEntity.getComponent<CPosition>().value.x += dx;
-		mEntity.getComponent<CPosition>().value.z += dz;
-	};
-	InputBehavior sBehavior = [](Entity& mEntity)
-	{
-		float distance = -50 * Engine::deltaTime();
-		float dx = distance * (float)(std::sin(Maths::DegreesToRadians(mEntity.getComponent<CTransformation>().rotationY)));
-		float dz = distance * (float)(std::cos(Maths::DegreesToRadians(mEntity.getComponent<CTransformation>().rotationY)));
-		mEntity.getComponent<CPosition>().value.x += dx;
-		mEntity.getComponent<CPosition>().value.z += dz;
-	};
-	InputBehavior spaceBehavior = [](Entity& mEntity)
-	{
+		const KeyDownEvent& kDEvent = static_cast<const KeyDownEvent&>(e);
+
+		CTransformation& transformation = mEntity.getComponent<CTransformation>();
 		CPosition& position = mEntity.getComponent<CPosition>();
-		if(position.value.y <= Engine::Systems::Physics::heightAtPoint(position.value.x, position.value.z)) 
+
+		switch (kDEvent.pressedKey)
 		{
-			mEntity.getComponent<CPhysics>().velocity.y = 30;
+		case Key::KEY_A:
+			transformation.rotationY += (160 * Engine::deltaTime());
+			break;
+
+		case Key::KEY_D:
+			transformation.rotationY -= (160 * Engine::deltaTime());
+			break;
+
+		case Key::KEY_W:
+			position.value.x += (float)((50 * Engine::deltaTime()) * std::sin(Maths::DegreesToRadians(transformation.rotationY)));
+			position.value.z += (float)((50 * Engine::deltaTime()) * std::cos(Maths::DegreesToRadians(transformation.rotationY)));
+			break;
+
+		case Key::KEY_S:
+			position.value.x += (float)((-50 * Engine::deltaTime()) * std::sin(Maths::DegreesToRadians(transformation.rotationY)));
+			position.value.z += (float)((-50 * Engine::deltaTime()) * std::cos(Maths::DegreesToRadians(transformation.rotationY)));
+			break;
+
+		case Key::KEY_SPACE:
+			if (position.value.y <= Engine::Systems::Physics::heightAtPoint(position.value.x, position.value.z))
+			{
+				mEntity.getComponent<CPhysics>().velocity.y = 30;
+			}
+			break;
 		}
 	};
-	input.reactsTo(Key::KEY_W, wBehavior);
-	input.reactsTo(Key::KEY_S, sBehavior);
-	input.reactsTo(Key::KEY_A, aBehavior);
-	input.reactsTo(Key::KEY_D, dBehavior);
-	input.reactsTo(Key::KEY_SPACE, spaceBehavior);
+	input.subscribe(EventType::KeyDown, keyDownBehavior);
 
-	InputBehavior mouseBehavior = [](Entity& mEntity) 
+	bool right = false;
+	bool left = false;
+
+	EventBehavior mouseKeyDownBehavior = [&](Entity& mEntity, const Event& e)
 	{
-		mEntity.getComponent<CCamera>().distanceToHook += (Engine::Input::Mouse::getScrollY());
+		const MouseKeyDownEvent& kDEvent = static_cast<const MouseKeyDownEvent&>(e);		
 
-		if (Engine::Input::Mouse::isMouseKeyDown(MouseKey::BUTTON_RIGHT))
+		right = false;
+		left = false;
+
+		switch (kDEvent.pressedKey)
 		{
-			mEntity.getComponent<CCamera>().pitch += Engine::Input::Mouse::getMovedY();
+		case MouseKey::BUTTON_RIGHT:			
+			right = true;
+			break;
+
+		case MouseKey::BUTTON_LEFT:		
+			left = true;
+			break;
 		}
 
-		if (Engine::Input::Mouse::isMouseKeyDown(MouseKey::BUTTON_LEFT))
+	};
+	EventBehavior mouseKeyUpBehavior = [&](Entity& mEntity, const Event& e)
+	{
+		const MouseKeyUpEvent& kUEvent = static_cast<const MouseKeyUpEvent&>(e);
+
+		switch (kUEvent.releasedKey)
 		{
-			mEntity.getComponent<CCamera>().angleAroundHook += Engine::Input::Mouse::getMovedX();
+		case MouseKey::BUTTON_RIGHT:
+			right = false;
+			break;
+
+		case MouseKey::BUTTON_LEFT:
+			left = false;
+			break;
+		}
+
+	};
+	EventBehavior mouseMoveBehavior = [&](Entity& mEntity, const Event& e)
+	{
+		const MouseMovedEvent& mMEvent = static_cast<const MouseMovedEvent&>(e);
+
+		CCamera& camera = mEntity.getComponent<CCamera>();
+
+		if (right)
+		{
+			camera.pitch += mMEvent.y * Settings::cameraSensetivity;
+		}
+
+		if (left)
+		{
+			camera.angleAroundHook += mMEvent.x * Settings::cameraSensetivity;
 		}
 	};
+	EventBehavior mouseScrollBehavior = [&](Entity& mEntity, const Event& e)
+	{
+		const MouseScrollEvent& mSEvent = static_cast<const MouseScrollEvent&>(e);
+
+		mEntity.getComponent<CCamera>().distanceToHook += mSEvent.y;
+	};
+
 	Entity& testCamera(Engine::EntityFactory::createEntity());
 	testCamera.addComponent<CPosition>(glm::vec3(0,10,5));
 	testCamera.addComponent<CTransformation>(0,0,0,1);
 	testCamera.addComponent<CCamera>().hookTo(&testPlayer, 50, 0);
 	testCamera.addComponent<CCamera>().pitch = 30;
-	testCamera.addComponent<CInput>().reactsToMouse(mouseBehavior);
+	CInput& cameraInput = testCamera.addComponent<CInput>();
+	cameraInput.subscribe(EventType::MouseKeyDown, mouseKeyDownBehavior);
+	cameraInput.subscribe(EventType::MouseKeyUp, mouseKeyUpBehavior);
+	cameraInput.subscribe(EventType::MouseMoved, mouseMoveBehavior);
+	cameraInput.subscribe(EventType::MouseScroll, mouseScrollBehavior);
 	Settings::camera = &testCamera.getComponent<CCamera>();
 
 

@@ -19,6 +19,7 @@ class BatchManager;
 class RenderSystem;
 class UpdateSystem;
 class PhysicsSystem;
+class EventSystem;
 
 class Engine
 {
@@ -75,6 +76,12 @@ public:
 		public:
 			static float heightAtPoint(float X, float Z);
 		};
+
+		class Event
+		{
+		public:
+			static void subscribe(const EventType& mType, CInput* mInput);
+		};
 	};
 
 	static void initialize(unsigned int width, unsigned int height, const char* title, bool fullscreen = false);
@@ -100,6 +107,7 @@ private:
 	static RenderSystem* m_renderSystem;
 	static UpdateSystem* m_updateSystem;
 	static PhysicsSystem* m_physicsSystem;
+	static EventSystem* m_eventSystem;
 
 	static float m_EngineFoV;
 	static float m_NearRenderPlane;

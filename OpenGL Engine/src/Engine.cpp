@@ -17,6 +17,7 @@
 #include "systems\render\RenderSystem.h"
 #include "systems\update\UpdateSystem.h"
 #include "systems\physics\PhysicsSystem.h"
+#include "systems\event\EventSystem.h"
 
 bool Engine::m_initialized = false;
 DataManager* Engine::m_loader = nullptr;
@@ -26,6 +27,7 @@ BatchManager* Engine::m_batchManager = nullptr;
 RenderSystem* Engine::m_renderSystem = nullptr;
 UpdateSystem* Engine::m_updateSystem = nullptr;
 PhysicsSystem* Engine::m_physicsSystem = nullptr;
+EventSystem* Engine::m_eventSystem = nullptr;
 
 float Engine::m_EngineFoV = 70;
 float Engine::m_NearRenderPlane = 0.1f;
@@ -44,7 +46,8 @@ void Engine::initialize(unsigned int width, unsigned int height, const char* tit
 	m_entityManager = new EntityManager(m_batchManager);	
 	m_renderSystem = new RenderSystem(m_shader, m_entityManager, m_batchManager);
 	m_physicsSystem = new PhysicsSystem(m_entityManager);
-	m_updateSystem = new UpdateSystem(m_entityManager, m_physicsSystem);
+	m_eventSystem = new EventSystem();
+	m_updateSystem = new UpdateSystem(m_entityManager, m_physicsSystem, m_eventSystem);
 
 	GLCall(glEnable(GL_CULL_FACE));
 	GLCall(glCullFace(GL_BACK));
@@ -81,6 +84,7 @@ void Engine::terminate()
 	delete m_renderSystem;
 	delete m_physicsSystem;
 	delete m_updateSystem;
+	delete m_eventSystem;
 
 	Display::destroyDisplay();
 
@@ -147,11 +151,11 @@ float Engine::Input::Mouse::getScrollY()
 }
 float Engine::Input::Mouse::getMovedY()
 {
-	return InputManager::Mouse::getYOffset() * Settings::cameraSensetivity;
+	return InputManager::Mouse::getYOffset();
 }
 float Engine::Input::Mouse::getMovedX()
 {
-	return InputManager::Mouse::getXOffset() * Settings::cameraSensetivity;
+	return InputManager::Mouse::getXOffset();
 }
 
 //============================================================================================================================
@@ -208,4 +212,9 @@ unsigned int Engine::Loader::loadTexture(std::string filePath)
 float Engine::Systems::Physics::heightAtPoint(float X, float Z)
 {
 	return m_physicsSystem->getHeightAtPoint(X, Z);
+}
+
+void Engine::Systems::Event::subscribe(const EventType& mType, CInput* mInput)
+{
+	m_eventSystem->subscribe(mType, mInput);
 }

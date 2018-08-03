@@ -54,7 +54,7 @@ float PhysicsSystem::getHeightAtPoint(float X, float Z)
 		float gridSquareSize = m_groundSize / ((float)length - 1);
 		int gridX = (int)std::floor(groundX / gridSquareSize);
 		int gridZ = (int)std::floor(groundZ / gridSquareSize);
-		if(gridX >= length - 1 || gridZ >= length - 1 || gridX < 0 || gridZ < 0)
+		if((unsigned int)gridX >= length - 1 || (unsigned int)gridZ >= length - 1 || gridX < 0 || gridZ < 0)
 		{
 			return 0.0f;
 		}

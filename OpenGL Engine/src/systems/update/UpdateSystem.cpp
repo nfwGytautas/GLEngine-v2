@@ -3,16 +3,19 @@
 #include <glm\gtc\matrix_transform.hpp>
 #include "..\..\Settings.h"
 #include "..\..\graphics\display\Display.h"
-#include "..\..\components\Entity.h"
-#include "..\..\components\PreDefinedComponents.h"
-#include "..\..\components\EntityManager.h"
 #include "..\..\input\InputManager.h"
 #include "..\physics\PhysicsSystem.h"
+#include "..\event\EventSystem.h"
 #include "..\..\algorithm\Algorithm.h"
+#include "..\..\components\Entity.h"
+#include "..\..\components\EntityManager.h"
+#include "..\..\components\preDefinedComponents\CInput.h"
+#include "..\..\components\preDefinedComponents\CCamera.h"
 
 void UpdateSystem::update()
 {
 	Display::updateDisplay();
+	InputManager::update();
 	m_entityManager->refresh();
 
 	updateEntitiesWithInput();
@@ -22,18 +25,34 @@ void UpdateSystem::update()
 	//Kinda redundant now
 	m_entityManager->update(Display::getDelta());
 }
-UpdateSystem::UpdateSystem(EntityManager* mEntityManager, PhysicsSystem* mPhysicsSystem)
-	: m_entityManager(mEntityManager), m_physicsSystem(mPhysicsSystem)
+UpdateSystem::UpdateSystem(EntityManager* mEntityManager, PhysicsSystem* mPhysicsSystem, EventSystem* mEventSystem)
+	: m_entityManager(mEntityManager), m_physicsSystem(mPhysicsSystem), m_eventSystem(mEventSystem)
 {
 }
 void UpdateSystem::updateEntitiesWithInput()
 {
-	auto inputEntities = m_entityManager->getEntitiesByGroup(EntityGroups::HasInput);
-	for (Entity* e : inputEntities)
+	auto downKeys = InputManager::getKeyDown();
+	for (Key key : downKeys)
 	{
-		e->getComponent<CInput>().react(InputManager::getKey());
-		e->getComponent<CInput>().reactToMouse();
+		m_eventSystem->post(KeyDownEvent(key));
 	}
+	auto upKeys = InputManager::getKeyUp();
+	for (Key key : upKeys)
+	{
+		m_eventSystem->post(KeyUpEvent(key));
+	}
+	auto mDownKeys = InputManager::getMKeyDown();
+	for (MouseKey key : mDownKeys)
+	{
+		m_eventSystem->post(MouseKeyDownEvent(key));
+	}
+	auto mUpKeys = InputManager::getMKeyUp();
+	for (MouseKey key : mUpKeys)
+	{
+		m_eventSystem->post(MouseKeyUpEvent(key));
+	}	
+	m_eventSystem->post(MouseMovedEvent(InputManager::Mouse::getXOffset(), InputManager::Mouse::getYOffset()));
+	m_eventSystem->post(MouseScrollEvent(InputManager::Mouse::getScrollAmountX(), InputManager::Mouse::getScrollAmountY()));
 }
 void UpdateSystem::updateEntitiesWithPhysics()
 {

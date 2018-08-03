@@ -3,9 +3,9 @@
 //Dependencies
 #include <unordered_map>
 #include <functional>
-#include "..\..\input\InputKeys.h"
+#include "..\..\systems\event\PreDefinedEvents.h"
 
-using InputBehavior = std::function<void(Entity& mEntity)>;
+using EventBehavior = std::function<void(Entity& mEntity, const Event& e)>;
 
 struct CInput : Component
 {
@@ -14,18 +14,10 @@ struct CInput : Component
 
 	void init() override;
 
-	bool enabled;
+	void subscribe(const EventType& mType, EventBehavior& mBehavior);
+	void react(const Event& mEvent);
 
-	//Most likely will change after event system is implemented
-	void react(const std::vector<Key>& mKeys);
-	void reactToMouse();
-	void reactsTo(Key mKey, InputBehavior mBehavior);
-	void reactsToMouse(InputBehavior mBehavior);
-
-	virtual CInput* clone() { return new CInput(*this); }
 private:
-	std::unordered_map<Key, InputBehavior> m_behaviors;
-	InputBehavior m_mouseBehavior;
-	bool m_hasMouseBehavior;
+	std::unordered_map<EventType, EventBehavior> m_reactions;
 };
 
