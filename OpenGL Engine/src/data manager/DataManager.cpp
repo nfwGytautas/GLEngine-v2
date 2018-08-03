@@ -321,7 +321,7 @@ void DataManager::createFallbacks()
 	m_fallbackMeshVertexCount = OBJLoader::loadedIndices.size();
 }
 
-glm::vec3 DataManager::calculateNormal(int x, int y, std::vector<glm::vec3>& mHeightMap, float maxPixelColor, int mMaxHeight)
+glm::vec3 DataManager::calculateNormal(int x, int y, std::vector<glm::vec3>& mHeightMap, float maxPixelColor, float mMaxHeight)
 {
 	float heightL = getHeight(x - 1, y, mHeightMap, maxPixelColor, mMaxHeight);
 	float heightR = getHeight(x + 1, y, mHeightMap, maxPixelColor, mMaxHeight);
@@ -331,7 +331,7 @@ glm::vec3 DataManager::calculateNormal(int x, int y, std::vector<glm::vec3>& mHe
 	return result;
 }
 
-float DataManager::getHeight(int x, int y, std::vector<glm::vec3>& mHeightMap, float maxPixelColor, int mMaxHeight)
+float DataManager::getHeight(int x, int y, std::vector<glm::vec3>& mHeightMap, float maxPixelColor, float mMaxHeight)
 {
 	if (x < 0 || x >= ImageLoader::height || y < 0 || y >= ImageLoader::height)
 	{

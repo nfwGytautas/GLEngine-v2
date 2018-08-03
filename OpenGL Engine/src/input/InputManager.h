@@ -14,6 +14,7 @@ public:
 		static bool isKeyDown(Key key);
 	private:
 		static bool m_pressedKeys[349];
+		static std::vector<Key> m_keyUp;
 		friend class InputManager;
 	};
 	class Mouse
@@ -21,6 +22,7 @@ public:
 	public:
 		static bool isMouseKeyDown(MouseKey key);
 		static float getScrollAmountY();
+		static float getScrollAmountX();
 		static float getXOffset();
 		static float getYOffset();
 
@@ -32,6 +34,7 @@ public:
 		static double m_scrollOffsetX;
 		static double m_scrollOffsetY;
 		static double m_scrollChangeY;
+		static double m_scrollChangeX;
 
 		static double m_moveAmount;
 		static double m_lastX;
@@ -40,6 +43,10 @@ public:
 		static float m_yoffset;
 
 		static bool m_pressedKeys[12];
+		static std::vector<MouseKey> m_keyUp;
+
+		static bool m_moved;
+		static bool m_scrolled;
 
 		friend class InputManager;
 	};
@@ -56,7 +63,10 @@ private:
 
 	static GLFWwindow* m_context;
 
-	static std::vector<Key> getKey();
+	static std::vector<Key> getKeyDown();
+	static std::vector<Key>& getKeyUp();
+	static std::vector<MouseKey> getMKeyDown();
+	static std::vector<MouseKey>& getMKeyUp();
+
 	friend UpdateSystem;
 };
-

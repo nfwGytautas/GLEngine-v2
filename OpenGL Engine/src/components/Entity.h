@@ -19,7 +19,6 @@ public:
 	void init();
 	void update(float frameTime);
 	void draw();
-	void handleMessage(const char* message);
 
 	bool isAlive() const;
 	void destroy();
@@ -32,7 +31,7 @@ public:
 			return getComponent<T>();
 		}
 
-		T* c(new T(std::forward <TArgs>(mArgs)...));
+		T* c(new T(std::forward<TArgs>(mArgs)...));
 		c->entity = this;
 		m_componentArray[getComponentTypeID<T>()] = c;
 		m_componentBitset[getComponentTypeID<T>()] = true;

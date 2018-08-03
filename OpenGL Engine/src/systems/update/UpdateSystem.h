@@ -2,12 +2,14 @@
 
 class EntityManager;
 class PhysicsSystem;
+class EventSystem;
+
 class UpdateSystem
 {
 public:
 	void update();
 
-	UpdateSystem(EntityManager* mEntityManager, PhysicsSystem* mPhysicsSystem);
+	UpdateSystem(EntityManager* mEntityManager, PhysicsSystem* mPhysicsSystem, EventSystem* mEventSystem);
 private:
 	void updateEntitiesWithInput();
 	void updateEntitiesWithPhysics();
@@ -15,4 +17,5 @@ private:
 
 	EntityManager* m_entityManager;
 	PhysicsSystem* m_physicsSystem;
+	EventSystem* m_eventSystem;
 };

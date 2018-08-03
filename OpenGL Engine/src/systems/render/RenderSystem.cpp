@@ -152,7 +152,7 @@ void RenderSystem::loadRenderSettings(Entity* entity)
 
 	if (cRenderer.hasAtlas)
 	{
-		m_shader->setFloatUniform("cRenderer_numberOfRows", cRenderer.atlasRowCount);
+		m_shader->setFloatUniform("cRenderer_numberOfRows", (float) cRenderer.atlasRowCount);
 		int column = cRenderer.atlasIndex % cRenderer.atlasRowCount;
 		float xOffSet = (float)column / (float) cRenderer.atlasRowCount;
 		int row = cRenderer.atlasIndex / cRenderer.atlasRowCount;

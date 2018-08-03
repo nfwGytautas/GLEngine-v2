@@ -14,6 +14,11 @@ double InputManager::Mouse::m_lastY = 0;
 float InputManager::Mouse::m_xoffset = 0;
 float InputManager::Mouse::m_yoffset = 0;
 double InputManager::Mouse::m_scrollChangeY = 0;
+double InputManager::Mouse::m_scrollChangeX = 0;
+std::vector<Key> InputManager::Keyboard::m_keyUp;
+std::vector<MouseKey> InputManager::Mouse::m_keyUp;
+bool InputManager::Mouse::m_moved = false;
+bool InputManager::Mouse::m_scrolled = false;
 GLFWwindow* InputManager::m_context = nullptr;
 
 bool InputManager::Keyboard::isKeyDown(Key key)
@@ -40,6 +45,7 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 		else if (action == GLFW_RELEASE)
 		{
 			Keyboard::m_pressedKeys[key] = false;
+			Keyboard::m_keyUp.push_back((Key)key);
 		}
 	}
 	catch (...)
@@ -72,6 +78,7 @@ void InputManager::mouseClickCallback(GLFWwindow* window, int button, int action
 		else if (action == GLFW_RELEASE)
 		{
 			Mouse::m_pressedKeys[button] = false;
+			Mouse::m_keyUp.push_back((MouseKey)button);
 		}
 	}
 	catch (...)
@@ -95,7 +102,7 @@ void InputManager::mouseMoveCallback(GLFWwindow* window, double xpos, double ypo
 		return;
 	}
 }
-std::vector<Key> InputManager::getKey()
+std::vector<Key> InputManager::getKeyDown()
 {
 	std::vector<Key> result;
 	for (unsigned int i = 0; i < 349; i++)
@@ -107,8 +114,30 @@ std::vector<Key> InputManager::getKey()
 	}
 	return result;
 }
+std::vector<Key>& InputManager::getKeyUp()
+{
+	return Keyboard::m_keyUp;
+}
+std::vector<MouseKey> InputManager::getMKeyDown()
+{
+	std::vector<MouseKey> result;
+	for (unsigned int i = 0; i < 12; i++)
+	{
+		if (Mouse::m_pressedKeys[i] == true)
+		{
+			result.push_back((MouseKey)i);
+		}
+	}
+	return result;
+}
+std::vector<MouseKey>& InputManager::getMKeyUp()
+{
+	return Mouse::m_keyUp;
+}
 void InputManager::update()
 {
+	Keyboard::m_keyUp.clear();
+	Mouse::m_keyUp.clear();
 	GLCall(glfwPollEvents());
 }
 
@@ -122,6 +151,13 @@ float InputManager::Mouse::getScrollAmountY()
 	m_scrollChangeY = m_scrollOffsetY;
 	m_scrollOffsetY = 0;
 	return (float) m_scrollChangeY;
+}
+
+float InputManager::Mouse::getScrollAmountX()
+{
+	m_scrollChangeX = m_scrollOffsetX;
+	m_scrollOffsetX = 0;
+	return (float)m_scrollChangeX;
 }
 
 float InputManager::Mouse::getXOffset()
