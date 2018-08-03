@@ -14,7 +14,8 @@
   * Filesystem https://www.boost.org/doc/libs/1_67_0/libs/filesystem/doc/index.htm
 
 **CREDITS**
-* https://www.youtube.com/user/ThinMatrix game engine series was used for a lot of OpenGL techniques
-* A good starting place http://www.opengl-tutorial.org/
-* Really good C++ and OpenGL toturials https://www.youtube.com/user/TheChernoProject
+* https://www.youtube.com/user/ThinMatrix game engine series that teaches alot of modern OpenGL techniques
+* A good opengl starting place http://www.opengl-tutorial.org/
+* C++ and OpenGL toturials https://www.youtube.com/user/TheChernoProject
 * **CBA** or **C**omponent **B**ased **A**rchitecture toturial https://www.youtube.com/watch?v=QAmtgvwHInM&list=PLTEcWGdSiQenl4YRPvSqW7UPC6SiGNN7e&index=5
+*  Basic event system toturial http://bastian.rieck.ru/blog/posts/2015/event_system_cxx11/
