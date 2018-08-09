@@ -135,6 +135,12 @@
     <ClInclude Include="src\components\preDefinedComponents\CInput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\SGEDefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\gui\GUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\graphics\display\Display.cpp">
@@ -243,6 +249,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\components\preDefinedComponents\CInput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SGEDefs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\gui\GUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

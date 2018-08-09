@@ -30,10 +30,6 @@ void calculateIndices(std::vector<unsigned int>& mIndices, unsigned int mVertexC
 		}
 	}
 }
-void calculateVBO()
-{
-
-}
 
 std::pair<unsigned int, unsigned int> DataManager::loadMesh(std::string mFilePath)
 {
@@ -75,6 +71,15 @@ std::pair<unsigned int, unsigned int> DataManager::createMesh(std::vector<float>
 	unbindVAO();
 
 	std::pair<unsigned int, unsigned int> result = std::make_pair(vaoID, indices.size());
+	return result;
+}
+
+std::pair<unsigned int, unsigned int> DataManager::create2DQuad(std::vector<float>& vertices)
+{
+	unsigned int vaoID = createVAO();
+	storeDataInAttributes(AttributeLocation::Position, 2, vertices);
+	unbindVAO();
+	std::pair<unsigned int, unsigned int> result = std::make_pair(vaoID, vertices.size() / 2);
 	return result;
 }
 

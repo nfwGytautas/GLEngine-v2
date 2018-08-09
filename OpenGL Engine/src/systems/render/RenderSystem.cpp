@@ -11,13 +11,14 @@
 #include "..\..\data manager\BatchManager.h"
 #include "..\..\graphics\api\GraphicsAPI.h"
 #include "..\..\graphics\gTypes\gTypes.h"
+#include "..\..\graphics\gui\GUI.h"
+#include "..\..\maths\Maths.h"
 
 void RenderSystem::render()
 {
 	//Prepare for rendering
-	prepare();
-	m_shader->bind();
-
+	prepare();	
+	
 	//MAIN RENDER CODE
 	//================================================
 	if (Settings::camera == nullptr)
@@ -25,21 +26,32 @@ void RenderSystem::render()
 		std::cout << "[Engine][Renderer] No specified camera!" << std::endl;
 		return;
 	}
-	m_shader->setMatrix4fUniform("viewMatrix", Settings::camera->viewMatrix);
 
+	//========ENTITY========
+	//Load camera
+	(*m_shaders)[ShaderNames::Entity]->bind();
+	loadViewport(ShaderNames::Entity);
 	//Load all the lights
-	loadLights();
-
+	loadLights(ShaderNames::Entity);
 	//Render entities
 	renderEntities();
+	(*m_shaders)[ShaderNames::Entity]->unbind();
+	//======================
+
+	//=========GUI==========
+	(*m_shaders)[ShaderNames::GUI]->bind();
+	//Render GUI
+	renderGUI();
+	(*m_shaders)[ShaderNames::GUI]->unbind();
+	//======================
 
 	//================================================
 
-	m_shader->unbind();
+	
 }
 
-RenderSystem::RenderSystem(DynamicShader* mShader, EntityManager* mEntityManager, BatchManager* mBatchManager)
-	: m_shader(mShader), m_entityManager(mEntityManager), m_batchManager(mBatchManager)
+RenderSystem::RenderSystem(std::unordered_map<std::string, DynamicShader*>* mShaders, EntityManager* mEntityManager, BatchManager* mBatchManager, std::pair<unsigned int, unsigned int> mGUIQuad)
+	: m_shaders(mShaders), m_entityManager(mEntityManager), m_batchManager(mBatchManager), m_GUIQuad(mGUIQuad)
 {
 }
 
@@ -47,18 +59,22 @@ void RenderSystem::prepare()
 {
 	GLCall(glEnable(GL_DEPTH_TEST));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-	GLCall(glClearColor(Settings::skyColor.r, Settings::skyColor.g, Settings::skyColor.b, 1));
+	GLCall(glClearColor(Settings::skyColor.r, Settings::skyColor.g, Settings::skyColor.b, 0.0f));
 }
-void RenderSystem::loadLights()
+void RenderSystem::loadViewport(std::string mShader)
+{
+	(*m_shaders)[mShader]->setMatrix4fUniform("viewMatrix", Settings::camera->viewMatrix);
+}
+void RenderSystem::loadLights(std::string mShader)
 {
 	auto lights = m_entityManager->getEntitiesByGroup(EntityGroups::LightEmittingEntity);
 	for (Entity* light : lights)
 	{
-		m_shader->setVec3Uniform("lightColour", light->getComponent<CColor>().value);
-		m_shader->setVec3Uniform("lightPosition", light->getComponent<CPosition>().value);
+		 (*m_shaders)[mShader]->setVec3Uniform("lightColour", light->getComponent<CColor>().value);
+		 (*m_shaders)[mShader]->setVec3Uniform("lightPosition", light->getComponent<CPosition>().value);
 	}
 
-	m_shader->setVec3Uniform("skyColor", Settings::skyColor);
+	(*m_shaders)[mShader]->setVec3Uniform("skyColor", Settings::skyColor);
 }
 void RenderSystem::renderEntities()
 {
@@ -86,33 +102,33 @@ void RenderSystem::renderEntities()
 				if (m_currentMaterial == nullptr || *m_currentMaterial != material)
 				{
 					GraphicsAPI::bindTexture(material);		
-					m_shader->setFloatUniform("shineDamper", material.shineDamper);
-					m_shader->setFloatUniform("reflectivity", material.reflectivity);
+					(*m_shaders)[ShaderNames::Entity]->setFloatUniform("shineDamper", material.shineDamper);
+					(*m_shaders)[ShaderNames::Entity]->setFloatUniform("reflectivity", material.reflectivity);
 					m_currentMaterial = &material;
 				}
 			}
 			else if (entity->hasComponent<CMultiTexture>())
 			{
 				CMultiTexture pack = entity->getComponent<CMultiTexture>();
-				m_shader->setIntUniform("blendMap", 1);
+				(*m_shaders)[ShaderNames::Entity]->setIntUniform("blendMap", 1);
 				GraphicsAPI::bindTexture(pack.textureBlendMap, 1);
-				m_shader->setIntUniform("backgroundTexture", 2);
+				(*m_shaders)[ShaderNames::Entity]->setIntUniform("backgroundTexture", 2);
 				GraphicsAPI::bindTexture(pack.background, 2);
-				m_shader->setIntUniform("rTexture", 3);
+				(*m_shaders)[ShaderNames::Entity]->setIntUniform("rTexture", 3);
 				GraphicsAPI::bindTexture(pack.r, 3);
-				m_shader->setIntUniform("gTexture", 4);
+				(*m_shaders)[ShaderNames::Entity]->setIntUniform("gTexture", 4);
 				GraphicsAPI::bindTexture(pack.g, 4);
-				m_shader->setIntUniform("bTexture", 5);
+				(*m_shaders)[ShaderNames::Entity]->setIntUniform("bTexture", 5);
 				GraphicsAPI::bindTexture(pack.b, 5);
 			}
 			if (entity->hasComponent<CTransformation>())
 			{
-				m_shader->setMatrix4fUniform("transformationMatrix", entity->getComponent<CTransformation>().transformationMatrix);
+				(*m_shaders)[ShaderNames::Entity]->setMatrix4fUniform("transformationMatrix", entity->getComponent<CTransformation>().transformationMatrix);
 			}
-			loadDefaultRenderSettings();
+			loadDefaultRenderSettings(ShaderNames::Entity);
 			if (entity->hasComponent<CRenderer>())
 			{
-				loadRenderSettings(entity);
+				loadRenderSettings(ShaderNames::Entity, entity);
 			}
 			GLCall(glDrawElements(GL_TRIANGLES, entity->getComponent<CMesh>().vertexCount, GL_UNSIGNED_INT, (void*)0));
 		}
@@ -125,10 +141,35 @@ void RenderSystem::renderEntities()
 	}
 }
 
-void RenderSystem::loadRenderSettings(Entity* entity)
+void RenderSystem::renderGUI()
+{
+	auto guis = m_batchManager->allKnownGUIs();
+	if(guis.size() > 0)
+	{
+		GLCall(glDisable(GL_DEPTH_TEST));
+		GLCall(glEnable(GL_BLEND));
+		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+		GraphicsAPI::bindVAO(m_GUIQuad.first);
+		GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
+		for (GUI gui : guis)
+		{
+			GraphicsAPI::bindTexture(gui);
+			glm::mat4 transformation = Maths::createTransformationMatrix(gui.getPosition(), gui.getRotation(), gui.getScale());
+			(*m_shaders)[ShaderNames::GUI]->setMatrix4fUniform("transformationMatrix", transformation);
+			GLCall(glDrawArrays(GL_TRIANGLE_STRIP, 0, m_GUIQuad.second));
+		}
+		GLCall(glDisableVertexAttribArray(AttributeLocation::Position));
+		GLCall(glBindVertexArray(0));
+		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+		GLCall(glDisable(GL_BLEND));
+		GLCall(glEnable(GL_DEPTH_TEST));
+	}	
+}
+
+void RenderSystem::loadRenderSettings(std::string mShader, Entity* entity)
 {
 	CRenderer cRenderer = entity->getComponent<CRenderer>();
-	m_shader->setFloatUniform("cRenderer_tileCount", (float)cRenderer.tileCount);
+	(*m_shaders)[mShader]->setFloatUniform("cRenderer_tileCount", (float)cRenderer.tileCount);
 
 	if (cRenderer.transparent)
 	{
@@ -137,46 +178,46 @@ void RenderSystem::loadRenderSettings(Entity* entity)
 
 	if (cRenderer.fakeLighting)
 	{
-		m_shader->setBooleanUniform("cRenderer_fakeLighting", true);
+		(*m_shaders)[mShader]->setBooleanUniform("cRenderer_fakeLighting", true);
 	}
 
 	if (cRenderer.multiTexture)
 	{
-		m_shader->setBooleanUniform("cRenderer_multiTexture", true);
+		(*m_shaders)[mShader]->setBooleanUniform("cRenderer_multiTexture", true);
 	}
 
 	if (cRenderer.disableSpecular)
 	{
-		m_shader->setBooleanUniform("cRenderer_disableSpecular", true);
+		(*m_shaders)[mShader]->setBooleanUniform("cRenderer_disableSpecular", true);
 	}
 
 	if (cRenderer.hasAtlas)
 	{
-		m_shader->setFloatUniform("cRenderer_numberOfRows", (float) cRenderer.atlasRowCount);
+		(*m_shaders)[mShader]->setFloatUniform("cRenderer_numberOfRows", (float) cRenderer.atlasRowCount);
 		int column = cRenderer.atlasIndex % cRenderer.atlasRowCount;
 		float xOffSet = (float)column / (float) cRenderer.atlasRowCount;
 		int row = cRenderer.atlasIndex / cRenderer.atlasRowCount;
 		float yOffSet = (float)row / (float)cRenderer.atlasRowCount;
 		glm::vec2 textureOffset(xOffSet, yOffSet);
-		m_shader->setVec2Uniform("uv_offset", textureOffset);
+		(*m_shaders)[mShader]->setVec2Uniform("uv_offset", textureOffset);
 	}
 
 	m_usingDefaults = false;
 }
-void RenderSystem::loadDefaultRenderSettings()
+void RenderSystem::loadDefaultRenderSettings(std::string mShader)
 {
 	if (!m_usingDefaults)
 	{
-		m_shader->setFloatUniform("cRenderer_tileCount", 1);
-		m_shader->setFloatUniform("cRenderer_numberOfRows", 1);
-		m_shader->setVec2Uniform("uv_offset", glm::vec2(0,0));
+		(*m_shaders)[mShader]->setFloatUniform("cRenderer_tileCount", 1);
+		(*m_shaders)[mShader]->setFloatUniform("cRenderer_numberOfRows", 1);
+		(*m_shaders)[mShader]->setVec2Uniform("uv_offset", glm::vec2(0,0));
 
 		GLCall(glEnable(GL_CULL_FACE));
 		GLCall(glCullFace(GL_BACK));
 
-		m_shader->setBooleanUniform("cRenderer_fakeLighting", false);
-		m_shader->setBooleanUniform("cRenderer_multiTexture", false);
-		m_shader->setBooleanUniform("cRenderer_disableSpecular", false);
+		(*m_shaders)[mShader]->setBooleanUniform("cRenderer_fakeLighting", false);
+		(*m_shaders)[mShader]->setBooleanUniform("cRenderer_multiTexture", false);
+		(*m_shaders)[mShader]->setBooleanUniform("cRenderer_disableSpecular", false);
 	}
 
 	m_usingDefaults = true;

@@ -13,7 +13,7 @@ void CTransformation::init()
 
 void CTransformation::update(float frameTime)
 {
-	transformationMatrix = Maths::CreateTransformationMatrix(cPosition->value, glm::vec3(rotationX, rotationY, rotationZ), scale);
+	transformationMatrix = Maths::createTransformationMatrix(cPosition->value, glm::vec3(rotationX, rotationY, rotationZ), scale);
 }
 
 CTransformation::CTransformation(float mXRotation, float mYRotation, float mZRotation, float mScale)

@@ -21,7 +21,7 @@
 
 bool Engine::m_initialized = false;
 DataManager* Engine::m_loader = nullptr;
-DynamicShader* Engine::m_shader = nullptr;
+std::unordered_map<std::string, DynamicShader*> Engine::m_shaders;
 EntityManager* Engine::m_entityManager = nullptr;
 BatchManager* Engine::m_batchManager = nullptr;
 RenderSystem* Engine::m_renderSystem = nullptr;
@@ -41,10 +41,12 @@ void Engine::initialize(unsigned int width, unsigned int height, const char* tit
 	Display::createDisplay(width, height, title, fullscreen);
 	InputManager::Mouse::centerCursorPosition();
 	m_loader = new DataManager();
-	m_shader = new DynamicShader("E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/vertex.shader", "E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/fragment.shader");
+	m_shaders[ShaderNames::Entity] = new DynamicShader("E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/vertex.shader", "E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/fragment.shader");
+	m_shaders[ShaderNames::GUI] = new DynamicShader("E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/guiV.shader", "E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/guiF.shader");
 	m_batchManager = new BatchManager();
 	m_entityManager = new EntityManager(m_batchManager);	
-	m_renderSystem = new RenderSystem(m_shader, m_entityManager, m_batchManager);
+	m_renderSystem = new RenderSystem(&m_shaders, m_entityManager, m_batchManager, 
+		m_loader->create2DQuad(Settings::guiQuad));
 	m_physicsSystem = new PhysicsSystem(m_entityManager);
 	m_eventSystem = new EventSystem();
 	m_updateSystem = new UpdateSystem(m_entityManager, m_physicsSystem, m_eventSystem);
@@ -52,9 +54,9 @@ void Engine::initialize(unsigned int width, unsigned int height, const char* tit
 	GLCall(glEnable(GL_CULL_FACE));
 	GLCall(glCullFace(GL_BACK));
 
-	m_shader->bind();
-	m_shader->setMatrix4fUniform("projectionMatrix", createProjectionMatrix());
-	m_shader->unbind();
+	m_shaders[ShaderNames::Entity]->bind();
+	m_shaders[ShaderNames::Entity]->setMatrix4fUniform("projectionMatrix", createProjectionMatrix());
+	m_shaders[ShaderNames::Entity]->unbind();
 
 	m_initialized = true;
 	std::cout << "[Engine] Engine initialized!" << std::endl;
@@ -78,7 +80,8 @@ void Engine::terminate()
 	m_loader->cleanUp();
 
 	delete m_loader;
-	delete m_shader;
+	delete m_shaders[ShaderNames::Entity];
+	delete m_shaders[ShaderNames::GUI];
 	delete m_entityManager;
 	delete m_batchManager;
 	delete m_renderSystem;
@@ -193,6 +196,12 @@ std::pair<unsigned int, unsigned int> Engine::Loader::createHeightMappedMesh(std
 {
 	auto result = m_loader->createHeightMappedMesh(mHeightMapFilePath, mMaxHeight, size, mCalculatedHeights);
 	m_batchManager->acknowledgeMesh(result.first);
+	return result;
+}
+GUI Engine::Loader::loadGUI(std::string filePath, glm::vec2 mPosition, float mRotation, glm::vec2 mScale)
+{
+	GUI result(loadTexture(filePath), mPosition, mRotation, mScale);
+	m_batchManager->acknowledgeGUI(result);
 	return result;
 }
 unsigned int Engine::Loader::loadMaterial(std::string filePath)

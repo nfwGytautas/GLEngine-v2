@@ -19,7 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\graphics\gui\GUI.h" />
     <ClInclude Include="src\components\preDefinedComponents\CInput.h" />
+    <ClInclude Include="src\SGEDefs.h" />
     <ClInclude Include="src\systems\event\EventSystem.h" />
     <ClInclude Include="src\systems\event\PreDefinedEvents.h" />
     <ClInclude Include="src\systems\event\Event.h" />
@@ -60,7 +62,9 @@
     <ClInclude Include="src\systems\update\UpdateSystem.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\graphics\gui\GUI.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CInput.cpp" />
+    <ClCompile Include="src\SGEDefs.cpp" />
     <ClCompile Include="src\systems\event\EventSystem.cpp" />
     <ClCompile Include="src\systems\event\PreDefinedEvents.cpp" />
     <ClCompile Include="src\systems\event\Event.cpp" />

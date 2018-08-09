@@ -1,6 +1,9 @@
 #pragma once
 #include <string>
+#include <unordered_map>
+#include <memory>
 #include <glm\glm.hpp>
+#include "SGEDefs.h"
 #include "Settings.h"
 #include "maths\Maths.h"
 #include "algorithm\Algorithm.h"
@@ -10,6 +13,7 @@
 #include "components\EntityGroups.h"
 #include "components\PreDefinedComponents.h"
 #include "input\InputKeys.h"
+#include "graphics\gui\GUI.h"
 
 class StaticShader;
 class DynamicShader;
@@ -30,7 +34,6 @@ public:
 		static bool shouldClose();
 		static void vSync(bool option);
 	};
-
 	class Input
 	{
 	public:
@@ -49,7 +52,6 @@ public:
 			static float getMovedX();
 		};
 	};
-
 	class EntityFactory
 	{
 	public:
@@ -57,17 +59,16 @@ public:
 		static Entity& createEntity(EntityBlueprint& mBlueprint);
 		static EntityBlueprint& newBlueprint();
 	};
-
 	class Loader
 	{
 	public:
 		static std::pair<unsigned int, unsigned int> loadMesh(std::string filePath);
 		static std::pair<unsigned int, unsigned int> createFlatMesh(unsigned int vertexCount, unsigned int size);
 		static std::pair<unsigned int, unsigned int> createHeightMappedMesh(std::string mHeightMapFilePath, float mMaxHeight, unsigned int size, continuous2DArray<float>& mCalculatedHeights);
+		static GUI loadGUI(std::string filePath, glm::vec2 mPosition, float mRotation, glm::vec2 mScale);
 		static unsigned int loadMaterial(std::string filePath);
 		static unsigned int loadTexture(std::string filePath);
 	};
-
 	class Systems
 	{
 	public:
@@ -99,9 +100,10 @@ public:
 private:
 	static glm::mat4 createProjectionMatrix();
 private:
+
 	static bool m_initialized;
 	static DataManager* m_loader;
-	static DynamicShader* m_shader;
+	static std::unordered_map<std::string, DynamicShader*> m_shaders;
 	static EntityManager* m_entityManager;
 	static BatchManager* m_batchManager;
 	static RenderSystem* m_renderSystem;
