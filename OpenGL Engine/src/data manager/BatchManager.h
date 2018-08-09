@@ -3,6 +3,8 @@
 #include <unordered_map>
 #include <vector>
 #include <memory>
+
+class GUI;
 class BatchManager
 {
 public:
@@ -10,9 +12,10 @@ public:
 	BatchManager();
 	~BatchManager();
 
-	//Meshes & Materials
+	//Meshes & Materials & GUIs
 	void acknowledgeMaterial(unsigned int id);
 	void acknowledgeMesh(unsigned int id);
+	void acknowledgeGUI(GUI& gui);
 
 	void addEntity(Entity* entity);
 	void updateEntityBatch(const std::vector<std::unique_ptr<Entity>>& pEntities);
@@ -20,6 +23,7 @@ public:
 	std::vector<Entity*>& getEntityBatch(unsigned int materialID);
 	std::vector<unsigned int>& allKnownMaterials();
 	std::vector<unsigned int>& allKnownMeshes();
+	std::vector<GUI>& allKnownGUIs();
 
 
 	void cleanUp();
@@ -30,4 +34,5 @@ private:
 
 	std::vector<unsigned int> m_knownMaterials;
 	std::vector<unsigned int> m_knownMeshes;
+	std::vector<GUI> m_knownGUIs;
 };

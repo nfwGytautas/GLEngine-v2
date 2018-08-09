@@ -1,6 +1,7 @@
 #include "BatchManager.h"
 #include <algorithm>
 #include "..\components\Entity.h"
+#include "..\graphics\gui\GUI.h"
 
 BatchManager::BatchManager()
 {
@@ -24,6 +25,14 @@ void BatchManager::acknowledgeMesh(unsigned int id)
 	if (std::find(m_knownMeshes.begin(), m_knownMeshes.end(), id) == m_knownMeshes.end())
 	{
 		m_knownMeshes.push_back(id);
+	}
+}
+
+void BatchManager::acknowledgeGUI(GUI& gui)
+{
+	if (std::find(m_knownGUIs.begin(), m_knownGUIs.end(), gui) == m_knownGUIs.end())
+	{
+		m_knownGUIs.push_back(gui);
 	}
 }
 
@@ -68,6 +77,11 @@ std::vector<unsigned int>& BatchManager::allKnownMaterials()
 std::vector<unsigned int>& BatchManager::allKnownMeshes()
 {
 	return m_knownMeshes;
+}
+
+std::vector<GUI>& BatchManager::allKnownGUIs()
+{
+	return m_knownGUIs;
 }
 
 void BatchManager::cleanUp()

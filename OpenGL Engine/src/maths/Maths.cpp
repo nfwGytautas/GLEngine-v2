@@ -1,11 +1,20 @@
 #include "Maths.h"
-
+#include <iostream>
 #include <glm\gtx\transform.hpp>
 #include <glm\gtc\matrix_transform.hpp>
+#include "..\Settings.h"
 
-#include <iostream>
 
-glm::mat4 Maths::CreateTransformationMatrix(glm::vec3 translation, glm::vec3 rotation, float scale)
+glm::mat4 Maths::createTransformationMatrix(glm::vec2 translation, float rotation, glm::vec2 scale)
+{
+	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(translation, 0));
+	glm::mat4 scaleMatrix = glm::scale(glm::vec3(scale.x, scale.y  * (Settings::width / Settings::height), 1.0f));
+	glm::mat4 rotationMatrix = glm::rotate(glm::radians(rotation), glm::vec3(0, 0, 1));
+	glm::mat4 returnMatrix = translationMatrix * rotationMatrix * scaleMatrix;
+	return returnMatrix;
+}
+
+glm::mat4 Maths::createTransformationMatrix(glm::vec3 translation, glm::vec3 rotation, float scale)
 {
 	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), translation);
 	glm::mat4 scaleMatrix = glm::scale(glm::vec3(scale, scale, scale));

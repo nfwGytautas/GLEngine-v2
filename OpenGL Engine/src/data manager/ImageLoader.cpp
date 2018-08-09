@@ -19,7 +19,7 @@ bool ImageLoader::loadImage(std::string mFilePath, std::string mFormat)
 			stbi_set_flip_vertically_on_load(1);
 		}
 
-		imageBuffer = stbi_load(mFilePath.c_str(), &width, &height, &BPP, STBI_rgb_alpha);
+		imageBuffer = stbi_load(mFilePath.c_str(), &width, &height, &BPP, 4);
 		stbi_failure_reason();
 		return true;
 	}

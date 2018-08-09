@@ -9,12 +9,13 @@
 
 class DataManager
 {
-public:
+public:	
 	DataManager();
 	~DataManager();
 
 	std::pair<unsigned int, unsigned int> loadMesh(std::string mFilePath);
 	std::pair<unsigned int, unsigned int> createMesh(std::vector<float>& vertices, std::vector<float>& normals, std::vector<float>& textureCoords, std::vector<unsigned int>& indices);
+	std::pair<unsigned int, unsigned int> create2DQuad(std::vector<float>& vertices);
 	std::pair<unsigned int, unsigned int> createFlatMesh(unsigned int vertexCount, unsigned int size);
 	std::pair<unsigned int, unsigned int> createHeightMappedMesh(std::string mHeightMapFilePath, float mMaxHeight, unsigned int size, continuous2DArray<float>& mCalculatedHeights);
 
@@ -24,12 +25,12 @@ public:
 
 	void cleanUp();
 private:
+	void createFallbacks();
 	unsigned int createVAO();
 	void storeDataInAttributes(unsigned int location, unsigned int dataSize, std::vector<float> positions);
 	void bindIndiceBuffer(std::vector<unsigned int> indices);
 	void unbindVAO();
 	void textureSetup();
-	void createFallbacks();
 	glm::vec3 calculateNormal(int x, int y, std::vector<glm::vec3>& mHeightMap, float maxPixelColor, float mMaxHeight);
 	float getHeight(int x, int y, std::vector<glm::vec3>& mHeightMap, float maxPixelColor, float mMaxHeight);
 private:

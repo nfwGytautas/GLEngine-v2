@@ -1,10 +1,9 @@
 #include "Engine.h"
-
 #include <iostream>
 
 int main()
 {
-	Engine::initialize(1280, 720, "TestWindow");
+	Engine::initialize(Settings::width, Settings::height, Settings::title, Settings::fullscreen);
 
 	EntityBlueprint& stallBlueprint(Engine::EntityFactory::newBlueprint());
 	stallBlueprint.addComponent<CPosition>(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -123,18 +122,18 @@ int main()
 
 	EventBehavior mouseKeyDownBehavior = [&](Entity& mEntity, const Event& e)
 	{
-		const MouseKeyDownEvent& kDEvent = static_cast<const MouseKeyDownEvent&>(e);		
+		const MouseKeyDownEvent& kDEvent = static_cast<const MouseKeyDownEvent&>(e);
 
 		right = false;
 		left = false;
 
 		switch (kDEvent.pressedKey)
 		{
-		case MouseKey::BUTTON_RIGHT:			
+		case MouseKey::BUTTON_RIGHT:
 			right = true;
 			break;
 
-		case MouseKey::BUTTON_LEFT:		
+		case MouseKey::BUTTON_LEFT:
 			left = true;
 			break;
 		}
@@ -191,6 +190,7 @@ int main()
 	cameraInput.subscribe(EventType::MouseScroll, mouseScrollBehavior);
 	Settings::camera = &testCamera.getComponent<CCamera>();
 
+	GUI testGui = Engine::Loader::loadGUI("E:/Test files/nfw/testGUI3.png", glm::vec2(0.5f, 0.5f), 0, glm::vec2(0.25f, 0.25f));
 
 	Engine::Window::vSync(true);
 	while (!Engine::Window::shouldClose())

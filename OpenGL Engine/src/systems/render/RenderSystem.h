@@ -1,4 +1,7 @@
 #pragma once
+#include <string>
+#include <unordered_map>
+#include <utility>
 
 struct CMaterial;
 class DynamicShader;
@@ -11,18 +14,21 @@ class RenderSystem
 public:
 	void render();
 
-	RenderSystem(DynamicShader* mShader, EntityManager* mEntityManager, BatchManager* mBatchManager);
+	RenderSystem(std::unordered_map<std::string, DynamicShader*>* mShaders, EntityManager* mEntityManager, BatchManager* mBatchManager, std::pair<unsigned int, unsigned int> mGUIQuad);
 private:
 	void prepare();
-	void loadLights();
+	void loadViewport(std::string mShader);
+	void loadLights(std::string mShader);
 	void renderEntities();
-	void loadRenderSettings(Entity* entity);
-	void loadDefaultRenderSettings();
+	void renderGUI();
+	void loadRenderSettings(std::string mShader, Entity* entity);
+	void loadDefaultRenderSettings(std::string mShader);
 	
+	std::pair<unsigned int, unsigned int> m_GUIQuad;
 	CMaterial* m_currentMaterial;
 	bool m_usingDefaults;
 
-	DynamicShader* m_shader;
+	std::unordered_map<std::string, DynamicShader*>* m_shaders;
 	EntityManager* m_entityManager;
 	BatchManager* m_batchManager;
 };

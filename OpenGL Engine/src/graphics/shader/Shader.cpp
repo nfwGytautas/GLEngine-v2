@@ -42,6 +42,7 @@ int Shader::getUniformLocation(std::string uniformName)
 
 void Shader::loadShaders(std::string vertexPath, std::string fragmentPath)
 {
+	std::cout << "[Engine][Shader] Loading: \n" << vertexPath << " \n" << fragmentPath << std::endl;
 	std::string fragmentSource;
 	std::string vertexSource;
 
