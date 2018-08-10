@@ -10,3 +10,7 @@ float Settings::gravity = -50;
 CCamera* Settings::camera = nullptr;
 float Settings::cameraSensetivity = 0.05f;
 std::vector<float> Settings::guiQuad = std::vector<float>{ -1, 1, -1, -1, 1, 1, 1, -1 };
+
+float Settings::FoV = 70;
+float Settings::nearRenderPlane = 0.1f;
+float Settings::farRenderPlane = 1000.0f;

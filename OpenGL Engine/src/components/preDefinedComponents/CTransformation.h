@@ -2,20 +2,18 @@
 #include "..\Component.h"
 //Dependencies
 #include <glm\glm.hpp>
-#include "CPosition.h"
 
 struct CTransformation : Component
 {
 	void init() override;
-	void update(float frameTime) override;
 
 	glm::mat4 transformationMatrix;
-	CPosition* cPosition;
-	//Could be seperate componenets
-	float rotationX, rotationY, rotationZ;
-	float scale;
+	glm::vec3 position;
+	glm::vec3 rotation;
+	glm::vec3 scale;
 
-	CTransformation(float mXRotation, float mYRotation, float mZRotation, float mScale);
+	CTransformation();
+	CTransformation(glm::vec3 mPosition, glm::vec3 mRotation, glm::vec3 mScale);
 
 	virtual CTransformation* clone() { return new CTransformation(*this); }
 };

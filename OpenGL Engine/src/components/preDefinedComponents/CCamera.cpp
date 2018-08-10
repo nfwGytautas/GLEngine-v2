@@ -5,11 +5,11 @@
 
 void CCamera::init()
 {
-	if (!entity->hasComponent<CPosition>())
+	if (!entity->hasComponent<CTransformation>())
 	{
-		entity->addComponent<CPosition>(glm::vec3(0, 0, 0));
+		entity->addComponent<CTransformation>();
 	}
-	cPosition = &entity->getComponent<CPosition>();
+	cTransformation = &entity->getComponent<CTransformation>();
 	entity->addGroup(EntityGroups::Camera);
 }
 

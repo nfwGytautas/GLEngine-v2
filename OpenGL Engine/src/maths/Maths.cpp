@@ -14,10 +14,10 @@ glm::mat4 Maths::createTransformationMatrix(glm::vec2 translation, float rotatio
 	return returnMatrix;
 }
 
-glm::mat4 Maths::createTransformationMatrix(glm::vec3 translation, glm::vec3 rotation, float scale)
+glm::mat4 Maths::createTransformationMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale)
 {
 	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), translation);
-	glm::mat4 scaleMatrix = glm::scale(glm::vec3(scale, scale, scale));
+	glm::mat4 scaleMatrix = glm::scale(glm::vec3(scale.x, scale.y, scale.z));
 	glm::mat4 xRotation = glm::rotate(glm::radians(rotation.x), glm::vec3(1, 0, 0));
 	glm::mat4 yRotation = glm::rotate(glm::radians(rotation.y), glm::vec3(0, 1, 0));
 	glm::mat4 zRotation = glm::rotate(glm::radians(rotation.z), glm::vec3(0, 0, 1));

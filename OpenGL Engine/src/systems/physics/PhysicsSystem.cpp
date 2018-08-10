@@ -2,7 +2,8 @@
 #include <iostream>
 #include "..\..\Settings.h"
 #include "..\..\components\Entity.h"
-#include "..\..\components\PreDefinedComponents.h"
+#include "..\..\components\preDefinedComponents\CPhysics.h"
+#include "..\..\components\preDefinedComponents\CTransformation.h"
 #include "..\..\components\EntityManager.h"
 #include "..\..\maths\Maths.h"
 
@@ -17,19 +18,19 @@ void PhysicsSystem::update(float delta)
 	for (Entity* e : physicsEntities)
 	{
 		CPhysics& currentEntityPhysics = e->getComponent<CPhysics>();
-		CPosition& currentEntityPosition = e->getComponent<CPosition>();
+		CTransformation& currentEntityTransformation = e->getComponent<CTransformation>();
 
-		currentEntityPosition.value += currentEntityPhysics.velocity * delta;
+		currentEntityTransformation.position += currentEntityPhysics.velocity * delta;
 
 		if (currentEntityPhysics.affectedByGravity)
 		{
 			currentEntityPhysics.velocity.y += Settings::gravity * delta;
 
-			float heightAtEntity = getHeightAtPoint(currentEntityPosition.value.x, currentEntityPosition.value.z);
-			if (currentEntityPosition.value.y < heightAtEntity)
+			float heightAtEntity = getHeightAtPoint(currentEntityTransformation.position.x, currentEntityTransformation.position.z);
+			if (currentEntityTransformation.position.y < heightAtEntity)
 			{
 				currentEntityPhysics.velocity.y = 0;
-				currentEntityPosition.value.y = heightAtEntity;
+				currentEntityTransformation.position.y = heightAtEntity;
 			}
 		}
 	}
@@ -47,9 +48,9 @@ float PhysicsSystem::getHeightAtPoint(float X, float Z)
 	auto groundEntities = m_entityManager->getEntitiesByGroup(EntityGroups::IsGround);
 	for(auto groundEntity : groundEntities)
 	{
-		CPosition& pos = groundEntity->getComponent<CPosition>();
-		float groundX = X - (pos.value.x * m_groundSize);
-		float groundZ = Z - (pos.value.z * m_groundSize);
+		CTransformation& transformation = groundEntity->getComponent<CTransformation>();
+		float groundX = X - (transformation.position.x * m_groundSize);
+		float groundZ = Z - (transformation.position.z * m_groundSize);
 		unsigned int length = m_heightMap.rowCount();
 		float gridSquareSize = m_groundSize / ((float)length - 1);
 		int gridX = (int)std::floor(groundX / gridSquareSize);

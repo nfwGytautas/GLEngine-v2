@@ -29,10 +29,6 @@ UpdateSystem* Engine::m_updateSystem = nullptr;
 PhysicsSystem* Engine::m_physicsSystem = nullptr;
 EventSystem* Engine::m_eventSystem = nullptr;
 
-float Engine::m_EngineFoV = 70;
-float Engine::m_NearRenderPlane = 0.1f;
-float Engine::m_FarRenderPlane = 1000.0f;
-
 //============================================================================================================================
 //ENGINE
 //============================================================================================================================
@@ -99,24 +95,20 @@ glm::mat4 Engine::createProjectionMatrix()
 	glm::mat4 returnMatrix = glm::mat4(1);
 
 	float aspectRatio = (float)Display::getWidth() / (float)Display::getHeight();
-	float y_scale = (float)((1.0f / glm::tan(glm::radians(m_EngineFoV / 2.0f))) * aspectRatio);
+	float y_scale = (float)((1.0f / glm::tan(glm::radians(Settings::FoV / 2.0f))) * aspectRatio);
 	float x_scale = y_scale / aspectRatio;
-	float frustum_length = m_FarRenderPlane - m_NearRenderPlane;
+	float frustum_length = Settings::farRenderPlane - Settings::nearRenderPlane;
 
 	returnMatrix[0] = glm::vec4(x_scale, 0, 0, 0);
 	returnMatrix[1] = glm::vec4(0, y_scale, 0, 0);
-	returnMatrix[2] = glm::vec4(0, 0, -((m_FarRenderPlane + m_NearRenderPlane) / frustum_length), -1);
-	returnMatrix[3] = glm::vec4(0, 0, -((2 * m_FarRenderPlane * m_NearRenderPlane) / frustum_length), 0);
+	returnMatrix[2] = glm::vec4(0, 0, -((Settings::farRenderPlane + Settings::nearRenderPlane) / frustum_length), -1);
+	returnMatrix[3] = glm::vec4(0, 0, -((2 * Settings::farRenderPlane * Settings::nearRenderPlane) / frustum_length), 0);
 
 	return returnMatrix;
 }
 float Engine::deltaTime()
 {
 	return Display::getDelta();
-}
-void Engine::setCamera(Entity& mEntity)
-{
-
 }
 void Engine::markAsGround(Entity & mEntity, continuous2DArray<float>& mHeightMap, float mGroundSize)
 {

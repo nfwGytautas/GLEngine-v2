@@ -6,24 +6,25 @@ int main()
 	Engine::initialize(Settings::width, Settings::height, Settings::title, Settings::fullscreen);
 
 	EntityBlueprint& stallBlueprint(Engine::EntityFactory::newBlueprint());
-	stallBlueprint.addComponent<CPosition>(glm::vec3(0.0f, 0.0f, 0.0f));
-	stallBlueprint.addComponent<CTransformation>(0, 0, 0, 1);
+	stallBlueprint.addComponent<CTransformation>();
 	stallBlueprint.addComponent<CMesh>(Engine::Loader::loadMesh("E:/Test files/nfw/stall.obj"));
 	stallBlueprint.addComponent<CMaterial>(Engine::Loader::loadMaterial("E:/Test files/nfw/stallTexture.png"), 10, 1);
 
 	Entity& stallEntity1(Engine::EntityFactory::createEntity(stallBlueprint));
-	stallEntity1.getComponent<CPosition>().value = glm::vec3(0.0f, 0.0f, -20.0f);
-	stallEntity1.getComponent<CTransformation>().rotationX = 90.0f;
+	CTransformation& stallEntityTransform1 = stallEntity1.getComponent<CTransformation>();
+	stallEntityTransform1.position = glm::vec3(0.0f, 0.0f, -20.0f);
+	stallEntityTransform1.rotation.x = 90.0f;
 
 	Entity& stallEntity2(Engine::EntityFactory::createEntity(stallBlueprint));
-	stallEntity2.getComponent<CPosition>().value = glm::vec3(10.0f, 0.0f, -20.0f);
+	CTransformation& stallEntityTransform2 = stallEntity2.getComponent<CTransformation>();
+	stallEntityTransform2.position = glm::vec3(10.0f, 0.0f, -20.0f);
 
 	Entity& stallEntity3(Engine::EntityFactory::createEntity(stallBlueprint));
-	stallEntity3.getComponent<CPosition>().value = glm::vec3(20.0f, 10.0f, -30.0f);
+	CTransformation& stallEntityTransform3 = stallEntity3.getComponent<CTransformation>();
+	stallEntityTransform3.position = glm::vec3(20.0f, 10.0f, -30.0f);
 
 	Entity& testTerrain1(Engine::EntityFactory::createEntity());
-	testTerrain1.addComponent<CPosition>(glm::vec3(0, 0, 0));
-	testTerrain1.addComponent<CTransformation>(0, 0, 0, 1);
+	testTerrain1.addComponent<CTransformation>();
 	continuous2DArray<float> calculatedHeights;
 	testTerrain1.addComponent<CMesh>(Engine::Loader::createHeightMappedMesh("E:/Test files/nfw/heightMap.png", 20, 800, calculatedHeights));
 	CMultiTexture& pack = testTerrain1.addComponent<CMultiTexture>();
@@ -38,16 +39,14 @@ int main()
 	Engine::markAsGround(testTerrain1, calculatedHeights, 800);
 
 	Entity& testTransparent1(Engine::EntityFactory::createEntity());
-	testTransparent1.addComponent<CPosition>(glm::vec3(20, 0, 10));
-	testTransparent1.addComponent<CTransformation>(0, 0, 0, 1);
+	testTransparent1.addComponent<CTransformation>(glm::vec3(20, 0, 10), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
 	testTransparent1.addComponent<CMesh>(Engine::Loader::loadMesh("E:/Test files/nfw/grassModel.obj"));
 	testTransparent1.addComponent<CMaterial>(Engine::Loader::loadMaterial("E:/Test files/nfw/grassTexture.png"), 10, 0);
 	testTransparent1.addComponent<CRenderer>().transparent = true;
 	testTransparent1.getComponent<CRenderer>().fakeLighting = true;
 
 	EntityBlueprint& fernBlueprint(Engine::EntityFactory::newBlueprint());
-	fernBlueprint.addComponent<CPosition>(glm::vec3(0.0f, 0.0f, 0.0f));
-	fernBlueprint.addComponent<CTransformation>(0, 0, 0, 1);
+	fernBlueprint.addComponent<CTransformation>();
 	fernBlueprint.addComponent<CMesh>(Engine::Loader::loadMesh("E:/Test files/nfw/fern.obj"));
 	fernBlueprint.addComponent<CMaterial>(Engine::Loader::loadMaterial("E:/Test files/nfw/fernAtlas.png"), 10, 0);
 	CRenderer& renderComponent = fernBlueprint.addComponent<CRenderer>();
@@ -57,25 +56,44 @@ int main()
 	renderComponent.atlasRowCount = 2;
 
 	Entity& fern1(Engine::EntityFactory::createEntity(fernBlueprint));
-	fern1.getComponent<CPosition>().value = glm::vec3(20, 0, 50);
+	fern1.getComponent<CTransformation>().position = glm::vec3(20, 0, 50);
 	fern1.getComponent<CRenderer>().atlasIndex = 0;
 	Entity& fern2(Engine::EntityFactory::createEntity(fernBlueprint));
-	fern2.getComponent<CPosition>().value = glm::vec3(10, 0, 50);
+	fern2.getComponent<CTransformation>().position = glm::vec3(10, 0, 50);
 	fern2.getComponent<CRenderer>().atlasIndex = 1;
 	Entity& fern3(Engine::EntityFactory::createEntity(fernBlueprint));
-	fern3.getComponent<CPosition>().value = glm::vec3(0, 0, 50);
+	fern3.getComponent<CTransformation>().position = glm::vec3(0, 0, 50);
 	fern3.getComponent<CRenderer>().atlasIndex = 2;
 	Entity& fern4(Engine::EntityFactory::createEntity(fernBlueprint));
-	fern4.getComponent<CPosition>().value = glm::vec3(-10, 0, 50);
+	fern4.getComponent<CTransformation>().position = glm::vec3(-10, 0, 50);
 	fern4.getComponent<CRenderer>().atlasIndex = 3;
 
-	Entity& testLight(Engine::EntityFactory::createEntity());
-	testLight.addComponent<CLightEmiter>();
-	testLight.getComponent<CPosition>().value = glm::vec3(20000, 40000, 20000);
+	Entity& sun(Engine::EntityFactory::createEntity());
+	sun.addComponent<CLightEmiter>();
+	sun.getComponent<CTransformation>().position = glm::vec3(0, 1000, -7000);
+	sun.getComponent<CColor>().value = glm::vec3(0.4f, 0.4f, 0.4f);
+
+	EntityBlueprint& lightBlueprint(Engine::EntityFactory::newBlueprint());
+	CLightEmiter& cEmiterBP = lightBlueprint.addComponent<CLightEmiter>();
+	cEmiterBP.attenuation = glm::vec3(1.0f, 0.01f, 0.002f);
+	cEmiterBP.lightOffset = glm::vec3(0.0f, 10.0f, 0.0f);
+	lightBlueprint.addComponent<CTransformation>().position = glm::vec3(20000, 40000, 20000);
+	lightBlueprint.addComponent<CColor>().value = glm::vec3(1, 1, 1);
+	lightBlueprint.addComponent<CMesh>(Engine::Loader::loadMesh("E:/Test files/nfw/lamp.obj"));
+	lightBlueprint.addComponent<CMaterial>(Engine::Loader::loadMaterial("E:/Test files/nfw/lamp.png"), 10, 0);
+
+	Entity& testLight2(Engine::EntityFactory::createEntity(lightBlueprint));
+	testLight2.getComponent<CTransformation>().position = glm::vec3(185, Engine::Systems::Physics::heightAtPoint(185, 293), 293);
+	testLight2.getComponent<CColor>().value = glm::vec3(2, 0, 0);
+	Entity& testLight3(Engine::EntityFactory::createEntity(lightBlueprint));
+	testLight3.getComponent<CTransformation>().position = glm::vec3(370, Engine::Systems::Physics::heightAtPoint(370, 300), 300);
+	testLight3.getComponent<CColor>().value = glm::vec3(0, 2, 2);
+	Entity& testLight4(Engine::EntityFactory::createEntity(lightBlueprint));
+	testLight4.getComponent<CTransformation>().position = glm::vec3(293, Engine::Systems::Physics::heightAtPoint(293, 305), 305);
+	testLight4.getComponent<CColor>().value = glm::vec3(2, 2, 0);
 
 	Entity& testPlayer(Engine::EntityFactory::createEntity());
-	testPlayer.addComponent<CPosition>(glm::vec3(50, 0, 50));
-	testPlayer.addComponent<CTransformation>(0, 0, 0, 1);
+	testPlayer.addComponent<CTransformation>(glm::vec3(50, 0, 50), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
 	testPlayer.addComponent<CMesh>(Engine::Loader::loadMesh("E:/Test files/nfw/person.obj"));
 	testPlayer.addComponent<CMaterial>(Engine::Loader::loadMaterial("E:/Test files/nfw/playerTexture.png"), 10, 0);
 	testPlayer.addComponent<CPhysics>().affectedByGravity = true;
@@ -85,30 +103,29 @@ int main()
 		const KeyDownEvent& kDEvent = static_cast<const KeyDownEvent&>(e);
 
 		CTransformation& transformation = mEntity.getComponent<CTransformation>();
-		CPosition& position = mEntity.getComponent<CPosition>();
 
 		switch (kDEvent.pressedKey)
 		{
 		case Key::KEY_A:
-			transformation.rotationY += (160 * Engine::deltaTime());
+			transformation.rotation.y += (160 * Engine::deltaTime());
 			break;
 
 		case Key::KEY_D:
-			transformation.rotationY -= (160 * Engine::deltaTime());
+			transformation.rotation.y -= (160 * Engine::deltaTime());
 			break;
 
 		case Key::KEY_W:
-			position.value.x += (float)((50 * Engine::deltaTime()) * std::sin(Maths::DegreesToRadians(transformation.rotationY)));
-			position.value.z += (float)((50 * Engine::deltaTime()) * std::cos(Maths::DegreesToRadians(transformation.rotationY)));
+			transformation.position.x += (float)((50 * Engine::deltaTime()) * std::sin(Maths::DegreesToRadians(transformation.rotation.y)));
+			transformation.position.z += (float)((50 * Engine::deltaTime()) * std::cos(Maths::DegreesToRadians(transformation.rotation.y)));
 			break;
 
 		case Key::KEY_S:
-			position.value.x += (float)((-50 * Engine::deltaTime()) * std::sin(Maths::DegreesToRadians(transformation.rotationY)));
-			position.value.z += (float)((-50 * Engine::deltaTime()) * std::cos(Maths::DegreesToRadians(transformation.rotationY)));
+			transformation.position.x += (float)((-50 * Engine::deltaTime()) * std::sin(Maths::DegreesToRadians(transformation.rotation.y)));
+			transformation.position.z += (float)((-50 * Engine::deltaTime()) * std::cos(Maths::DegreesToRadians(transformation.rotation.y)));
 			break;
 
 		case Key::KEY_SPACE:
-			if (position.value.y <= Engine::Systems::Physics::heightAtPoint(position.value.x, position.value.z))
+			if (transformation.position.y <= Engine::Systems::Physics::heightAtPoint(transformation.position.x, transformation.position.z))
 			{
 				mEntity.getComponent<CPhysics>().velocity.y = 30;
 			}
@@ -179,8 +196,7 @@ int main()
 	};
 
 	Entity& testCamera(Engine::EntityFactory::createEntity());
-	testCamera.addComponent<CPosition>(glm::vec3(0,10,5));
-	testCamera.addComponent<CTransformation>(0,0,0,1);
+	testCamera.addComponent<CTransformation>(glm::vec3(0, 10, 5), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
 	testCamera.addComponent<CCamera>().hookTo(&testPlayer, 50, 0);
 	testCamera.addComponent<CCamera>().pitch = 30;
 	CInput& cameraInput = testCamera.addComponent<CInput>();

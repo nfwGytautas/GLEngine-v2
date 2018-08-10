@@ -11,6 +11,7 @@ public:
 
 	UpdateSystem(EntityManager* mEntityManager, PhysicsSystem* mPhysicsSystem, EventSystem* mEventSystem);
 private:
+	void updateEntitiesWithTransformation();
 	void updateEntitiesWithInput();
 	void updateEntitiesWithPhysics();
 	void updateEntitiesWithCameras();

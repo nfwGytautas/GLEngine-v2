@@ -2,13 +2,13 @@
 #include "..\Component.h"
 //Dependencies
 #include <glm\glm.hpp>
-#include "CPosition.h"
+#include "CTransformation.h"
 
 class UpdateSystem;
 struct CCamera : Component
 {
 	glm::mat4 viewMatrix;
-	CPosition* cPosition;
+	CTransformation* cTransformation;
 
 	void init() override;
 	void hookTo(Entity* mEntity, float mDistanceToHook, float mAngleAroundHook);

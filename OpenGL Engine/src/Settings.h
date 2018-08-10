@@ -16,4 +16,8 @@ struct Settings
 	static CCamera* camera;
 	static float cameraSensetivity;
 	static std::vector<float> guiQuad;
+
+	static float FoV;
+	static float nearRenderPlane;
+	static float farRenderPlane;
 };

@@ -1,21 +1,15 @@
 #include "CTransformation.h"
 #include "..\Entity.h"
-#include "..\..\maths\Maths.h"
 
 void CTransformation::init()
 {
-	if (!entity->hasComponent<CPosition>())
-	{
-		entity->addComponent<CPosition>(glm::vec3(0, 0, 0));
-	}
-	cPosition = &entity->getComponent<CPosition>();
+	entity->addGroup(EntityGroups::StaticEntity);
 }
 
-void CTransformation::update(float frameTime)
-{
-	transformationMatrix = Maths::createTransformationMatrix(cPosition->value, glm::vec3(rotationX, rotationY, rotationZ), scale);
-}
+CTransformation::CTransformation()
+	: position(0,0,0), rotation(0,0,0), scale(1,1,1)
+{}
 
-CTransformation::CTransformation(float mXRotation, float mYRotation, float mZRotation, float mScale)
-	: rotationX{ mXRotation }, rotationY{ mYRotation }, rotationZ{ mZRotation }, scale{ mScale }
+CTransformation::CTransformation(glm::vec3 mPosition, glm::vec3 mRotation, glm::vec3 mScale)
+	: position(mPosition), rotation(mRotation), scale(mScale)
 {}

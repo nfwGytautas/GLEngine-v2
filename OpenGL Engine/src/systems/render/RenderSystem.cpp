@@ -2,6 +2,7 @@
 #include <iostream>
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
+#include "..\..\SGEDefs.h"
 #include "..\..\Settings.h"
 #include "..\..\graphics\FrameworkAssert.h"
 #include "..\..\graphics\shader\DynamicShader.h"
@@ -68,12 +69,16 @@ void RenderSystem::loadViewport(std::string mShader)
 void RenderSystem::loadLights(std::string mShader)
 {
 	auto lights = m_entityManager->getEntitiesByGroup(EntityGroups::LightEmittingEntity);
-	for (Entity* light : lights)
+	for (unsigned int i = 0; i < lights.size() && i < SGE_MAX_SUPPORTED_LIGHTS; i++)
 	{
-		 (*m_shaders)[mShader]->setVec3Uniform("lightColour", light->getComponent<CColor>().value);
-		 (*m_shaders)[mShader]->setVec3Uniform("lightPosition", light->getComponent<CPosition>().value);
+		CColor& cColor = lights[i]->getComponent<CColor>();
+		CTransformation& cTransformation = lights[i]->getComponent<CTransformation>();
+		CLightEmiter& cLightEmiter = lights[i]->getComponent<CLightEmiter>();
+		(*m_shaders)[mShader]->setVec3Uniform("lightColour[" + std::to_string(i) + "]", cColor.value);
+		(*m_shaders)[mShader]->setVec3Uniform("lightPosition[" + std::to_string(i) + "]", cTransformation.position + cLightEmiter.lightOffset);
+		(*m_shaders)[mShader]->setVec3Uniform("attenuation[" + std::to_string(i) + "]", cLightEmiter.attenuation);
 	}
-
+	(*m_shaders)[mShader]->setFloatUniform("lightCount", lights.size());
 	(*m_shaders)[mShader]->setVec3Uniform("skyColor", Settings::skyColor);
 }
 void RenderSystem::renderEntities()
