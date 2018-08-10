@@ -66,9 +66,6 @@
     <ClInclude Include="src\components\preDefinedComponents\CMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\preDefinedComponents\CPosition.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\components\preDefinedComponents\CTransformation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -183,9 +180,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\components\preDefinedComponents\CMesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\components\preDefinedComponents\CPosition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\components\preDefinedComponents\CRenderer.cpp">

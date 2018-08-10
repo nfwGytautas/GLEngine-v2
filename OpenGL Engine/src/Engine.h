@@ -110,8 +110,4 @@ private:
 	static UpdateSystem* m_updateSystem;
 	static PhysicsSystem* m_physicsSystem;
 	static EventSystem* m_eventSystem;
-
-	static float m_EngineFoV;
-	static float m_NearRenderPlane;
-	static float m_FarRenderPlane;
 };

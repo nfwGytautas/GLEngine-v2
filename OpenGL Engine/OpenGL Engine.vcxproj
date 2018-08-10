@@ -39,7 +39,6 @@
     <ClInclude Include="src\components\preDefinedComponents\CLightEmiter.h" />
     <ClInclude Include="src\components\preDefinedComponents\CMaterial.h" />
     <ClInclude Include="src\components\preDefinedComponents\CMesh.h" />
-    <ClInclude Include="src\components\preDefinedComponents\CPosition.h" />
     <ClInclude Include="src\components\preDefinedComponents\CTransformation.h" />
     <ClInclude Include="src\data manager\BatchManager.h" />
     <ClInclude Include="src\components\EntityManager.h" />
@@ -80,7 +79,6 @@
     <ClCompile Include="src\components\preDefinedComponents\CLightEmiter.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CMaterial.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CMesh.cpp" />
-    <ClCompile Include="src\components\preDefinedComponents\CPosition.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CRenderer.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CTransformation.cpp" />
     <ClCompile Include="src\data manager\BatchManager.cpp" />
