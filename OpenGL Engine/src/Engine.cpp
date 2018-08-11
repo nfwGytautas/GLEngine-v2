@@ -39,10 +39,11 @@ void Engine::initialize(unsigned int width, unsigned int height, const char* tit
 	m_loader = new DataManager();
 	m_shaders[ShaderNames::Entity] = new DynamicShader("E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/vertex.shader", "E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/fragment.shader");
 	m_shaders[ShaderNames::GUI] = new DynamicShader("E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/guiV.shader", "E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/guiF.shader");
+	m_shaders[ShaderNames::Skybox] = new DynamicShader("E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/skyboxV.shader", "E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/skyboxF.shader");
 	m_batchManager = new BatchManager();
-	m_entityManager = new EntityManager(m_batchManager);	
+	m_entityManager = new EntityManager(m_batchManager);
 	m_renderSystem = new RenderSystem(&m_shaders, m_entityManager, m_batchManager, 
-		m_loader->create2DQuad(Settings::guiQuad));
+		m_loader->create2DQuad(Settings::guiQuad), m_loader->createSkybox());
 	m_physicsSystem = new PhysicsSystem(m_entityManager);
 	m_eventSystem = new EventSystem();
 	m_updateSystem = new UpdateSystem(m_entityManager, m_physicsSystem, m_eventSystem);
@@ -50,9 +51,15 @@ void Engine::initialize(unsigned int width, unsigned int height, const char* tit
 	GLCall(glEnable(GL_CULL_FACE));
 	GLCall(glCullFace(GL_BACK));
 
+	glm::mat4 projMatrix = createProjectionMatrix();
+
 	m_shaders[ShaderNames::Entity]->bind();
-	m_shaders[ShaderNames::Entity]->setMatrix4fUniform("projectionMatrix", createProjectionMatrix());
+	m_shaders[ShaderNames::Entity]->setMatrix4fUniform("projectionMatrix", projMatrix);
 	m_shaders[ShaderNames::Entity]->unbind();
+
+	m_shaders[ShaderNames::Skybox]->bind();
+	m_shaders[ShaderNames::Skybox]->setMatrix4fUniform("projectionMatrix", projMatrix);
+	m_shaders[ShaderNames::Skybox]->unbind();
 
 	m_initialized = true;
 	std::cout << "[Engine] Engine initialized!" << std::endl;

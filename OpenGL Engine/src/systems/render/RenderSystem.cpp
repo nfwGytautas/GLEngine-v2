@@ -19,7 +19,8 @@ void RenderSystem::render()
 {
 	//Prepare for rendering
 	prepare();	
-	
+
+	//================================================
 	//MAIN RENDER CODE
 	//================================================
 	if (Settings::camera == nullptr)
@@ -27,6 +28,19 @@ void RenderSystem::render()
 		std::cout << "[Engine][Renderer] No specified camera!" << std::endl;
 		return;
 	}
+
+	//========Skybox========
+	(*m_shaders)[ShaderNames::Skybox]->bind();
+	//Custom viewport for the skybox
+	glm::mat4 skyboxViewPort = Settings::camera->viewMatrix;
+	skyboxViewPort[0].w = 0;
+	skyboxViewPort[1].w = 0;
+	skyboxViewPort[2].w = 0;
+	(*m_shaders)[ShaderNames::Skybox]->setMatrix4fUniform("viewMatrix", skyboxViewPort);
+	//Render Skybox
+	renderSkybox();
+	(*m_shaders)[ShaderNames::Skybox]->unbind();
+	//======================
 
 	//========ENTITY========
 	//Load camera
@@ -44,15 +58,15 @@ void RenderSystem::render()
 	//Render GUI
 	renderGUI();
 	(*m_shaders)[ShaderNames::GUI]->unbind();
-	//======================
+	//======================	
 
 	//================================================
 
 	
 }
 
-RenderSystem::RenderSystem(std::unordered_map<std::string, DynamicShader*>* mShaders, EntityManager* mEntityManager, BatchManager* mBatchManager, std::pair<unsigned int, unsigned int> mGUIQuad)
-	: m_shaders(mShaders), m_entityManager(mEntityManager), m_batchManager(mBatchManager), m_GUIQuad(mGUIQuad)
+RenderSystem::RenderSystem(std::unordered_map<std::string, DynamicShader*>* mShaders, EntityManager* mEntityManager, BatchManager* mBatchManager, std::pair<unsigned int, unsigned int> mGUIQuad, std::tuple<unsigned int, unsigned int, unsigned int> mSkybox)
+	: m_shaders(mShaders), m_entityManager(mEntityManager), m_batchManager(mBatchManager), m_GUIQuad(mGUIQuad), m_skybox(mSkybox)
 {
 }
 
@@ -78,7 +92,14 @@ void RenderSystem::loadLights(std::string mShader)
 		(*m_shaders)[mShader]->setVec3Uniform("lightPosition[" + std::to_string(i) + "]", cTransformation.position + cLightEmiter.lightOffset);
 		(*m_shaders)[mShader]->setVec3Uniform("attenuation[" + std::to_string(i) + "]", cLightEmiter.attenuation);
 	}
-	(*m_shaders)[mShader]->setFloatUniform("lightCount", lights.size());
+	if(lights.size() <= SGE_MAX_SUPPORTED_LIGHTS)
+	{
+		(*m_shaders)[mShader]->setFloatUniform("lightCount", lights.size());
+	}
+	else
+	{
+		(*m_shaders)[mShader]->setFloatUniform("lightCount", SGE_MAX_SUPPORTED_LIGHTS);
+	}
 	(*m_shaders)[mShader]->setVec3Uniform("skyColor", Settings::skyColor);
 }
 void RenderSystem::renderEntities()
@@ -169,6 +190,19 @@ void RenderSystem::renderGUI()
 		GLCall(glDisable(GL_BLEND));
 		GLCall(glEnable(GL_DEPTH_TEST));
 	}	
+}
+
+void RenderSystem::renderSkybox()
+{
+	GraphicsAPI::bindVAO(std::get<0>(m_skybox));
+	GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
+	GraphicsAPI::bindCubeMap(std::get<2>(m_skybox));
+
+	GLCall(glDrawArrays(GL_TRIANGLES, 0, std::get<1>(m_skybox)));
+
+	GLCall(glDisableVertexAttribArray(AttributeLocation::Position));
+	GLCall(glBindVertexArray(0));
+	GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
 }
 
 void RenderSystem::loadRenderSettings(std::string mShader, Entity* entity)

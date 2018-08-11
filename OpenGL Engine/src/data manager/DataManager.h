@@ -16,12 +16,15 @@ public:
 	std::pair<unsigned int, unsigned int> loadMesh(std::string mFilePath);
 	std::pair<unsigned int, unsigned int> createMesh(std::vector<float>& vertices, std::vector<float>& normals, std::vector<float>& textureCoords, std::vector<unsigned int>& indices);
 	std::pair<unsigned int, unsigned int> create2DQuad(std::vector<float>& vertices);
+	std::pair<unsigned int, unsigned int> create3DCube(std::vector<float>& vertices);
+	std::tuple<unsigned int, unsigned int, unsigned int> createSkybox();
 	std::pair<unsigned int, unsigned int> createFlatMesh(unsigned int vertexCount, unsigned int size);
 	std::pair<unsigned int, unsigned int> createHeightMappedMesh(std::string mHeightMapFilePath, float mMaxHeight, unsigned int size, continuous2DArray<float>& mCalculatedHeights);
 
 	unsigned int loadMaterial(std::string mFilePath);
+	/*Texture files must be in this order: Right, Left, Top, Bottom, Back, Front*/
+	unsigned int loadCubeMap(std::vector<std::string>& textureFiles);
 
-	
 
 	void cleanUp();
 private:

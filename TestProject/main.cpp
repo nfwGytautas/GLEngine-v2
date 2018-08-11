@@ -3,6 +3,13 @@
 
 int main()
 {
+	Settings::skyboxFiles[0] = "E:/Test files/nfw/skyboxRight.png";
+	Settings::skyboxFiles[1] = "E:/Test files/nfw/skyboxLeft.png";
+	Settings::skyboxFiles[2] = "E:/Test files/nfw/skyboxTop.png";
+	Settings::skyboxFiles[3] = "E:/Test files/nfw/skyboxBottom.png";
+	Settings::skyboxFiles[4] = "E:/Test files/nfw/skyboxBback.png";
+	Settings::skyboxFiles[5] = "E:/Test files/nfw/skyboxFront.png";
+
 	Engine::initialize(Settings::width, Settings::height, Settings::title, Settings::fullscreen);
 
 	EntityBlueprint& stallBlueprint(Engine::EntityFactory::newBlueprint());

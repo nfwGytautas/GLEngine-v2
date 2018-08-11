@@ -38,6 +38,10 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 {
 	try
 	{
+		if (key < 0 || key >= 349)
+		{
+			return;
+		}
 		if (action == GLFW_PRESS)
 		{
 			Keyboard::m_pressedKeys[key] = true;

@@ -1,6 +1,7 @@
 #include "ImageLoader.h"
 #include <vector>
 #include <iostream>
+#include <sys/stat.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb image\stb_image.h"
@@ -14,6 +15,13 @@ bool ImageLoader::loadImage(std::string mFilePath, std::string mFormat)
 {
 	try
 	{
+		//Check to see if file exists
+		if (!checkPath(mFilePath))
+		{
+			std::cout << "[Engine][Data manager] Error: Loading image! File does not exist: " << mFilePath << std::endl;
+			return false;
+		}
+
 		if(mFormat == ".png")
 		{
 			stbi_set_flip_vertically_on_load(1);
@@ -80,4 +88,10 @@ void ImageLoader::loadFallbackImage()
 	imageBuffer = reinterpret_cast<unsigned char *>(&(tempBuffer[0]));
 	width = 64;
 	height = 64;
+}
+
+bool ImageLoader::checkPath(std::string mFilePath)
+{
+	struct stat buffer;
+	return (stat(mFilePath.c_str(), &buffer) == 0);
 }
