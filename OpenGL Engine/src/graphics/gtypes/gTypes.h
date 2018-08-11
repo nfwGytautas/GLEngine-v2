@@ -16,4 +16,5 @@ namespace ShaderNames
 {
 	const char* const Entity = "entity";
 	const char* const GUI = "gui";
+	const char* const Skybox = "skybox";
 }

@@ -12,5 +12,6 @@ public:
 	static int BPP;
 
 	static void loadFallbackImage();
+	static bool checkPath(std::string mFilePath);
 };
 

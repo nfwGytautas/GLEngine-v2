@@ -7,6 +7,7 @@
 #include <iostream>
 #include "OBJLoader.h"
 #include "ImageLoader.h"
+#include "..\Settings.h"
 #include "..\graphics\gtypes\gTypes.h"
 #include "..\graphics\FrameworkAssert.h"
 #include "..\components\Entity.h"
@@ -80,6 +81,68 @@ std::pair<unsigned int, unsigned int> DataManager::create2DQuad(std::vector<floa
 	storeDataInAttributes(AttributeLocation::Position, 2, vertices);
 	unbindVAO();
 	std::pair<unsigned int, unsigned int> result = std::make_pair(vaoID, vertices.size() / 2);
+	return result;
+}
+
+std::pair<unsigned int, unsigned int> DataManager::create3DCube(std::vector<float>& vertices)
+{
+	unsigned int vaoID = createVAO();
+	storeDataInAttributes(AttributeLocation::Position, 3, vertices);
+	unbindVAO();
+	std::pair<unsigned int, unsigned int> result = std::make_pair(vaoID, vertices.size() / 3);
+	return result;
+}
+
+std::tuple<unsigned int, unsigned int, unsigned int> DataManager::createSkybox()
+{
+	float cubeMapVertices[] = {
+		-Settings::skyboxSize,  Settings::skyboxSize, -Settings::skyboxSize,
+		-Settings::skyboxSize, -Settings::skyboxSize, -Settings::skyboxSize,
+		Settings::skyboxSize, -Settings::skyboxSize, -Settings::skyboxSize,
+		Settings::skyboxSize, -Settings::skyboxSize, -Settings::skyboxSize,
+		Settings::skyboxSize,  Settings::skyboxSize, -Settings::skyboxSize,
+		-Settings::skyboxSize,  Settings::skyboxSize, -Settings::skyboxSize,
+
+		-Settings::skyboxSize, -Settings::skyboxSize,  Settings::skyboxSize,
+		-Settings::skyboxSize, -Settings::skyboxSize, -Settings::skyboxSize,
+		-Settings::skyboxSize,  Settings::skyboxSize, -Settings::skyboxSize,
+		-Settings::skyboxSize,  Settings::skyboxSize, -Settings::skyboxSize,
+		-Settings::skyboxSize,  Settings::skyboxSize,  Settings::skyboxSize,
+		-Settings::skyboxSize, -Settings::skyboxSize,  Settings::skyboxSize,
+
+		Settings::skyboxSize, -Settings::skyboxSize, -Settings::skyboxSize,
+		Settings::skyboxSize, -Settings::skyboxSize,  Settings::skyboxSize,
+		Settings::skyboxSize,  Settings::skyboxSize,  Settings::skyboxSize,
+		Settings::skyboxSize,  Settings::skyboxSize,  Settings::skyboxSize,
+		Settings::skyboxSize,  Settings::skyboxSize, -Settings::skyboxSize,
+		Settings::skyboxSize, -Settings::skyboxSize, -Settings::skyboxSize,
+
+		-Settings::skyboxSize, -Settings::skyboxSize,  Settings::skyboxSize,
+		-Settings::skyboxSize,  Settings::skyboxSize,  Settings::skyboxSize,
+		Settings::skyboxSize,  Settings::skyboxSize,  Settings::skyboxSize,
+		Settings::skyboxSize,  Settings::skyboxSize,  Settings::skyboxSize,
+		Settings::skyboxSize, -Settings::skyboxSize,  Settings::skyboxSize,
+		-Settings::skyboxSize, -Settings::skyboxSize,  Settings::skyboxSize,
+
+		-Settings::skyboxSize,  Settings::skyboxSize, -Settings::skyboxSize,
+		Settings::skyboxSize,  Settings::skyboxSize, -Settings::skyboxSize,
+		Settings::skyboxSize,  Settings::skyboxSize,  Settings::skyboxSize,
+		Settings::skyboxSize,  Settings::skyboxSize,  Settings::skyboxSize,
+		-Settings::skyboxSize,  Settings::skyboxSize,  Settings::skyboxSize,
+		-Settings::skyboxSize,  Settings::skyboxSize, -Settings::skyboxSize,
+
+		-Settings::skyboxSize, -Settings::skyboxSize, -Settings::skyboxSize,
+		-Settings::skyboxSize, -Settings::skyboxSize,  Settings::skyboxSize,
+		Settings::skyboxSize, -Settings::skyboxSize, -Settings::skyboxSize,
+		Settings::skyboxSize, -Settings::skyboxSize, -Settings::skyboxSize,
+		-Settings::skyboxSize, -Settings::skyboxSize,  Settings::skyboxSize,
+		Settings::skyboxSize, -Settings::skyboxSize,  Settings::skyboxSize
+	};
+	std::vector<std::string> cubeFiles = arrayToVector(Settings::skyboxFiles);
+	unsigned int textureID = loadCubeMap(cubeFiles);
+	std::vector<float> cubeMesh = arrayToVector(cubeMapVertices);
+	std::pair<unsigned int, unsigned int> cube = create3DCube(cubeMesh);
+	std::tuple<unsigned int, unsigned int, unsigned int> result = std::make_tuple(cube.first, cube.second, textureID);
 	return result;
 }
 
@@ -221,6 +284,31 @@ unsigned int DataManager::loadMaterial(std::string mFilePath)
 	{
 		return m_materialCache[mFilePath];
 	}
+}
+
+unsigned int DataManager::loadCubeMap(std::vector<std::string>& textureFiles)
+{
+	unsigned int textureID = 0;
+	GLCall(glGenTextures(1, &textureID));
+	GLCall(glActiveTexture(GL_TEXTURE0));
+	GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, textureID));
+
+	for (unsigned int i = 0; i < textureFiles.size(); i++)
+	{
+		auto boostFilePath = boost::filesystem::path(textureFiles[i]);
+		ImageLoader::loadImage(boostFilePath.string(), boostFilePath.extension().string());
+		GLCall(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, ImageLoader::width, ImageLoader::height, 0, GL_RGBA, GL_UNSIGNED_BYTE, ImageLoader::imageBuffer));
+	}
+
+	GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+	GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+	GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+	GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+
+	GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
+
+	m_textures.push_back(textureID);
+	return textureID;
 }
 
 void DataManager::cleanUp()

@@ -3,9 +3,11 @@
 #include <GLFW\glfw3.h>
 #include "..\FrameworkAssert.h"
 
-//============================================================================================================================
-//GRAPHICS API
-//============================================================================================================================
+void GraphicsAPI::bindCubeMap(unsigned int id, unsigned int slot)
+{
+	GLCall(glActiveTexture(GL_TEXTURE0 + slot));
+	GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, id));
+}
 void GraphicsAPI::bindTexture(unsigned int id, unsigned int slot)
 {
 	GLCall(glActiveTexture(GL_TEXTURE0 + slot));
