@@ -8,6 +8,7 @@
 class Maths
 {
 public:
+	static glm::mat4 createProjectionMatrix();
 	static glm::mat4 createTransformationMatrix(glm::vec2 translation, float rotation, glm::vec2 scale);
 	static glm::mat4 createTransformationMatrix(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale);
 	static double DegreesToRadians(double degrees);

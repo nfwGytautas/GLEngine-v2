@@ -3,6 +3,7 @@
 #include <functional>
 #include "Event.h"
 #include "..\..\components\Entity.h"
+#include "PreDefinedEvents.h"
 
 struct CInput;
 

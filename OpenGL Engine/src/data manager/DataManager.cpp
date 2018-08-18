@@ -1,4 +1,5 @@
 #include "DataManager.h"
+#include "..\SGEDefs.h"
 #include <iostream>
 #include <thread>
 #include <boost\filesystem.hpp>
@@ -9,9 +10,10 @@
 #include "ImageLoader.h"
 #include "..\Settings.h"
 #include "..\graphics\gtypes\gTypes.h"
-#include "..\graphics\FrameworkAssert.h"
+#include "..\graphics\GraphicsAssert.h"
 #include "..\components\Entity.h"
 #include "..\components\PreDefinedComponents.h"
+
 
 void calculateIndices(std::vector<unsigned int>& mIndices, unsigned int mVertexCount)
 {
@@ -34,9 +36,9 @@ void calculateIndices(std::vector<unsigned int>& mIndices, unsigned int mVertexC
 
 std::pair<unsigned int, unsigned int> DataManager::loadMesh(std::string mFilePath)
 {
-	if(m_meshCache.find(mFilePath) == m_meshCache.end())
+	if (m_meshCache.find(mFilePath) == m_meshCache.end())
 	{
-		if(OBJLoader::LoadOBJ(mFilePath))
+		if (OBJLoader::LoadOBJ(mFilePath))
 		{
 			unsigned int vaoID = createVAO();
 			bindIndiceBuffer(OBJLoader::loadedIndices);
@@ -47,11 +49,14 @@ std::pair<unsigned int, unsigned int> DataManager::loadMesh(std::string mFilePat
 
 			std::pair<unsigned int, unsigned int> result = std::make_pair(vaoID, OBJLoader::loadedIndices.size());
 			m_meshCache[mFilePath] = result;
+			SGE::Instances::instances->batchManagerInstance->acknowledgeMesh(vaoID);
 			return result;
 		}
 		else
 		{
 			std::pair<unsigned int, unsigned int> result = std::make_pair(m_fallbackMeshID, m_fallbackMeshVertexCount);
+			SGE::Instances::instances->batchManagerInstance->acknowledgeMesh(m_fallbackMeshID);
+			SGE::Instances::instances->batchManagerInstance->acknowledgeMaterial(m_fallbackTexture);
 			m_meshCache[mFilePath] = result;
 			return result;
 		}
@@ -95,52 +100,53 @@ std::pair<unsigned int, unsigned int> DataManager::create3DCube(std::vector<floa
 
 std::tuple<unsigned int, unsigned int, unsigned int> DataManager::createSkybox()
 {
-	float cubeMapVertices[] = {
-		-Settings::skyboxSize,  Settings::skyboxSize, -Settings::skyboxSize,
-		-Settings::skyboxSize, -Settings::skyboxSize, -Settings::skyboxSize,
-		Settings::skyboxSize, -Settings::skyboxSize, -Settings::skyboxSize,
-		Settings::skyboxSize, -Settings::skyboxSize, -Settings::skyboxSize,
-		Settings::skyboxSize,  Settings::skyboxSize, -Settings::skyboxSize,
-		-Settings::skyboxSize,  Settings::skyboxSize, -Settings::skyboxSize,
+	float skyboxVertices[] = {
+		// positions          
+		-1.0f,  1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
 
-		-Settings::skyboxSize, -Settings::skyboxSize,  Settings::skyboxSize,
-		-Settings::skyboxSize, -Settings::skyboxSize, -Settings::skyboxSize,
-		-Settings::skyboxSize,  Settings::skyboxSize, -Settings::skyboxSize,
-		-Settings::skyboxSize,  Settings::skyboxSize, -Settings::skyboxSize,
-		-Settings::skyboxSize,  Settings::skyboxSize,  Settings::skyboxSize,
-		-Settings::skyboxSize, -Settings::skyboxSize,  Settings::skyboxSize,
+		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
 
-		Settings::skyboxSize, -Settings::skyboxSize, -Settings::skyboxSize,
-		Settings::skyboxSize, -Settings::skyboxSize,  Settings::skyboxSize,
-		Settings::skyboxSize,  Settings::skyboxSize,  Settings::skyboxSize,
-		Settings::skyboxSize,  Settings::skyboxSize,  Settings::skyboxSize,
-		Settings::skyboxSize,  Settings::skyboxSize, -Settings::skyboxSize,
-		Settings::skyboxSize, -Settings::skyboxSize, -Settings::skyboxSize,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
 
-		-Settings::skyboxSize, -Settings::skyboxSize,  Settings::skyboxSize,
-		-Settings::skyboxSize,  Settings::skyboxSize,  Settings::skyboxSize,
-		Settings::skyboxSize,  Settings::skyboxSize,  Settings::skyboxSize,
-		Settings::skyboxSize,  Settings::skyboxSize,  Settings::skyboxSize,
-		Settings::skyboxSize, -Settings::skyboxSize,  Settings::skyboxSize,
-		-Settings::skyboxSize, -Settings::skyboxSize,  Settings::skyboxSize,
+		-1.0f, -1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
 
-		-Settings::skyboxSize,  Settings::skyboxSize, -Settings::skyboxSize,
-		Settings::skyboxSize,  Settings::skyboxSize, -Settings::skyboxSize,
-		Settings::skyboxSize,  Settings::skyboxSize,  Settings::skyboxSize,
-		Settings::skyboxSize,  Settings::skyboxSize,  Settings::skyboxSize,
-		-Settings::skyboxSize,  Settings::skyboxSize,  Settings::skyboxSize,
-		-Settings::skyboxSize,  Settings::skyboxSize, -Settings::skyboxSize,
+		-1.0f,  1.0f, -1.0f,
+		1.0f,  1.0f, -1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f, -1.0f,
 
-		-Settings::skyboxSize, -Settings::skyboxSize, -Settings::skyboxSize,
-		-Settings::skyboxSize, -Settings::skyboxSize,  Settings::skyboxSize,
-		Settings::skyboxSize, -Settings::skyboxSize, -Settings::skyboxSize,
-		Settings::skyboxSize, -Settings::skyboxSize, -Settings::skyboxSize,
-		-Settings::skyboxSize, -Settings::skyboxSize,  Settings::skyboxSize,
-		Settings::skyboxSize, -Settings::skyboxSize,  Settings::skyboxSize
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		1.0f, -1.0f,  1.0f
 	};
 	std::vector<std::string> cubeFiles = arrayToVector(Settings::skyboxFiles);
 	unsigned int textureID = loadCubeMap(cubeFiles);
-	std::vector<float> cubeMesh = arrayToVector(cubeMapVertices);
+	std::vector<float> cubeMesh = arrayToVector(skyboxVertices);
 	std::pair<unsigned int, unsigned int> cube = create3DCube(cubeMesh);
 	std::tuple<unsigned int, unsigned int, unsigned int> result = std::make_tuple(cube.first, cube.second, textureID);
 	return result;
@@ -209,9 +215,9 @@ std::pair<unsigned int, unsigned int> DataManager::createHeightMappedMesh(std::s
 
 			hindex = (j * ImageLoader::height) + i;
 
-			heightMap[hindex].x = (float)ImageLoader::imageBuffer[k-1];
+			heightMap[hindex].x = (float)ImageLoader::imageBuffer[k - 1];
 			heightMap[hindex].y = (float)ImageLoader::imageBuffer[k];
-			heightMap[hindex].z = (float)ImageLoader::imageBuffer[k+1];
+			heightMap[hindex].z = (float)ImageLoader::imageBuffer[k + 1];
 
 			k += 4;
 		}
@@ -225,10 +231,10 @@ std::pair<unsigned int, unsigned int> DataManager::createHeightMappedMesh(std::s
 	normals.resize(count * 3);
 	std::vector<float> textureCoords;
 	textureCoords.resize(count * 2);
-	
+
 	int vertexIndex = 0;
 	mCalculatedHeights.resize(vertexCount);
-	float height = 0;	
+	float height = 0;
 	for (unsigned int i = 0; i < vertexCount; i++) {
 		for (unsigned int j = 0; j < vertexCount; j++) {
 			vertices[vertexIndex * 3] = (float)j / ((float)vertexCount - 1) * size;
@@ -251,6 +257,9 @@ std::pair<unsigned int, unsigned int> DataManager::createHeightMappedMesh(std::s
 	indiceCalc.join();
 
 	auto result = createMesh(vertices, normals, textureCoords, indices);
+
+	SGE::Instances::instances->batchManagerInstance->acknowledgeMesh(result.first);
+
 	return result;
 }
 
@@ -272,6 +281,7 @@ unsigned int DataManager::loadMaterial(std::string mFilePath)
 			{
 				ImageLoader::freeData();
 			}
+			SGE::Instances::instances->batchManagerInstance->acknowledgeMaterial(textureID);
 			return textureID;
 		}
 		else
@@ -298,17 +308,42 @@ unsigned int DataManager::loadCubeMap(std::vector<std::string>& textureFiles)
 		auto boostFilePath = boost::filesystem::path(textureFiles[i]);
 		ImageLoader::loadImage(boostFilePath.string(), boostFilePath.extension().string());
 		GLCall(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, ImageLoader::width, ImageLoader::height, 0, GL_RGBA, GL_UNSIGNED_BYTE, ImageLoader::imageBuffer));
+		ImageLoader::freeData();
 	}
 
 	GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 	GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 	GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
 	GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+	GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
 
 	GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
 
 	m_textures.push_back(textureID);
 	return textureID;
+}
+
+unsigned int DataManager::loadTexture(std::string mFilePath)
+{
+	auto boostFilePath = boost::filesystem::path(mFilePath);
+	if (ImageLoader::loadImage(boostFilePath.string(), boostFilePath.extension().string()))
+	{
+		unsigned int textureID = 0;
+		GLCall(glGenTextures(1, &textureID));
+		GLCall(glBindTexture(GL_TEXTURE_2D, textureID));
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, ImageLoader::width, ImageLoader::height, 0, GL_RGBA, GL_UNSIGNED_BYTE, ImageLoader::imageBuffer));
+		textureSetup();
+		m_textures.push_back(textureID);
+		if (ImageLoader::imageBuffer)
+		{
+			ImageLoader::freeData();
+		}
+		return textureID;
+	}
+	else
+	{
+		return m_fallbackTexture;
+	}
 }
 
 void DataManager::cleanUp()
@@ -418,8 +453,8 @@ glm::vec3 DataManager::calculateNormal(int x, int y, std::vector<glm::vec3>& mHe
 {
 	float heightL = getHeight(x - 1, y, mHeightMap, maxPixelColor, mMaxHeight);
 	float heightR = getHeight(x + 1, y, mHeightMap, maxPixelColor, mMaxHeight);
-	float heightD = getHeight(x, y-1, mHeightMap, maxPixelColor, mMaxHeight);
-	float heightU = getHeight(x, y+1, mHeightMap, maxPixelColor, mMaxHeight);
+	float heightD = getHeight(x, y - 1, mHeightMap, maxPixelColor, mMaxHeight);
+	float heightU = getHeight(x, y + 1, mHeightMap, maxPixelColor, mMaxHeight);
 	glm::vec3 result = glm::normalize(glm::vec3(heightL - heightR, 2, heightD - heightU));
 	return result;
 }

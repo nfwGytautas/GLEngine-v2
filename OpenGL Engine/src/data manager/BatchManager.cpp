@@ -3,6 +3,7 @@
 #include "..\components\Entity.h"
 #include "..\graphics\gui\GUI.h"
 
+
 BatchManager::BatchManager()
 {
 }
@@ -15,7 +16,7 @@ BatchManager::~BatchManager()
 //============================================================================================================================
 void BatchManager::acknowledgeMaterial(unsigned int id)
 {
-	if(std::find(m_knownMaterials.begin(), m_knownMaterials.end(), id) == m_knownMaterials.end())
+	if (std::find(m_knownMaterials.begin(), m_knownMaterials.end(), id) == m_knownMaterials.end())
 	{
 		m_knownMaterials.push_back(id);
 	}
@@ -28,7 +29,7 @@ void BatchManager::acknowledgeMesh(unsigned int id)
 	}
 }
 
-void BatchManager::acknowledgeGUI(GUI& gui)
+void BatchManager::acknowledgeGUI(GUI* gui)
 {
 	if (std::find(m_knownGUIs.begin(), m_knownGUIs.end(), gui) == m_knownGUIs.end())
 	{
@@ -38,7 +39,7 @@ void BatchManager::acknowledgeGUI(GUI& gui)
 
 void BatchManager::addEntity(Entity* entity)
 {
-	if(entity->hasComponent<CMesh>())
+	if (entity->hasComponent<CMesh>())
 	{
 		auto mesh = entity->getComponent<CMesh>().m_vaoID;
 		if (m_entityBatch.find(mesh) != m_entityBatch.end())
@@ -53,12 +54,12 @@ void BatchManager::addEntity(Entity* entity)
 		}
 	}
 }
-void BatchManager::updateEntityBatch(const std::vector<std::unique_ptr<Entity>>& pEntities)
+void BatchManager::updateEntityBatch(const std::vector<Entity*>& pEntities)
 {
 	clearEntityBatch();
-	for (auto& e : pEntities)
+	for (auto e : pEntities)
 	{
-		addEntity(e.get());
+		addEntity(e);
 	}
 }
 void BatchManager::clearEntityBatch()
@@ -79,7 +80,7 @@ std::vector<unsigned int>& BatchManager::allKnownMeshes()
 	return m_knownMeshes;
 }
 
-std::vector<GUI>& BatchManager::allKnownGUIs()
+std::vector<GUI*>& BatchManager::allKnownGUIs()
 {
 	return m_knownGUIs;
 }

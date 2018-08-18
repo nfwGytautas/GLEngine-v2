@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include "..\SGEDefs.h"
 #include "EntityManager.h"
 
 void Entity::init()
@@ -52,19 +53,18 @@ void Entity::delGroup(Group mGroup) noexcept
 void Entity::addGroup(Group mGroup) noexcept
 {
 	m_groupBitset[mGroup] = true;
-	m_manager.addToGroup(this, mGroup);
+	SGE::Instances::instances->entityManagerInstance->addToGroup(this, mGroup);
 }
 
-Entity::Entity(EntityManager& mManager)
-	: m_manager(mManager)
+Entity::Entity()
 {
 	for (unsigned int i = 0; i < maxComponents; i++)
 	{
 		m_componentArray[i] = nullptr;
 	}
+	SGE::Instances::instances->entityManagerInstance->registerEntity(this);
 }
-Entity::Entity(EntityManager& mManager, EntityBlueprint& mBlueprint)
-	: m_manager(mManager)
+Entity::Entity(EntityBlueprint& mBlueprint)
 {
 	m_componentBitset = mBlueprint.m_componentBitset;
 
@@ -79,14 +79,24 @@ Entity::Entity(EntityManager& mManager, EntityBlueprint& mBlueprint)
 			m_componentArray[i] = comp;
 		}
 	}
+	SGE::Instances::instances->entityManagerInstance->registerEntity(this);
 }
 Entity::~Entity()
 {
-	for (unsigned int i = 0; i < maxComponents; i++)
+	releaseMemory();
+}
+
+void Entity::releaseMemory()
+{
+	if(!m_memoryReleased)
 	{
-		if (m_componentArray[i] != nullptr)
+		for (unsigned int i = 0; i < maxComponents; i++)
 		{
-			delete m_componentArray[i];
+			if (m_componentArray[i] != nullptr)
+			{
+				delete m_componentArray[i];
+			}
 		}
+		m_memoryReleased = true;
 	}
 }

@@ -1,9 +1,10 @@
 #include "InputManager.h"
 #include <iostream>
+#include <GL\glew.h>
 #include <GLFW\glfw3.h>
 #include "..\graphics\display\Display.h"
-#include "..\graphics\FrameworkAssert.h"
-#include "..\Engine.h"
+#include "..\graphics\GraphicsAssert.h"
+#include "..\Settings.h"
 
 bool InputManager::Keyboard::m_pressedKeys[349] = { false };
 bool InputManager::Mouse::m_pressedKeys[12] = { false };
@@ -183,5 +184,5 @@ void InputManager::Mouse::getCursorPosition(double & xpos, double & ypos)
 }
 void InputManager::Mouse::centerCursorPosition()
 {
-	GLCall(glfwSetCursorPos(m_context, Display::getWidth() / 2, Display::getHeight() / 2));
+	GLCall(glfwSetCursorPos(m_context, Settings::width / 2, Settings::height / 2));
 }

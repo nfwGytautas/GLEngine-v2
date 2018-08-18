@@ -1,5 +1,7 @@
 #version 400 core
 
+in vec3 reflectionPosition;
+in vec3 reflectionNormal;
 in vec2 pass_textureCoordinates;
 in vec3 surfaceNormal;
 in vec3 toLightVector[4];
@@ -8,6 +10,7 @@ in float visibility;
 
 out vec4 out_Color;
 
+uniform samplerCube skybox;
 uniform sampler2D material;
 
 uniform sampler2D blendMap;
@@ -22,11 +25,13 @@ uniform vec3 attenuation[4];
 uniform float shineDamper;
 uniform float reflectivity;
 uniform vec3 skyColor;
+uniform vec3 cameraPos;
 
 //CRenderer component uniforms
 uniform float cRenderer_tileCount;
 uniform float cRenderer_multiTexture;
 uniform float cRenderer_disableSpecular;
+uniform float cRenderer_skyboxReflection;
 
 void main(void){
 	vec4 totalColor;
@@ -44,7 +49,16 @@ void main(void){
 	}
 	else
 	{
-		totalColor = texture(material,pass_textureCoordinates);
+		if (cRenderer_skyboxReflection > 0.5)
+		{
+			vec3 viewDirection = normalize(reflectionPosition - cameraPos);
+			vec3 reflectionVector = reflect(viewDirection, normalize(reflectionNormal));
+			totalColor = vec4(texture(skybox, reflectionVector).rgb, 1.0);
+		}	
+		else
+		{
+			totalColor = texture(material, pass_textureCoordinates);
+		}
 	
 		if(totalColor.a < 0.5)
 		{
@@ -73,8 +87,8 @@ void main(void){
 		totalDiffuse = totalDiffuse + (brightness * lightColour[i]) / attFactor;
 		totalSpecular = totalSpecular + (dampedFactor * reflectivity * lightColour[i]) / attFactor;
 	}
-	totalDiffuse = max(totalDiffuse, 0.2);
-	
+	totalDiffuse = max(totalDiffuse, 0.2);	
+
 	if(cRenderer_disableSpecular > 0.5)
 	{
 		out_Color = vec4(totalDiffuse, 1.0) * totalColor;
@@ -83,5 +97,6 @@ void main(void){
 	{
 		out_Color = vec4(totalDiffuse, 1.0) * totalColor + vec4(totalSpecular, 1.0);
 	}
-	out_Color = mix(vec4(skyColor,1.0), out_Color, visibility);
+
+	out_Color = mix(vec4(skyColor, 1.0), out_Color, visibility);
 }

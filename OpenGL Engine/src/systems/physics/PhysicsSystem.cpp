@@ -1,5 +1,6 @@
 #include "PhysicsSystem.h"
 #include <iostream>
+#include "..\..\SGEDefs.h"
 #include "..\..\Settings.h"
 #include "..\..\components\Entity.h"
 #include "..\..\components\preDefinedComponents\CPhysics.h"
@@ -7,14 +8,15 @@
 #include "..\..\components\EntityManager.h"
 #include "..\..\maths\Maths.h"
 
-PhysicsSystem::PhysicsSystem(EntityManager* mEntityManager)
-	: m_entityManager(mEntityManager)
+
+
+PhysicsSystem::PhysicsSystem()
 {
 }
 
 void PhysicsSystem::update(float delta)
 {
-	auto physicsEntities = m_entityManager->getEntitiesByGroup(EntityGroups::HasPhysics);
+	auto physicsEntities = SGE::Instances::instances->entityManagerInstance->getEntitiesByGroup(EntityGroups::HasPhysics);
 	for (Entity* e : physicsEntities)
 	{
 		CPhysics& currentEntityPhysics = e->getComponent<CPhysics>();
@@ -45,8 +47,8 @@ void PhysicsSystem::registerHeightMap(continuous2DArray<float>& mHeightMap, floa
 
 float PhysicsSystem::getHeightAtPoint(float X, float Z)
 {
-	auto groundEntities = m_entityManager->getEntitiesByGroup(EntityGroups::IsGround);
-	for(auto groundEntity : groundEntities)
+	auto groundEntities = SGE::Instances::instances->entityManagerInstance->getEntitiesByGroup(EntityGroups::IsGround);
+	for (auto groundEntity : groundEntities)
 	{
 		CTransformation& transformation = groundEntity->getComponent<CTransformation>();
 		float groundX = X - (transformation.position.x * m_groundSize);
@@ -55,7 +57,7 @@ float PhysicsSystem::getHeightAtPoint(float X, float Z)
 		float gridSquareSize = m_groundSize / ((float)length - 1);
 		int gridX = (int)std::floor(groundX / gridSquareSize);
 		int gridZ = (int)std::floor(groundZ / gridSquareSize);
-		if((unsigned int)gridX >= length - 1 || (unsigned int)gridZ >= length - 1 || gridX < 0 || gridZ < 0)
+		if ((unsigned int)gridX >= length - 1 || (unsigned int)gridZ >= length - 1 || gridX < 0 || gridZ < 0)
 		{
 			return 0.0f;
 		}
@@ -65,7 +67,7 @@ float PhysicsSystem::getHeightAtPoint(float X, float Z)
 		if (xCoord <= (1 - zCoord))
 		{
 			result = Maths::barryCentric(
-				glm::vec3(0, m_heightMap(gridX, gridZ), 0), 
+				glm::vec3(0, m_heightMap(gridX, gridZ), 0),
 				glm::vec3(1, m_heightMap((gridX + 1), gridZ), 0),
 				glm::vec3(0, m_heightMap(gridX, gridZ + 1), 1),
 				glm::vec2(xCoord, zCoord));

@@ -21,6 +21,5 @@ struct Settings
 	static float nearRenderPlane;
 	static float farRenderPlane;
 
-	static float skyboxSize;
 	static std::string skyboxFiles[6];
 };

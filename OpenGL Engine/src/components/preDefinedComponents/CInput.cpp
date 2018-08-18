@@ -1,5 +1,5 @@
 #include "CInput.h"
-#include "..\..\Engine.h"
+#include "..\..\SGEDefs.h"
 #include "..\Entity.h"
 #include "..\..\systems\event\EventSystem.h"
 
@@ -13,7 +13,7 @@ void CInput::init()
 
 void CInput::subscribe(const EventType& mType, EventBehavior& mBehavior)
 {
-	Engine::Systems::Event::subscribe(mType, this);
+	SGE::Instances::instances->eventSystemInstance->subscribe(mType, this);
 	m_reactions[mType] = mBehavior;
 }
 

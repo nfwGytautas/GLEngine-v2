@@ -1,9 +1,10 @@
 #include "UpdateSystem.h"
+#include "..\..\SGEDefs.h"
 #include <glm\gtx\transform.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 #include "..\..\Settings.h"
 #include "..\..\graphics\display\Display.h"
-#include "..\..\input\InputManager.h"
+#include "..\..\data manager\InputManager.h"
 #include "..\physics\PhysicsSystem.h"
 #include "..\event\EventSystem.h"
 #include "..\..\algorithm\Algorithm.h"
@@ -17,7 +18,7 @@ void UpdateSystem::update()
 {
 	Display::updateDisplay();
 	InputManager::update();
-	m_entityManager->refresh();
+	SGE::Instances::instances->entityManagerInstance->refresh();
 
 	updateEntitiesWithTransformation();
 	updateEntitiesWithInput();
@@ -25,15 +26,14 @@ void UpdateSystem::update()
 	updateEntitiesWithCameras();
 
 	//Kinda redundant now
-	m_entityManager->update(Display::getDelta());
+	SGE::Instances::instances->entityManagerInstance->update(Display::getDelta());
 }
-UpdateSystem::UpdateSystem(EntityManager* mEntityManager, PhysicsSystem* mPhysicsSystem, EventSystem* mEventSystem)
-	: m_entityManager(mEntityManager), m_physicsSystem(mPhysicsSystem), m_eventSystem(mEventSystem)
+UpdateSystem::UpdateSystem()
 {
 }
 void UpdateSystem::updateEntitiesWithTransformation()
 {
-	auto transformations = m_entityManager->getEntitiesByGroup(EntityGroups::StaticEntity);
+	auto transformations = SGE::Instances::instances->entityManagerInstance->getEntitiesByGroup(EntityGroups::StaticEntity);
 	for (Entity* entity : transformations)
 	{
 		CTransformation& cTransform = entity->getComponent<CTransformation>();
@@ -50,34 +50,34 @@ void UpdateSystem::updateEntitiesWithInput()
 	auto downKeys = InputManager::getKeyDown();
 	for (Key key : downKeys)
 	{
-		m_eventSystem->post(KeyDownEvent(key));
+		SGE::Instances::instances->eventSystemInstance->post(KeyDownEvent(key));
 	}
 	auto upKeys = InputManager::getKeyUp();
 	for (Key key : upKeys)
 	{
-		m_eventSystem->post(KeyUpEvent(key));
+		SGE::Instances::instances->eventSystemInstance->post(KeyUpEvent(key));
 	}
 	auto mDownKeys = InputManager::getMKeyDown();
 	for (MouseKey key : mDownKeys)
 	{
-		m_eventSystem->post(MouseKeyDownEvent(key));
+		SGE::Instances::instances->eventSystemInstance->post(MouseKeyDownEvent(key));
 	}
 	auto mUpKeys = InputManager::getMKeyUp();
 	for (MouseKey key : mUpKeys)
 	{
-		m_eventSystem->post(MouseKeyUpEvent(key));
-	}	
-	m_eventSystem->post(MouseMovedEvent(InputManager::Mouse::getXOffset(), InputManager::Mouse::getYOffset()));
-	m_eventSystem->post(MouseScrollEvent(InputManager::Mouse::getScrollAmountX(), InputManager::Mouse::getScrollAmountY()));
+		SGE::Instances::instances->eventSystemInstance->post(MouseKeyUpEvent(key));
+	}
+	SGE::Instances::instances->eventSystemInstance->post(MouseMovedEvent(InputManager::Mouse::getXOffset(), InputManager::Mouse::getYOffset()));
+	SGE::Instances::instances->eventSystemInstance->post(MouseScrollEvent(InputManager::Mouse::getScrollAmountX(), InputManager::Mouse::getScrollAmountY()));
 }
 void UpdateSystem::updateEntitiesWithPhysics()
 {
-	m_physicsSystem->update(Display::getDelta());
+	SGE::Instances::instances->physicsSystemInstance->update(Display::getDelta());
 }
 
 void UpdateSystem::updateEntitiesWithCameras()
 {
-	auto cameraEntities = m_entityManager->getEntitiesByGroup(EntityGroups::Camera);
+	auto cameraEntities = SGE::Instances::instances->entityManagerInstance->getEntitiesByGroup(EntityGroups::Camera);
 	for (Entity* e : cameraEntities)
 	{
 		CCamera& cameraComponent = e->getComponent<CCamera>();
@@ -90,8 +90,8 @@ void UpdateSystem::updateEntitiesWithCameras()
 			float verticalDistance = cameraComponent.distanceToHook * sin(glm::radians(cameraComponent.pitch));
 
 			float fullAngle = cameraComponent.m_hookedTo->getComponent<CTransformation>().rotation.y + cameraComponent.angleAroundHook;
-			float offsetX = (float) horizontalDistance * sin(glm::radians(fullAngle));
-			float offsetZ = (float) horizontalDistance * cos(glm::radians(fullAngle));
+			float offsetX = (float)horizontalDistance * sin(glm::radians(fullAngle));
+			float offsetZ = (float)horizontalDistance * cos(glm::radians(fullAngle));
 
 			cameraComponent.cTransformation->position.x = cameraComponent.m_hookedTo->getComponent<CTransformation>().position.x - offsetX;
 			cameraComponent.cTransformation->position.z = cameraComponent.m_hookedTo->getComponent<CTransformation>().position.z - offsetZ;

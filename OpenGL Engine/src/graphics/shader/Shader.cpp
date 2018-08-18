@@ -9,7 +9,7 @@
 #include <GLFW\glfw3.h>
 #include <glm\glm.hpp>
 
-#include "..\FrameworkAssert.h"
+#include "..\GraphicsAssert.h"
 #include "..\gtypes\gTypes.h"
 
 Shader::Shader()
@@ -36,13 +36,13 @@ int Shader::getUniformLocation(std::string uniformName)
 {
 	GLCall(int location = glGetUniformLocation(m_programID, uniformName.c_str()));
 	if (location == -1)
-		std::cout << "[Engine][Shader] Warning: uniform '" << uniformName << "' doesn't exist!" << std::endl;
+		std::cout << "[SGE][Shader] Warning: uniform '" << uniformName << "' doesn't exist!" << std::endl;
 	return location;
 }
 
 void Shader::loadShaders(std::string vertexPath, std::string fragmentPath)
 {
-	std::cout << "[Engine][Shader] Loading: \n" << vertexPath << " \n" << fragmentPath << std::endl;
+	std::cout << "[SGE][Shader] Loading: \n" << vertexPath << " \n" << fragmentPath << std::endl;
 	std::string fragmentSource;
 	std::string vertexSource;
 
@@ -52,7 +52,7 @@ void Shader::loadShaders(std::string vertexPath, std::string fragmentPath)
 			(std::istreambuf_iterator<char>()));
 	}
 	else {
-		std::cout << "[Engine][Shader] Impossible to read " << vertexPath << std::endl;
+		std::cout << "[SGE][Shader] Impossible to read " << vertexPath << std::endl;
 		return;
 	}
 	vertexFile.close();
@@ -63,7 +63,7 @@ void Shader::loadShaders(std::string vertexPath, std::string fragmentPath)
 			(std::istreambuf_iterator<char>()));
 	}
 	else {
-		std::cout << "[Engine][Shader] Impossible to read " << fragmentPath << std::endl;
+		std::cout << "[SGE][Shader] Impossible to read " << fragmentPath << std::endl;
 		return;
 	}
 	fragmentFile.close();
@@ -77,7 +77,7 @@ void Shader::loadShaders(std::string vertexPath, std::string fragmentPath)
 	int InfoLogLength;
 
 	// Compile Vertex Shader
-	std::cout << "[Engine][Shader] Compiling [VERTEX] shader \n";
+	std::cout << "[SGE][Shader] Compiling [VERTEX] shader \n";
 
 	char const * VertexSourcePointer = vertexSource.c_str();
 	GLCall(glShaderSource(VertexShaderID, 1, &VertexSourcePointer, NULL));
@@ -89,13 +89,13 @@ void Shader::loadShaders(std::string vertexPath, std::string fragmentPath)
 	if (InfoLogLength > 0) {
 		std::vector<char> VertexShaderErrorMessage(InfoLogLength + 1);
 		GLCall(glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]));
-		std::cout << "[Engine][Shader] " << &VertexShaderErrorMessage[0] << std::endl;
+		std::cout << "[SGE][Shader] " << &VertexShaderErrorMessage[0] << std::endl;
 	}
 
 
 
 	// Compile Fragment Shader
-	std::cout << "[Engine][Shader] Compiling [FRAGMENT] shader \n";
+	std::cout << "[SGE][Shader] Compiling [FRAGMENT] shader \n";
 
 	char const * FragmentSourcePointer = fragmentSource.c_str();
 	GLCall(glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer, NULL));
@@ -107,13 +107,13 @@ void Shader::loadShaders(std::string vertexPath, std::string fragmentPath)
 	if (InfoLogLength > 0) {
 		std::vector<char> FragmentShaderErrorMessage(InfoLogLength + 1);
 		GLCall(glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]));
-		std::cout << "[Engine][Shader] " << &FragmentShaderErrorMessage[0] << std::endl;
+		std::cout << "[SGE][Shader] " << &FragmentShaderErrorMessage[0] << std::endl;
 	}
 
 
 
 	// Link the program
-	std::cout << "[Engine][Shader] Linking program \n";
+	std::cout << "[SGE][Shader] Linking program \n";
 	m_programID = (unsigned int)glCreateProgram();
 	GLCall(glAttachShader(m_programID, VertexShaderID));
 	GLCall(glAttachShader(m_programID, FragmentShaderID));
@@ -128,7 +128,7 @@ void Shader::loadShaders(std::string vertexPath, std::string fragmentPath)
 	if (InfoLogLength > 0) {
 		std::vector<char> ProgramErrorMessage(InfoLogLength + 1);
 		GLCall(glGetProgramInfoLog(m_programID, InfoLogLength, NULL, &ProgramErrorMessage[0]));
-		std::cout << "[Engine][Shader] " << &ProgramErrorMessage[0] << std::endl;
+		std::cout << "[SGE][Shader] " << &ProgramErrorMessage[0] << std::endl;
 	}
 
 

@@ -57,8 +57,15 @@ bool OBJLoader::LoadOBJ(std::string filePath)
 				normal.z = mesh->mNormals[verticeIdx].z;
 				normals.push_back(normal);
 				glm::vec2 uv;
-				uv.x = mesh->mTextureCoords[0][verticeIdx].x;
-				uv.y = mesh->mTextureCoords[0][verticeIdx].y;
+				if (mesh->mTextureCoords[0])
+				{
+					uv.x = mesh->mTextureCoords[0][verticeIdx].x;
+					uv.y = mesh->mTextureCoords[0][verticeIdx].y;
+				}
+				else
+				{
+					uv = glm::vec2(0.0f, 0.0f);
+				}
 				uvs.push_back(uv);
 			}
 			for (unsigned int faceIdx = 0; faceIdx < mesh->mNumFaces; faceIdx++)
