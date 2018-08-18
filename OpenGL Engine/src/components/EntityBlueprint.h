@@ -6,13 +6,9 @@
 #include "Component.h"
 #include "Entity.h"
 
-class EntityManager;
 class EntityBlueprint
 {
 public:
-	EntityBlueprint(EntityManager& mManager);
-	~EntityBlueprint();
-
 	template<typename T, typename... TArgs>
 	T& addComponent(TArgs&&... mArgs)
 	{
@@ -38,13 +34,15 @@ public:
 		auto ptr(m_componentArray[getComponentTypeID<T>()]);
 		return *static_cast<T*>(ptr);
 	}
-private:
-	EntityManager& m_manager;
 
-	using ComponentBitset = std::bitset<maxComponents>;
-	using ComponentArray = std::array<Component*, maxComponents>;
-	ComponentArray m_componentArray;
-	ComponentBitset m_componentBitset;
+	EntityBlueprint();
+	~EntityBlueprint();
+	void releaseMemory();
+private:
+	bool m_memoryReleased{ false };
+
+	std::array<Component*, maxComponents> m_componentArray;
+	std::bitset<maxComponents> m_componentBitset;
 
 	friend Entity;
 };

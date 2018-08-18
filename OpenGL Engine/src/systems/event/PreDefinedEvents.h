@@ -1,6 +1,6 @@
 #pragma once
 #include "Event.h"
-#include "..\..\input\InputKeys.h"
+#include "..\..\data manager\InputKeys.h"
 
 struct KeyDownEvent : public Event
 {

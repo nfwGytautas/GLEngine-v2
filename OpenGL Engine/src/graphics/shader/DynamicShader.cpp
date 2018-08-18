@@ -5,7 +5,7 @@
 #include <sstream>
 #include <vector>
 
-#include "..\FrameworkAssert.h"
+#include "..\GraphicsAssert.h"
 
 #include <GL\glew.h>
 #include <glm\glm.hpp>
@@ -55,7 +55,7 @@ int DynamicShader::getUniformLocation(const std::string& name)
 	GLCall(int location = glGetUniformLocation(m_programID, name.c_str()));
 	if (location == -1)
 	{
-		std::cout << "[Engine][Shader][Dynamic] Warning: uniform '" << name << "' doesn't exist!" << std::endl;
+		std::cout << "[SGE][Shader][Dynamic] Warning: uniform '" << name << "' doesn't exist!" << std::endl;
 	}
 
 	m_UniformLocationCache[name] = location;

@@ -7,9 +7,10 @@
 #include <glm\glm.hpp>
 #include "..\algorithm\Algorithm.h"
 
+
 class DataManager
 {
-public:	
+public:
 	DataManager();
 	~DataManager();
 
@@ -24,6 +25,7 @@ public:
 	unsigned int loadMaterial(std::string mFilePath);
 	/*Texture files must be in this order: Right, Left, Top, Bottom, Back, Front*/
 	unsigned int loadCubeMap(std::vector<std::string>& textureFiles);
+	unsigned int loadTexture(std::string mFilePath);
 
 
 	void cleanUp();

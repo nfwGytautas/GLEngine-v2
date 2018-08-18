@@ -4,6 +4,8 @@ in vec3 position;
 in vec2 textureCoordinates;
 in vec3 normal;
 
+out vec3 reflectionPosition;
+out vec3 reflectionNormal;
 out vec2 pass_textureCoordinates;
 out vec3 surfaceNormal;
 out vec3 toLightVector[4];
@@ -22,7 +24,7 @@ uniform vec2 uv_offset;
 uniform float cRenderer_fakeLighting;
 uniform float cRenderer_numberOfRows;
 
-const float density = 0.0035;
+const float density = 0.0005;
 const float gradient = 10.0;
 
 void main(void){
@@ -30,6 +32,8 @@ void main(void){
 	vec4 positionRelativeToCam = viewMatrix * worldPosition;
 	gl_Position = projectionMatrix * positionRelativeToCam;
 	pass_textureCoordinates = (textureCoordinates/cRenderer_numberOfRows) + uv_offset;
+	reflectionPosition = vec3(transformationMatrix * vec4(position, 1.0));
+	reflectionNormal = mat3(transpose(inverse(transformationMatrix))) * normal;
 
 	vec3 actualNormal = normal;
 	if(cRenderer_fakeLighting > 0.5)

@@ -1,11 +1,12 @@
 #pragma once
+#include <string>
 #include <glm\glm.hpp>
 
 class GraphicsAPI;
 class GUI
 {
 public:
-	GUI(unsigned int mTexture, glm::vec2 mPosition, float mRotation ,glm::vec2 mScale);
+	GUI(std::string mFilepath, glm::vec2 mPosition, float mRotation ,glm::vec2 mScale);
 
 	bool operator==(const GUI& gui) const
 	{

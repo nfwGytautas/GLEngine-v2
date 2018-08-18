@@ -1,4 +1,4 @@
-#include "FrameworkAssert.h"
+#include "GraphicsAssert.h"
 
 #include <GL/glew.h>
 #include <iostream>

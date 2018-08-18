@@ -15,5 +15,4 @@ float Settings::FoV = 70;
 float Settings::nearRenderPlane = 0.1f;
 float Settings::farRenderPlane = 2000.0f;
 
-float Settings::skyboxSize = 500.0f;
 std::string Settings::skyboxFiles[6] = { "", "", "", "", "", "" };

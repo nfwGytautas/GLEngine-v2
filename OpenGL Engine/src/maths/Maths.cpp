@@ -5,6 +5,23 @@
 #include "..\Settings.h"
 
 
+glm::mat4 Maths::createProjectionMatrix()
+{
+	glm::mat4 returnMatrix = glm::mat4(1);
+
+	float aspectRatio = (float)Settings::width / (float)Settings::height;
+	float y_scale = (float)((1.0f / glm::tan(glm::radians(Settings::FoV / 2.0f))) * aspectRatio);
+	float x_scale = y_scale / aspectRatio;
+	float frustum_length = Settings::farRenderPlane - Settings::nearRenderPlane;
+
+	returnMatrix[0] = glm::vec4(x_scale, 0, 0, 0);
+	returnMatrix[1] = glm::vec4(0, y_scale, 0, 0);
+	returnMatrix[2] = glm::vec4(0, 0, -((Settings::farRenderPlane + Settings::nearRenderPlane) / frustum_length), -1);
+	returnMatrix[3] = glm::vec4(0, 0, -((2 * Settings::farRenderPlane * Settings::nearRenderPlane) / frustum_length), 0);
+
+	return returnMatrix;
+}
+
 glm::mat4 Maths::createTransformationMatrix(glm::vec2 translation, float rotation, glm::vec2 scale)
 {
 	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(translation, 0));

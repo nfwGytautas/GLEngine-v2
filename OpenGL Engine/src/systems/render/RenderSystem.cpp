@@ -4,7 +4,7 @@
 #include <GLFW\glfw3.h>
 #include "..\..\SGEDefs.h"
 #include "..\..\Settings.h"
-#include "..\..\graphics\FrameworkAssert.h"
+#include "..\..\graphics\GraphicsAssert.h"
 #include "..\..\graphics\shader\DynamicShader.h"
 #include "..\..\components\EntityManager.h"
 #include "..\..\components\Entity.h"
@@ -14,6 +14,7 @@
 #include "..\..\graphics\gTypes\gTypes.h"
 #include "..\..\graphics\gui\GUI.h"
 #include "..\..\maths\Maths.h"
+
 
 void RenderSystem::render()
 {
@@ -25,89 +26,100 @@ void RenderSystem::render()
 	//================================================
 	if (Settings::camera == nullptr)
 	{
-		std::cout << "[Engine][Renderer] No specified camera!" << std::endl;
+		std::cout << "[SGE][Renderer] No specified camera!" << std::endl;
 		return;
 	}
 
-	//========Skybox========
-	(*m_shaders)[ShaderNames::Skybox]->bind();
-	//Custom viewport for the skybox
-	glm::mat4 skyboxViewPort = Settings::camera->viewMatrix;
-	skyboxViewPort[0].w = 0;
-	skyboxViewPort[1].w = 0;
-	skyboxViewPort[2].w = 0;
-	(*m_shaders)[ShaderNames::Skybox]->setMatrix4fUniform("viewMatrix", skyboxViewPort);
-	//Render Skybox
-	renderSkybox();
-	(*m_shaders)[ShaderNames::Skybox]->unbind();
-	//======================
+	DynamicShader* loadedShader = nullptr;	
 
 	//========ENTITY========
 	//Load camera
-	(*m_shaders)[ShaderNames::Entity]->bind();
-	loadViewport(ShaderNames::Entity);
+	loadedShader = SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::Entity);
+	loadedShader->bind();
+	loadViewport(loadedShader);
 	//Load all the lights
-	loadLights(ShaderNames::Entity);
+	loadLights(loadedShader);
 	//Render entities
-	renderEntities();
-	(*m_shaders)[ShaderNames::Entity]->unbind();
+	renderEntities(loadedShader);
+	loadedShader->unbind();
+	//======================	
+
+	//========Skybox========
+	loadedShader = SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::Skybox);
+	loadedShader->bind();
+	//Custom viewport for the skybox
+	glm::mat4 skyboxViewPort = glm::mat4(glm::mat3(Settings::camera->viewMatrix));
+	loadedShader->setMatrix4fUniform("viewMatrix", skyboxViewPort);
+	//Render Skybox
+	renderSkybox(loadedShader);
+	loadedShader->unbind();
 	//======================
 
 	//=========GUI==========
-	(*m_shaders)[ShaderNames::GUI]->bind();
+	loadedShader = SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::GUI);
+	loadedShader->bind();
 	//Render GUI
-	renderGUI();
-	(*m_shaders)[ShaderNames::GUI]->unbind();
+	renderGUI(loadedShader);
+	loadedShader->unbind();
 	//======================	
 
 	//================================================
 
-	
+
 }
 
-RenderSystem::RenderSystem(std::unordered_map<std::string, DynamicShader*>* mShaders, EntityManager* mEntityManager, BatchManager* mBatchManager, std::pair<unsigned int, unsigned int> mGUIQuad, std::tuple<unsigned int, unsigned int, unsigned int> mSkybox)
-	: m_shaders(mShaders), m_entityManager(mEntityManager), m_batchManager(mBatchManager), m_GUIQuad(mGUIQuad), m_skybox(mSkybox)
-{
-}
+RenderSystem::RenderSystem()
+	:m_firstTime(true)
+{}
 
 void RenderSystem::prepare()
 {
+	GLCall(glEnable(GL_CULL_FACE));
+	GLCall(glCullFace(GL_BACK));
 	GLCall(glEnable(GL_DEPTH_TEST));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 	GLCall(glClearColor(Settings::skyColor.r, Settings::skyColor.g, Settings::skyColor.b, 0.0f));
+
+	if(m_firstTime)
+	{
+		m_GUIQuad = SGE::Instances::instances->dataManagerInstance->create2DQuad(Settings::guiQuad);
+		m_skybox = SGE::Instances::instances->dataManagerInstance->createSkybox();
+		m_firstTime = false;
+	}
 }
-void RenderSystem::loadViewport(std::string mShader)
+void RenderSystem::loadViewport(DynamicShader* shader)
 {
-	(*m_shaders)[mShader]->setMatrix4fUniform("viewMatrix", Settings::camera->viewMatrix);
+	shader->setMatrix4fUniform("viewMatrix", Settings::camera->viewMatrix);
 }
-void RenderSystem::loadLights(std::string mShader)
+void RenderSystem::loadLights(DynamicShader* shader)
 {
-	auto lights = m_entityManager->getEntitiesByGroup(EntityGroups::LightEmittingEntity);
+	auto lights = SGE::Instances::instances->entityManagerInstance->getEntitiesByGroup(EntityGroups::LightEmittingEntity);
 	for (unsigned int i = 0; i < lights.size() && i < SGE_MAX_SUPPORTED_LIGHTS; i++)
 	{
 		CColor& cColor = lights[i]->getComponent<CColor>();
 		CTransformation& cTransformation = lights[i]->getComponent<CTransformation>();
 		CLightEmiter& cLightEmiter = lights[i]->getComponent<CLightEmiter>();
-		(*m_shaders)[mShader]->setVec3Uniform("lightColour[" + std::to_string(i) + "]", cColor.value);
-		(*m_shaders)[mShader]->setVec3Uniform("lightPosition[" + std::to_string(i) + "]", cTransformation.position + cLightEmiter.lightOffset);
-		(*m_shaders)[mShader]->setVec3Uniform("attenuation[" + std::to_string(i) + "]", cLightEmiter.attenuation);
+		shader->setVec3Uniform("lightColour[" + std::to_string(i) + "]", cColor.value);
+		shader->setVec3Uniform("lightPosition[" + std::to_string(i) + "]", cTransformation.position + cLightEmiter.lightOffset);
+		shader->setVec3Uniform("attenuation[" + std::to_string(i) + "]", cLightEmiter.attenuation);
 	}
 	if(lights.size() <= SGE_MAX_SUPPORTED_LIGHTS)
 	{
-		(*m_shaders)[mShader]->setFloatUniform("lightCount", lights.size());
+		shader->setFloatUniform("lightCount", lights.size());
 	}
 	else
 	{
-		(*m_shaders)[mShader]->setFloatUniform("lightCount", SGE_MAX_SUPPORTED_LIGHTS);
+		shader->setFloatUniform("lightCount", SGE_MAX_SUPPORTED_LIGHTS);
 	}
-	(*m_shaders)[mShader]->setVec3Uniform("skyColor", Settings::skyColor);
+	shader->setVec3Uniform("skyColor", Settings::skyColor);
 }
-void RenderSystem::renderEntities()
-{
-	auto knownMeshes = m_batchManager->allKnownMeshes();
+void RenderSystem::renderEntities(DynamicShader* shader)
+{			
+	shader->setVec3Uniform("cameraPos", Settings::camera->cTransformation->position);
+	auto knownMeshes = SGE::Instances::instances->batchManagerInstance->allKnownMeshes();
 	for (unsigned int meshID : knownMeshes)
 	{
-		auto sameMeshEntities = m_batchManager->getEntityBatch(meshID);
+		auto sameMeshEntities = SGE::Instances::instances->batchManagerInstance->getEntityBatch(meshID);
 		if (sameMeshEntities.size() != 0)
 		{
 			auto mesh = sameMeshEntities[0]->getComponent<CMesh>();
@@ -128,33 +140,33 @@ void RenderSystem::renderEntities()
 				if (m_currentMaterial == nullptr || *m_currentMaterial != material)
 				{
 					GraphicsAPI::bindTexture(material);		
-					(*m_shaders)[ShaderNames::Entity]->setFloatUniform("shineDamper", material.shineDamper);
-					(*m_shaders)[ShaderNames::Entity]->setFloatUniform("reflectivity", material.reflectivity);
+					shader->setFloatUniform("shineDamper", material.shineDamper);
+					shader->setFloatUniform("reflectivity", material.reflectivity);
 					m_currentMaterial = &material;
 				}
 			}
 			else if (entity->hasComponent<CMultiTexture>())
 			{
 				CMultiTexture pack = entity->getComponent<CMultiTexture>();
-				(*m_shaders)[ShaderNames::Entity]->setIntUniform("blendMap", 1);
+				shader->setIntUniform("blendMap", 1);
 				GraphicsAPI::bindTexture(pack.textureBlendMap, 1);
-				(*m_shaders)[ShaderNames::Entity]->setIntUniform("backgroundTexture", 2);
+				shader->setIntUniform("backgroundTexture", 2);
 				GraphicsAPI::bindTexture(pack.background, 2);
-				(*m_shaders)[ShaderNames::Entity]->setIntUniform("rTexture", 3);
+				shader->setIntUniform("rTexture", 3);
 				GraphicsAPI::bindTexture(pack.r, 3);
-				(*m_shaders)[ShaderNames::Entity]->setIntUniform("gTexture", 4);
+				shader->setIntUniform("gTexture", 4);
 				GraphicsAPI::bindTexture(pack.g, 4);
-				(*m_shaders)[ShaderNames::Entity]->setIntUniform("bTexture", 5);
+				shader->setIntUniform("bTexture", 5);
 				GraphicsAPI::bindTexture(pack.b, 5);
 			}
 			if (entity->hasComponent<CTransformation>())
 			{
-				(*m_shaders)[ShaderNames::Entity]->setMatrix4fUniform("transformationMatrix", entity->getComponent<CTransformation>().transformationMatrix);
+				shader->setMatrix4fUniform("transformationMatrix", entity->getComponent<CTransformation>().transformationMatrix);
 			}
-			loadDefaultRenderSettings(ShaderNames::Entity);
+			loadDefaultRenderSettings(shader);
 			if (entity->hasComponent<CRenderer>())
 			{
-				loadRenderSettings(ShaderNames::Entity, entity);
+				loadRenderSettings(shader, entity);
 			}
 			GLCall(glDrawElements(GL_TRIANGLES, entity->getComponent<CMesh>().vertexCount, GL_UNSIGNED_INT, (void*)0));
 		}
@@ -163,13 +175,14 @@ void RenderSystem::renderEntities()
 		GLCall(glDisableVertexAttribArray(AttributeLocation::Normal));
 		GLCall(glBindVertexArray(0));
 		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+		GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
 		m_currentMaterial = nullptr;
 	}
 }
 
-void RenderSystem::renderGUI()
+void RenderSystem::renderGUI(DynamicShader* shader)
 {
-	auto guis = m_batchManager->allKnownGUIs();
+	auto guis = SGE::Instances::instances->batchManagerInstance->allKnownGUIs();
 	if(guis.size() > 0)
 	{
 		GLCall(glDisable(GL_DEPTH_TEST));
@@ -177,11 +190,11 @@ void RenderSystem::renderGUI()
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 		GraphicsAPI::bindVAO(m_GUIQuad.first);
 		GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
-		for (GUI gui : guis)
+		for (GUI* gui : guis)
 		{
 			GraphicsAPI::bindTexture(gui);
-			glm::mat4 transformation = Maths::createTransformationMatrix(gui.getPosition(), gui.getRotation(), gui.getScale());
-			(*m_shaders)[ShaderNames::GUI]->setMatrix4fUniform("transformationMatrix", transformation);
+			glm::mat4 transformation = Maths::createTransformationMatrix(gui->getPosition(), gui->getRotation(), gui->getScale());
+			shader->setMatrix4fUniform("transformationMatrix", transformation);
 			GLCall(glDrawArrays(GL_TRIANGLE_STRIP, 0, m_GUIQuad.second));
 		}
 		GLCall(glDisableVertexAttribArray(AttributeLocation::Position));
@@ -192,8 +205,9 @@ void RenderSystem::renderGUI()
 	}	
 }
 
-void RenderSystem::renderSkybox()
+void RenderSystem::renderSkybox(DynamicShader* shader)
 {
+	GLCall(glDepthFunc(GL_LEQUAL));
 	GraphicsAPI::bindVAO(std::get<0>(m_skybox));
 	GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
 	GraphicsAPI::bindCubeMap(std::get<2>(m_skybox));
@@ -203,12 +217,13 @@ void RenderSystem::renderSkybox()
 	GLCall(glDisableVertexAttribArray(AttributeLocation::Position));
 	GLCall(glBindVertexArray(0));
 	GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
+	GLCall(glDepthFunc(GL_LESS));
 }
 
-void RenderSystem::loadRenderSettings(std::string mShader, Entity* entity)
+void RenderSystem::loadRenderSettings(DynamicShader* shader, Entity* entity)
 {
 	CRenderer cRenderer = entity->getComponent<CRenderer>();
-	(*m_shaders)[mShader]->setFloatUniform("cRenderer_tileCount", (float)cRenderer.tileCount);
+	shader->setFloatUniform("cRenderer_tileCount", (float)cRenderer.tileCount);
 
 	if (cRenderer.transparent)
 	{
@@ -217,46 +232,53 @@ void RenderSystem::loadRenderSettings(std::string mShader, Entity* entity)
 
 	if (cRenderer.fakeLighting)
 	{
-		(*m_shaders)[mShader]->setBooleanUniform("cRenderer_fakeLighting", true);
+		shader->setBooleanUniform("cRenderer_fakeLighting", true);
 	}
 
 	if (cRenderer.multiTexture)
 	{
-		(*m_shaders)[mShader]->setBooleanUniform("cRenderer_multiTexture", true);
+		shader->setBooleanUniform("cRenderer_multiTexture", true);
 	}
 
 	if (cRenderer.disableSpecular)
 	{
-		(*m_shaders)[mShader]->setBooleanUniform("cRenderer_disableSpecular", true);
+		shader->setBooleanUniform("cRenderer_disableSpecular", true);
 	}
 
 	if (cRenderer.hasAtlas)
 	{
-		(*m_shaders)[mShader]->setFloatUniform("cRenderer_numberOfRows", (float) cRenderer.atlasRowCount);
+		shader->setFloatUniform("cRenderer_numberOfRows", (float) cRenderer.atlasRowCount);
 		int column = cRenderer.atlasIndex % cRenderer.atlasRowCount;
 		float xOffSet = (float)column / (float) cRenderer.atlasRowCount;
 		int row = cRenderer.atlasIndex / cRenderer.atlasRowCount;
 		float yOffSet = (float)row / (float)cRenderer.atlasRowCount;
 		glm::vec2 textureOffset(xOffSet, yOffSet);
-		(*m_shaders)[mShader]->setVec2Uniform("uv_offset", textureOffset);
+		shader->setVec2Uniform("uv_offset", textureOffset);
+	}
+
+	if (cRenderer.skyboxReflection)
+	{
+		shader->setFloatUniform("cRenderer_skyboxReflection", true);
+		GraphicsAPI::bindCubeMap(std::get<2>(m_skybox));
 	}
 
 	m_usingDefaults = false;
 }
-void RenderSystem::loadDefaultRenderSettings(std::string mShader)
+void RenderSystem::loadDefaultRenderSettings(DynamicShader* shader)
 {
 	if (!m_usingDefaults)
 	{
-		(*m_shaders)[mShader]->setFloatUniform("cRenderer_tileCount", 1);
-		(*m_shaders)[mShader]->setFloatUniform("cRenderer_numberOfRows", 1);
-		(*m_shaders)[mShader]->setVec2Uniform("uv_offset", glm::vec2(0,0));
+		shader->setFloatUniform("cRenderer_tileCount", 1);
+		shader->setFloatUniform("cRenderer_numberOfRows", 1);
+		shader->setVec2Uniform("uv_offset", glm::vec2(0,0));
 
 		GLCall(glEnable(GL_CULL_FACE));
 		GLCall(glCullFace(GL_BACK));
 
-		(*m_shaders)[mShader]->setBooleanUniform("cRenderer_fakeLighting", false);
-		(*m_shaders)[mShader]->setBooleanUniform("cRenderer_multiTexture", false);
-		(*m_shaders)[mShader]->setBooleanUniform("cRenderer_disableSpecular", false);
+		shader->setBooleanUniform("cRenderer_fakeLighting", false);
+		shader->setBooleanUniform("cRenderer_multiTexture", false);
+		shader->setBooleanUniform("cRenderer_disableSpecular", false);
+		shader->setFloatUniform("cRenderer_skyboxReflection", false);
 	}
 
 	m_usingDefaults = true;

@@ -1,7 +1,6 @@
 #include "EntityManager.h"
 #include <algorithm>
-#include "..\data manager\BatchManager.h"
-#include "EntityBlueprint.h"
+#include "..\SGEDefs.h"
 
 void EntityManager::refresh()
 {
@@ -13,24 +12,24 @@ void EntityManager::refresh()
 		(
 			std::remove_if(std::begin(v), std::end(v),
 				[i](Entity* mEntity)
-				{
-					return !mEntity->isAlive() || !mEntity->hasGroup(i);
-				}),
+		{
+			return !mEntity->isAlive() || !mEntity->hasGroup(i);
+		}),
 			std::end(v)
-		);
+			);
 	}
 
 	m_entities.erase
 	(
 		std::remove_if(std::begin(m_entities), std::end(m_entities),
-			[](const std::unique_ptr<Entity>& mEntity)
-			{
-				return !mEntity->isAlive();
-			}),
+			[](const Entity* mEntity)
+	{
+		return !mEntity->isAlive();
+	}),
 		std::end(m_entities)
-	);
+		);
 
-	m_bManager->updateEntityBatch(m_entities);
+	SGE::Instances::instances->batchManagerInstance->updateEntityBatch(m_entities);
 }
 
 void EntityManager::update(float frameTime)
@@ -49,28 +48,14 @@ void EntityManager::draw()
 	}
 }
 
-Entity& EntityManager::addEntity()
+void EntityManager::registerEntity(Entity* entity)
 {
-	Entity* e(new Entity(*this));
-	std::unique_ptr<Entity> uPtr{ e };
-	m_entities.emplace_back(std::move(uPtr));
-	return *e;
+	m_entities.push_back(entity);
 }
 
-Entity & EntityManager::addEntity(EntityBlueprint& mBlueprint)
+void EntityManager::registerBlueprint(EntityBlueprint* blueprint)
 {
-	Entity* e(new Entity(*this, mBlueprint));
-	std::unique_ptr<Entity> uPtr{ e };
-	m_entities.emplace_back(std::move(uPtr));
-	return *e;
-}
-
-EntityBlueprint& EntityManager::addBlueprint()
-{
-	EntityBlueprint* e(new EntityBlueprint(*this));
-	std::unique_ptr<EntityBlueprint> uPtr{ e };
-	m_blueprints.emplace_back(std::move(uPtr));
-	return *e;
+	m_blueprints.push_back(blueprint);
 }
 
 void EntityManager::addToGroup(Entity * mEntity, Group mGroup)
@@ -83,8 +68,7 @@ std::vector<Entity*>& EntityManager::getEntitiesByGroup(Group mGroup)
 	return m_groupedEntities[mGroup];
 }
 
-EntityManager::EntityManager(BatchManager* pManager)
-	:m_bManager(pManager)
+EntityManager::EntityManager()
 {}
 EntityManager::~EntityManager()
 {

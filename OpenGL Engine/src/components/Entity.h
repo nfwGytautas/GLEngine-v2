@@ -11,7 +11,6 @@ static const size_t maxComponents = 32;
 static const size_t maxGroups = 32;
 using Group = size_t;
 
-class EntityManager;
 class EntityBlueprint;
 class Entity
 {
@@ -58,13 +57,15 @@ public:
 	void addGroup(Group mGroup) noexcept;
 	void delGroup(Group mGroup) noexcept;
 
-	Entity(EntityManager& mManager);
-	Entity(EntityManager& mManager, EntityBlueprint& mBlueprint);
+	Entity();
+	Entity(EntityBlueprint& mBlueprint);
 	~Entity();
+	void releaseMemory();
 private:
-	EntityManager& m_manager;
 
 	bool m_alive{ true };
+
+	bool m_memoryReleased{ false };
 
 	using ComponentBitset = std::bitset<maxComponents>;
 	using ComponentArray = std::array<Component*, maxComponents>;
