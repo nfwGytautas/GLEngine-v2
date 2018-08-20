@@ -4,7 +4,7 @@
 #include <glm\gtc\matrix_transform.hpp>
 #include "..\..\Settings.h"
 #include "..\..\graphics\display\Display.h"
-#include "..\..\data manager\InputManager.h"
+#include "..\..\data manager\input\InputManager.h"
 #include "..\physics\PhysicsSystem.h"
 #include "..\event\EventSystem.h"
 #include "..\..\algorithm\Algorithm.h"

@@ -2,9 +2,9 @@
 #include <iostream>
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
-#include "..\graphics\display\Display.h"
-#include "..\graphics\GraphicsAssert.h"
-#include "..\Settings.h"
+#include "..\..\graphics\display\Display.h"
+#include "..\..\graphics\GraphicsAssert.h"
+#include "..\..\Settings.h"
 
 bool InputManager::Keyboard::m_pressedKeys[349] = { false };
 bool InputManager::Mouse::m_pressedKeys[12] = { false };

@@ -96,6 +96,14 @@ pointers
 */
 #define SGE_MAX_SUPPORTED_LIGHTS 4
 
+#define SGE_SHADER_MAP_DIFFUSE_SUPPORT 1
+#define SGE_SHADER_MAP_SPECULAR_SUPPORT 1
+#define SGE_SHADER_MAP_OPACITY_SUPPORT 0
+#define SGE_SHADER_MAP_BUMP_SUPPORT 0
+#define SGE_SHADER_MAP_NORMAL_SUPPORT 0
+#define SGE_SHADER_MAP_GLOW_SUPPORT 0
+#define SGE_SHADER_MAP_REFLECTION_SUPPORT 0
+
 #pragma region INCLUDES
 
 #pragma region GraphicsTechonology
@@ -161,14 +169,14 @@ namespace SGE
 		class InstanceManager
 		{
 		public:
-			std::shared_ptr<EntityManager>	entityManagerInstance;
-			std::shared_ptr<DataManager>	dataManagerInstance;
-			std::shared_ptr<PhysicsSystem>	physicsSystemInstance;
-			std::shared_ptr<RenderSystem>	renderSystemInstance;
-			std::shared_ptr<UpdateSystem>	updateSystemInstance;
-			std::shared_ptr<EventSystem>	eventSystemInstance;
-			std::shared_ptr<BatchManager>	batchManagerInstance;
-			std::shared_ptr<ShaderManager>	shaderManagerInstance;
+			std::shared_ptr<EntityManager>	 entityManagerInstance;
+			std::shared_ptr<DataManager>	 dataManagerInstance;
+			std::shared_ptr<PhysicsSystem>	 physicsSystemInstance;
+			std::shared_ptr<RenderSystem>	 renderSystemInstance;
+			std::shared_ptr<UpdateSystem>	 updateSystemInstance;
+			std::shared_ptr<EventSystem>	 eventSystemInstance;
+			std::shared_ptr<BatchManager>	 batchManagerInstance;
+			std::shared_ptr<ShaderManager>	 shaderManagerInstance;
 
 			InstanceManager();
 			~InstanceManager();

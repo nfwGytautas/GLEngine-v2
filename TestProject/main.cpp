@@ -21,10 +21,18 @@ int main()
 	SGE::Types::Physics physics = engine.getPhysicsManager();
 	SGE::Types::DataManager dataManager = engine.getDataManager();
 
+	Model stallModel;
+	Mesh stallMesh;
+	stallMesh.setVAO(dataManager->createVAO("E:/Test files/nfw/stall.obj"));
+	Material stallMaterial;
+	stallMaterial.changeSpecularShininess(32.0f);
+	stallMaterial.addShadingMap(ShadingMap(dataManager->loadTexture("E:/Test files/nfw/stallTexture.png"), ShadingMapType::Diffuse));
+	stallMesh.setMaterial(stallMaterial);
+	stallModel.addMesh(stallMesh);
+
 	EntityBlueprint stallBlueprint;
 	stallBlueprint.addComponent<CTransformation>();
-	stallBlueprint.addComponent<CMesh>(dataManager->loadMesh("E:/Test files/nfw/stall.obj"));
-	stallBlueprint.addComponent<CMaterial>(dataManager->loadMaterial("E:/Test files/nfw/stallTexture.png"), 10, 1);
+	stallBlueprint.addComponent<CModel>(stallModel);
 
 	Entity stallEntity1(stallBlueprint);
 	CTransformation& stallEntityTransform1 = stallEntity1.getComponent<CTransformation>();
@@ -39,7 +47,7 @@ int main()
 	CTransformation& stallEntityTransform3 = stallEntity3.getComponent<CTransformation>();
 	stallEntityTransform3.position = glm::vec3(20.0f, 10.0f, -30.0f);
 
-	Entity testTerrain1;
+	/*Entity testTerrain1;
 	testTerrain1.addComponent<CTransformation>();
 	continuous2DArray<float> calculatedHeights;
 	testTerrain1.addComponent<CMesh>(dataManager->createHeightMappedMesh("E:/Test files/nfw/heightMap.png", 20, 800, calculatedHeights));
@@ -88,30 +96,29 @@ int main()
 	sun.addComponent<CLightEmiter>();
 	sun.getComponent<CTransformation>().position = glm::vec3(0, 1000, -7000);
 	sun.getComponent<CColor>().value = glm::vec3(0.4f, 0.4f, 0.4f);
-
+	*/
 	EntityBlueprint lightBlueprint;
 	CLightEmiter& cEmiterBP = lightBlueprint.addComponent<CLightEmiter>();
 	cEmiterBP.attenuation = glm::vec3(1.0f, 0.01f, 0.002f);
-	cEmiterBP.lightOffset = glm::vec3(0.0f, 10.0f, 0.0f);
+	//cEmiterBP.lightOffset = glm::vec3(0.0f, 10.0f, 0.0f);
 	lightBlueprint.addComponent<CTransformation>().position = glm::vec3(20000, 40000, 20000);
-	lightBlueprint.addComponent<CColor>().value = glm::vec3(1, 1, 1);
-	lightBlueprint.addComponent<CMesh>(dataManager->loadMesh("E:/Test files/nfw/lamp.obj"));
-	lightBlueprint.addComponent<CMaterial>(dataManager->loadMaterial("E:/Test files/nfw/lamp.png"), 10, 0);
 
 	Entity testLight2(lightBlueprint);
-	testLight2.getComponent<CTransformation>().position = glm::vec3(185, physics->getHeightAtPoint(185, 293), 293);
-	testLight2.getComponent<CColor>().value = glm::vec3(2, 0, 0);
-	Entity testLight3(lightBlueprint);
+	//testLight2.getComponent<CTransformation>().position = glm::vec3(185, physics->getHeightAtPoint(185, 293), 293);
+	/*Entity testLight3(lightBlueprint);
 	testLight3.getComponent<CTransformation>().position = glm::vec3(370, physics->getHeightAtPoint(370, 300), 300);
 	testLight3.getComponent<CColor>().value = glm::vec3(0, 2, 2);
 	Entity testLight4(lightBlueprint);
 	testLight4.getComponent<CTransformation>().position = glm::vec3(293, physics->getHeightAtPoint(293, 305), 305);
-	testLight4.getComponent<CColor>().value = glm::vec3(2, 2, 0);
-
+	testLight4.getComponent<CColor>().value = glm::vec3(2, 2, 0);*/
+	
+	Entity testMultiTexture;
+	testMultiTexture.addComponent<CTransformation>(glm::vec3(50, 0, 50), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
+	testMultiTexture.addComponent<CModel>(dataManager->loadModel("E:/Test files/minecraft-clone/dirtblock.obj"));
+	
 	Entity testPlayer;
 	testPlayer.addComponent<CTransformation>(glm::vec3(50, 0, 50), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
-	testPlayer.addComponent<CMesh>(dataManager->loadMesh("E:/Test files/nfw/person.obj"));
-	testPlayer.addComponent<CMaterial>(dataManager->loadMaterial("E:/Test files/nfw/playerTexture.png"), 10, 0);
+	testPlayer.addComponent<CModel>(dataManager->loadModel("E:/Test files/nfw/realExample/nanosuit.obj"));
 	testPlayer.addComponent<CPhysics>().affectedByGravity = true;
 	CInput& input = testPlayer.addComponent<CInput>();
 	EventBehavior keyDownBehavior = [&](Entity& mEntity, const Event& e)
@@ -147,7 +154,7 @@ int main()
 			}
 			break;
 		case Key::KEY_T:
-			mEntity.getComponent<CTransformation>().position = glm::vec3(-50, 10, 5);
+			//mEntity.getComponent<CTransformation>().position = glm::vec3(-50, 10, 5);
 			break;
 		}
 	};
@@ -225,12 +232,12 @@ int main()
 	cameraInput.subscribe(EventType::MouseScroll, mouseScrollBehavior);
 	Settings::camera = &testCamera.getComponent<CCamera>();
 
-	GUI testGui("E:/Test files/nfw/testGUI3.png", glm::vec2(0.5f, 0.5f), 0, glm::vec2(0.25f, 0.25f));
+	/*GUI testGui("E:/Test files/nfw/testGUI3.png", glm::vec2(0.5f, 0.5f), 0, glm::vec2(0.25f, 0.25f));
 
 	Entity testSkyboxReflection;
 	testSkyboxReflection.addComponent<CTransformation>(glm::vec3(-50, 10, 5), glm::vec3(0, 0, 0), glm::vec3(10, 10, 10));
 	testSkyboxReflection.addComponent<CMesh>(dataManager->loadMesh("E:/Test files/nfw/simple_cube.obj"));
-	testSkyboxReflection.addComponent<CRenderer>().skyboxReflection = true;
+	testSkyboxReflection.addComponent<CRenderer>().skyboxReflection = true;*/
 
 	Display::switchVerticalSync(true);
 	while (!Display::closed())

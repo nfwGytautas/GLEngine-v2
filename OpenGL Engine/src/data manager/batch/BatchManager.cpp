@@ -1,7 +1,7 @@
 #include "BatchManager.h"
 #include <algorithm>
-#include "..\components\Entity.h"
-#include "..\graphics\gui\GUI.h"
+#include "..\..\components\Entity.h"
+#include "..\..\graphics\gui\GUI.h"
 
 
 BatchManager::BatchManager()
@@ -14,7 +14,7 @@ BatchManager::~BatchManager()
 //============================================================================================================================
 //MESHES & MATERIALS
 //============================================================================================================================
-void BatchManager::acknowledgeMaterial(unsigned int id)
+/*void BatchManager::acknowledgeMaterial(unsigned int id)
 {
 	if (std::find(m_knownMaterials.begin(), m_knownMaterials.end(), id) == m_knownMaterials.end())
 	{
@@ -27,7 +27,7 @@ void BatchManager::acknowledgeMesh(unsigned int id)
 	{
 		m_knownMeshes.push_back(id);
 	}
-}
+}*/
 
 void BatchManager::acknowledgeGUI(GUI* gui)
 {
@@ -37,7 +37,7 @@ void BatchManager::acknowledgeGUI(GUI* gui)
 	}
 }
 
-void BatchManager::addEntity(Entity* entity)
+/*void BatchManager::addEntity(Entity* entity)
 {
 	if (entity->hasComponent<CMesh>())
 	{
@@ -65,9 +65,9 @@ void BatchManager::updateEntityBatch(const std::vector<Entity*>& pEntities)
 void BatchManager::clearEntityBatch()
 {
 	m_entityBatch.clear();
-}
+}*/
 
-std::vector<Entity*>& BatchManager::getEntityBatch(unsigned int materialID)
+/*std::vector<Entity*>& BatchManager::getEntityBatch(unsigned int materialID)
 {
 	return m_entityBatch[materialID];
 }
@@ -78,7 +78,7 @@ std::vector<unsigned int>& BatchManager::allKnownMaterials()
 std::vector<unsigned int>& BatchManager::allKnownMeshes()
 {
 	return m_knownMeshes;
-}
+}*/
 
 std::vector<GUI*>& BatchManager::allKnownGUIs()
 {
@@ -87,7 +87,7 @@ std::vector<GUI*>& BatchManager::allKnownGUIs()
 
 void BatchManager::cleanUp()
 {
-	clearEntityBatch();
+	/*clearEntityBatch();
 	m_knownMaterials.clear();
-	m_knownMeshes.clear();
+	m_knownMeshes.clear();*/
 }

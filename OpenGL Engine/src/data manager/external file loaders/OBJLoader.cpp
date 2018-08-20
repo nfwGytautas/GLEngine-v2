@@ -4,7 +4,7 @@
 #include <Assimp\assimp\scene.h>
 #include <Assimp\assimp\postprocess.h>
 
-#include "..\maths\Maths.h"
+#include "..\..\maths\Maths.h"
 
 std::vector<float> OBJLoader::loadedVertices;
 std::vector<float> OBJLoader::loadedNormals;
@@ -30,7 +30,7 @@ bool OBJLoader::LoadOBJ(std::string filePath)
 
 	if (!scene)
 	{
-		std::cout << "[Engine][Resource manager][OBJLoader] Assimp error." << importer.GetErrorString() << "\n";
+		std::cout << "[SGE][Data manager][OBJLoader] Assimp error." << importer.GetErrorString() << "\n";
 		return false;
 	}
 

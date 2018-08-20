@@ -11,6 +11,7 @@ namespace EntityGroups
 		HasPhysics = 4,
 		Camera = 5,
 		HasHook = 6,
-		IsGround = 7
+		IsGround = 7,
+		Renderable = 8
 	};
 }

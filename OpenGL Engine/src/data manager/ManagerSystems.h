@@ -2,19 +2,22 @@
 
 //Batch manager
 //Requires instance managing
-#include "BatchManager.h"
+#include "batch\BatchManager.h"
 
-//Data manager
+//Memory manager
 //Requires instance managing
-#include "DataManager.h"
+#include "external file loaders\DataManager.h"
+
+//Data structures
+#include "data structures\Model.h"
 
 //Input keys
-#include "InputKeys.h"
+#include "input\InputKeys.h"
 
 //Input manager
 //Requires managing
-#include "InputManager.h"
+#include "input\InputManager.h"
 
 //Shader manager
 //Requires managing
-#include "ShaderManager.h"
+#include "shader\ShaderManager.h"

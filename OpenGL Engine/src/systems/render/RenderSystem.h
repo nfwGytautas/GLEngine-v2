@@ -2,11 +2,10 @@
 #include <string>
 #include <unordered_map>
 #include <utility>
+#include "..\..\data manager\data structures\Model.h"
 
-struct CMaterial;
 class Entity;
 class DynamicShader;
-
 class RenderSystem
 {
 public:
@@ -23,9 +22,8 @@ private:
 	void loadRenderSettings(DynamicShader* shader, Entity* entity);
 	void loadDefaultRenderSettings(DynamicShader* shader);
 
-	std::pair<unsigned int, unsigned int> m_GUIQuad;
+	VAO m_GUIQuad;
 	std::tuple<unsigned int, unsigned int, unsigned int> m_skybox;
-	CMaterial* m_currentMaterial;
 	bool m_usingDefaults;
 	bool m_firstTime;
 };
