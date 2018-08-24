@@ -19,7 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\data manager\ShaderManager.h" />
+    <ClInclude Include="src\data manager\data structures\Model.h" />
+    <ClInclude Include="src\data manager\external file loaders\ModelLoader.h" />
+    <ClInclude Include="src\components\preDefinedComponents\CModel.h" />
+    <ClInclude Include="src\data manager\shader\ShaderManager.h" />
     <ClInclude Include="src\graphics\GraphicsSystem.h" />
     <ClInclude Include="src\components\EntityComponentSystem.h" />
     <ClInclude Include="src\data manager\ManagerSystems.h" />
@@ -31,7 +34,7 @@
     <ClInclude Include="src\systems\event\PreDefinedEvents.h" />
     <ClInclude Include="src\systems\event\Event.h" />
     <ClInclude Include="src\components\preDefinedComponents\CRenderer.h" />
-    <ClInclude Include="src\data manager\ImageLoader.h" />
+    <ClInclude Include="src\data manager\external file loaders\ImageLoader.h" />
     <ClInclude Include="src\components\preDefinedComponents\CCamera.h" />
     <ClInclude Include="src\systems\physics\PhysicsSystem.h" />
     <ClInclude Include="src\components\preDefinedComponents\CPhysics.h" />
@@ -40,23 +43,20 @@
     <ClInclude Include="src\graphics\api\GraphicsAPI.h" />
     <ClInclude Include="src\graphics\shader\DynamicShader.h" />
     <ClInclude Include="src\components\EntityGroups.h" />
-    <ClInclude Include="src\components\preDefinedComponents\CColor.h" />
     <ClInclude Include="src\components\preDefinedComponents\CLightEmiter.h" />
-    <ClInclude Include="src\components\preDefinedComponents\CMaterial.h" />
-    <ClInclude Include="src\components\preDefinedComponents\CMesh.h" />
     <ClInclude Include="src\components\preDefinedComponents\CTransformation.h" />
-    <ClInclude Include="src\data manager\BatchManager.h" />
+    <ClInclude Include="src\data manager\batch\BatchManager.h" />
     <ClInclude Include="src\components\EntityManager.h" />
     <ClInclude Include="src\components\PreDefinedComponents.h" />
     <ClInclude Include="src\components\Component.h" />
-    <ClInclude Include="src\data manager\OBJLoader.h" />
-    <ClInclude Include="src\data manager\InputKeys.h" />
-    <ClInclude Include="src\data manager\InputManager.h" />
+    <ClInclude Include="src\data manager\external file loaders\OBJLoader.h" />
+    <ClInclude Include="src\data manager\input\InputKeys.h" />
+    <ClInclude Include="src\data manager\input\InputManager.h" />
     <ClInclude Include="src\components\Entity.h" />
     <ClInclude Include="src\maths\Maths.h" />
     <ClInclude Include="src\graphics\shader\Shader.h" />
     <ClInclude Include="src\algorithm\Algorithm.h" />
-    <ClInclude Include="src\data manager\DataManager.h" />
+    <ClInclude Include="src\data manager\external file loaders\DataManager.h" />
     <ClInclude Include="src\graphics\display\Display.h" />
     <ClInclude Include="src\graphics\GraphicsAssert.h" />
     <ClInclude Include="src\graphics\gtypes\gTypes.h" />
@@ -66,7 +66,10 @@
     <ClInclude Include="src\utility\Time.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\data manager\ShaderManager.cpp" />
+    <ClCompile Include="src\data manager\data structures\Model.cpp" />
+    <ClCompile Include="src\data manager\external file loaders\ModelLoader.cpp" />
+    <ClCompile Include="src\components\preDefinedComponents\CModel.cpp" />
+    <ClCompile Include="src\data manager\shader\ShaderManager.cpp" />
     <ClCompile Include="src\SGEngine.cpp" />
     <ClCompile Include="src\graphics\gui\GUI.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CInput.cpp" />
@@ -74,7 +77,7 @@
     <ClCompile Include="src\systems\event\EventSystem.cpp" />
     <ClCompile Include="src\systems\event\PreDefinedEvents.cpp" />
     <ClCompile Include="src\systems\event\Event.cpp" />
-    <ClCompile Include="src\data manager\ImageLoader.cpp" />
+    <ClCompile Include="src\data manager\external file loaders\ImageLoader.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CCamera.cpp" />
     <ClCompile Include="src\systems\physics\PhysicsSystem.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CPhysics.cpp" />
@@ -82,22 +85,19 @@
     <ClCompile Include="src\components\preDefinedComponents\CMultiTexture.cpp" />
     <ClCompile Include="src\graphics\api\GraphicsAPI.cpp" />
     <ClCompile Include="src\graphics\shader\DynamicShader.cpp" />
-    <ClCompile Include="src\components\preDefinedComponents\CColor.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CLightEmiter.cpp" />
-    <ClCompile Include="src\components\preDefinedComponents\CMaterial.cpp" />
-    <ClCompile Include="src\components\preDefinedComponents\CMesh.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CRenderer.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CTransformation.cpp" />
-    <ClCompile Include="src\data manager\BatchManager.cpp" />
+    <ClCompile Include="src\data manager\batch\BatchManager.cpp" />
     <ClCompile Include="src\algorithm\Algorithm.cpp" />
     <ClCompile Include="src\components\Component.cpp" />
     <ClCompile Include="src\components\EntityManager.cpp" />
-    <ClCompile Include="src\data manager\OBJLoader.cpp" />
-    <ClCompile Include="src\data manager\InputManager.cpp" />
+    <ClCompile Include="src\data manager\external file loaders\OBJLoader.cpp" />
+    <ClCompile Include="src\data manager\input\InputManager.cpp" />
     <ClCompile Include="src\components\Entity.cpp" />
     <ClCompile Include="src\maths\Maths.cpp" />
     <ClCompile Include="src\graphics\shader\Shader.cpp" />
-    <ClCompile Include="src\data manager\DataManager.cpp" />
+    <ClCompile Include="src\data manager\external file loaders\DataManager.cpp" />
     <ClCompile Include="src\graphics\display\Display.cpp" />
     <ClCompile Include="src\graphics\GraphicsAssert.cpp" />
     <ClCompile Include="src\Settings.cpp" />
@@ -158,19 +158,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>E:\CV\OpenGL engine\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
-    <TargetName>GLEngine</TargetName>
+    <TargetName>SGEngine</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>E:\CV\OpenGL engine\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
-    <TargetName>GLEngine</TargetName>
+    <TargetName>SGEngine</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>E:\CV\OpenGL engine\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
-    <TargetName>GLEngine</TargetName>
+    <TargetName>SGEngine</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>E:\CV\OpenGL engine\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
-    <TargetName>GLEngine</TargetName>
+    <TargetName>SGEngine</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

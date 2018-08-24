@@ -1,8 +1,8 @@
 #pragma once
 #include <unordered_map>
 #include <string>
-#include "..\graphics\shader\DynamicShader.h"
-#include "..\graphics\gtypes\gTypes.h"
+#include "..\..\graphics\shader\DynamicShader.h"
+#include "..\..\graphics\gtypes\gTypes.h"
 
 class ShaderManager
 {

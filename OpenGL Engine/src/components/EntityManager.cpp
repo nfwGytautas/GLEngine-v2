@@ -29,7 +29,7 @@ void EntityManager::refresh()
 		std::end(m_entities)
 		);
 
-	SGE::Instances::instances->batchManagerInstance->updateEntityBatch(m_entities);
+	//SGE::Instances::instances->batchManagerInstance->updateEntityBatch(m_entities);
 }
 
 void EntityManager::update(float frameTime)

@@ -1,9 +1,7 @@
 #pragma once
 #include "preDefinedComponents\CTransformation.h"	//Transformation component
 
-#include "preDefinedComponents\CColor.h"			//Color component
-#include "preDefinedComponents\CMesh.h"				//Mesh component
-#include "preDefinedComponents\CMaterial.h"			//Material component
+#include "preDefinedComponents\CModel.h"			//Model component
 
 #include "preDefinedComponents\CRenderer.h"			//Rendering component
 

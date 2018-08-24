@@ -3,7 +3,6 @@
 //Dependencies
 #include <glm\glm.hpp>
 #include "CTransformation.h"
-#include "CColor.h"
 
 struct CLightEmiter : Component
 {
@@ -12,9 +11,12 @@ struct CLightEmiter : Component
 	glm::vec3 attenuation;
 	glm::vec3 lightOffset;
 
+	glm::vec3 ambient;
+	glm::vec3 diffuse;
+	glm::vec3 specular;
+
 	CTransformation* cTransform;
-	CColor* cColor;
-	CLightEmiter() : attenuation(1,0,0), lightOffset(0,0,0) {};
+	CLightEmiter() : attenuation(1,0,0), lightOffset(0,0,0), ambient(0.2f, 0.2f, 0.2f), diffuse(0.5f, 0.5f, 0.5f), specular(1.0f, 1.0f, 1.0f) {};
 
 	virtual CLightEmiter* clone() { return new CLightEmiter(*this); }
 };

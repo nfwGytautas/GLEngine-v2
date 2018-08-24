@@ -5,7 +5,7 @@
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 #include "..\GraphicsAssert.h"
-#include "..\..\data manager\InputManager.h"
+#include "..\..\data manager\input\InputManager.h"
 #include "..\..\utility\Time.h"
 #include "..\..\Settings.h"
 

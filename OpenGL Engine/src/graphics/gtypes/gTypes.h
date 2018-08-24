@@ -17,4 +17,14 @@ namespace ShaderNames
 	const char* const Entity = "entity";
 	const char* const GUI = "gui";
 	const char* const Skybox = "skybox";
+	const char* const MultiMaterial = "multiMat";
+}
+
+namespace ShaderLocations
+{
+	enum SLoc
+	{
+		Diffuse = 0,
+		Specular = 1
+	};
 }

@@ -42,11 +42,7 @@ void GraphicsAPI::bindTexture(unsigned int id, unsigned int slot)
 	GLCall(glActiveTexture(GL_TEXTURE0 + slot));
 	GLCall(glBindTexture(GL_TEXTURE_2D, id));
 }
-void GraphicsAPI::bindTexture(const CMaterial& mMaterial, unsigned int slot)
-{
-	GLCall(glActiveTexture(GL_TEXTURE0 + slot));
-	GLCall(glBindTexture(GL_TEXTURE_2D, mMaterial.m_textureID));
-}
+
 void GraphicsAPI::bindTexture(const GUI* mGui, unsigned int slot)
 {
 	GLCall(glActiveTexture(GL_TEXTURE0 + slot));
@@ -55,9 +51,4 @@ void GraphicsAPI::bindTexture(const GUI* mGui, unsigned int slot)
 void GraphicsAPI::bindVAO(unsigned int id)
 {
 	GLCall(glBindVertexArray(id));
-}
-
-void GraphicsAPI::bindVAO(const CMesh& mMesh)
-{
-	GLCall(glBindVertexArray(mMesh.m_vaoID));
 }

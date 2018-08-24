@@ -2,10 +2,26 @@
 #include <iostream>
 #include <string>
 
+#if SGE_DEVELOPMENT_STATUS == 1
+#ifdef SGE_SYSTEM_WINDOWS
+#pragma message ("warning: You are using the development build of SGE")
+#else
+#warning ("warning: You are using the development build of SGE")
+#endif
+#endif
+
 SGE::Instances::InstanceManager* SGE::Instances::instances;
 
 void SGE::StateControl::_sgeInit()
 {
+	std::cout 
+		<< "Simple Graphics Engine: \n "
+		<< (SGE_DEVELOPMENT_STATUS == 1 ? "Development build of version " : "Full release of version ")
+		<< SGE_VERSION_MAJOR
+		<< ":"
+		<< SGE_VERSION_MINOR
+		<< std::endl;
+
 	assert(GraphicsAPI::initialize());
 
 	Instances::instances = new Instances::InstanceManager();	
@@ -48,6 +64,12 @@ void SGE::StateControl::_sgePrepareShaders()
 		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/skyboxV.shader",
 		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/skyboxF.shader"
 	);
+	SGE::Instances::instances->shaderManagerInstance->addShader
+	(
+		ShaderNames::MultiMaterial,
+		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/multiMaterialVertex.shader",
+		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/multiMaterialFragment.shader"
+	);
 	#elif SGE_DEVELOPMENT_STATUS == 0
 
 	std::string path;
@@ -80,6 +102,7 @@ void SGE::StateControl::_sgePrepareShaders()
 
 	_sgeSendProjectionMatrix(SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::Entity));
 	_sgeSendProjectionMatrix(SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::Skybox));
+	_sgeSendProjectionMatrix(SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::MultiMaterial));
 }
 
 void SGE::StateControl::_sgeSendProjectionMatrix(DynamicShader* targetShader)

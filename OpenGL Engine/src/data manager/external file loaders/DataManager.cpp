@@ -1,18 +1,18 @@
 #include "DataManager.h"
-#include "..\SGEDefs.h"
 #include <iostream>
 #include <thread>
 #include <boost\filesystem.hpp>
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
-#include <iostream>
+#include "..\..\SGEDefs.h"
 #include "OBJLoader.h"
 #include "ImageLoader.h"
-#include "..\Settings.h"
-#include "..\graphics\gtypes\gTypes.h"
-#include "..\graphics\GraphicsAssert.h"
-#include "..\components\Entity.h"
-#include "..\components\PreDefinedComponents.h"
+#include "ModelLoader.h"
+#include "..\..\Settings.h"
+#include "..\..\graphics\gtypes\gTypes.h"
+#include "..\..\graphics\GraphicsAssert.h"
+#include "..\..\components\Entity.h"
+#include "..\..\components\PreDefinedComponents.h"
 
 
 void calculateIndices(std::vector<unsigned int>& mIndices, unsigned int mVertexCount)
@@ -34,40 +34,7 @@ void calculateIndices(std::vector<unsigned int>& mIndices, unsigned int mVertexC
 	}
 }
 
-std::pair<unsigned int, unsigned int> DataManager::loadMesh(std::string mFilePath)
-{
-	if (m_meshCache.find(mFilePath) == m_meshCache.end())
-	{
-		if (OBJLoader::LoadOBJ(mFilePath))
-		{
-			unsigned int vaoID = createVAO();
-			bindIndiceBuffer(OBJLoader::loadedIndices);
-			storeDataInAttributes(AttributeLocation::Position, 3, OBJLoader::loadedVertices);
-			storeDataInAttributes(AttributeLocation::UVs, 2, OBJLoader::loadedUVs);
-			storeDataInAttributes(AttributeLocation::Normal, 3, OBJLoader::loadedNormals);
-			unbindVAO();
-
-			std::pair<unsigned int, unsigned int> result = std::make_pair(vaoID, OBJLoader::loadedIndices.size());
-			m_meshCache[mFilePath] = result;
-			SGE::Instances::instances->batchManagerInstance->acknowledgeMesh(vaoID);
-			return result;
-		}
-		else
-		{
-			std::pair<unsigned int, unsigned int> result = std::make_pair(m_fallbackMeshID, m_fallbackMeshVertexCount);
-			SGE::Instances::instances->batchManagerInstance->acknowledgeMesh(m_fallbackMeshID);
-			SGE::Instances::instances->batchManagerInstance->acknowledgeMaterial(m_fallbackTexture);
-			m_meshCache[mFilePath] = result;
-			return result;
-		}
-	}
-	else
-	{
-		return m_meshCache[mFilePath];
-	}
-}
-
-std::pair<unsigned int, unsigned int> DataManager::createMesh(std::vector<float>& vertices, std::vector<float>& normals, std::vector<float>& textureCoords, std::vector<unsigned int>& indices)
+VAO DataManager::createVAO(std::vector<float>& vertices, std::vector<float>& normals, std::vector<float>& textureCoords, std::vector<unsigned int>& indices)
 {
 	unsigned int vaoID = createVAO();
 	bindIndiceBuffer(indices);
@@ -76,26 +43,46 @@ std::pair<unsigned int, unsigned int> DataManager::createMesh(std::vector<float>
 	storeDataInAttributes(AttributeLocation::Normal, 3, normals);
 	unbindVAO();
 
-	std::pair<unsigned int, unsigned int> result = std::make_pair(vaoID, indices.size());
-	return result;
+	return VAO(vaoID, indices.size());
 }
 
-std::pair<unsigned int, unsigned int> DataManager::create2DQuad(std::vector<float>& vertices)
+VAO DataManager::createVAO(std::string pathToFile) 
+{
+	if (m_VAOCache.find(pathToFile) == m_VAOCache.end())
+	{
+		if (OBJLoader::LoadOBJ(pathToFile))
+		{
+			VAO result = createVAO(OBJLoader::loadedVertices, OBJLoader::loadedNormals, OBJLoader::loadedUVs, OBJLoader::loadedIndices);
+			m_VAOCache[pathToFile] = result;
+			return result;
+		}
+		else
+		{
+			VAO result(m_fallbackMeshID, m_fallbackMeshVertexCount);
+			m_VAOCache[pathToFile] = result;
+			return result;
+		}
+	}
+	else
+	{
+		return m_VAOCache[pathToFile];
+	}
+}
+
+VAO DataManager::create2DQuad(std::vector<float>& vertices)
 {
 	unsigned int vaoID = createVAO();
 	storeDataInAttributes(AttributeLocation::Position, 2, vertices);
 	unbindVAO();
-	std::pair<unsigned int, unsigned int> result = std::make_pair(vaoID, vertices.size() / 2);
-	return result;
+	return VAO(vaoID, vertices.size() / 2);
 }
 
-std::pair<unsigned int, unsigned int> DataManager::create3DCube(std::vector<float>& vertices)
+VAO DataManager::create3DCube(std::vector<float>& vertices)
 {
 	unsigned int vaoID = createVAO();
 	storeDataInAttributes(AttributeLocation::Position, 3, vertices);
 	unbindVAO();
-	std::pair<unsigned int, unsigned int> result = std::make_pair(vaoID, vertices.size() / 3);
-	return result;
+	return VAO(vaoID, vertices.size() / 3);
 }
 
 std::tuple<unsigned int, unsigned int, unsigned int> DataManager::createSkybox()
@@ -147,12 +134,12 @@ std::tuple<unsigned int, unsigned int, unsigned int> DataManager::createSkybox()
 	std::vector<std::string> cubeFiles = arrayToVector(Settings::skyboxFiles);
 	unsigned int textureID = loadCubeMap(cubeFiles);
 	std::vector<float> cubeMesh = arrayToVector(skyboxVertices);
-	std::pair<unsigned int, unsigned int> cube = create3DCube(cubeMesh);
-	std::tuple<unsigned int, unsigned int, unsigned int> result = std::make_tuple(cube.first, cube.second, textureID);
+	VAO cube = create3DCube(cubeMesh);
+	std::tuple<unsigned int, unsigned int, unsigned int> result = std::make_tuple(cube.ID, cube.elementCount, textureID);
 	return result;
 }
 
-std::pair<unsigned int, unsigned int> DataManager::createFlatMesh(unsigned int vertexCount, unsigned int size)
+VAO DataManager::createFlatMesh(unsigned int vertexCount, unsigned int size)
 {
 	std::vector<unsigned int> indices;
 	indices.resize(6 * (vertexCount - 1) * (vertexCount - 1));
@@ -187,11 +174,10 @@ std::pair<unsigned int, unsigned int> DataManager::createFlatMesh(unsigned int v
 
 	indiceCalc.join();
 
-	auto result = createMesh(vertices, normals, textureCoords, indices);
-	return result;
+	return createVAO(vertices, normals, textureCoords, indices);
 }
 
-std::pair<unsigned int, unsigned int> DataManager::createHeightMappedMesh(std::string mHeightMapFilePath, float mMaxHeight, unsigned int size, continuous2DArray<float>& mCalculatedHeights)
+VAO DataManager::createHeightMappedMesh(std::string mHeightMapFilePath, float mMaxHeight, unsigned int size, continuous2DArray<float>& mCalculatedHeights)
 {
 	auto boostFilePath = boost::filesystem::path(mHeightMapFilePath);
 	ImageLoader::loadImage(boostFilePath.string(), boostFilePath.extension().string());
@@ -254,46 +240,8 @@ std::pair<unsigned int, unsigned int> DataManager::createHeightMappedMesh(std::s
 
 	ImageLoader::freeData();
 
-	indiceCalc.join();
-
-	auto result = createMesh(vertices, normals, textureCoords, indices);
-
-	SGE::Instances::instances->batchManagerInstance->acknowledgeMesh(result.first);
-
-	return result;
-}
-
-unsigned int DataManager::loadMaterial(std::string mFilePath)
-{
-	auto boostFilePath = boost::filesystem::path(mFilePath);
-	if (m_materialCache.find(mFilePath) == m_materialCache.end())
-	{
-		if (ImageLoader::loadImage(boostFilePath.string(), boostFilePath.extension().string()))
-		{
-			unsigned int textureID = 0;
-			GLCall(glGenTextures(1, &textureID));
-			GLCall(glBindTexture(GL_TEXTURE_2D, textureID));
-			GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, ImageLoader::width, ImageLoader::height, 0, GL_RGBA, GL_UNSIGNED_BYTE, ImageLoader::imageBuffer));
-			textureSetup();
-			m_textures.push_back(textureID);
-			m_materialCache[mFilePath] = textureID;
-			if (ImageLoader::imageBuffer)
-			{
-				ImageLoader::freeData();
-			}
-			SGE::Instances::instances->batchManagerInstance->acknowledgeMaterial(textureID);
-			return textureID;
-		}
-		else
-		{
-			m_materialCache[mFilePath] = m_fallbackTexture;
-			return m_fallbackTexture;
-		}
-	}
-	else
-	{
-		return m_materialCache[mFilePath];
-	}
+	indiceCalc.join(); 
+	return createVAO(vertices, normals, textureCoords, indices);;
 }
 
 unsigned int DataManager::loadCubeMap(std::vector<std::string>& textureFiles)
@@ -346,6 +294,57 @@ unsigned int DataManager::loadTexture(std::string mFilePath)
 	}
 }
 
+Model DataManager::loadModel(std::string pathToModel)
+{
+	if (m_modelCache.find(pathToModel) == m_modelCache.end())
+	{
+		ModelLoader::loadModel(pathToModel);
+		auto boostFilePath = boost::filesystem::path(pathToModel);
+
+		auto meshes = ModelLoader::modelMeshes;
+
+		std::vector<Mesh> loadedMeshes;
+
+		for (auto mesh : meshes)
+		{
+			Mesh loadedMesh;
+			//TODO: Clean this up
+			std::vector<float> vertices = Maths::Vec3ToFloatVector(mesh.positions);
+			std::vector<float> normals = Maths::Vec3ToFloatVector(mesh.normals);
+			std::vector<float> uvs = Maths::Vec2ToFloatVector(mesh.texCoords);
+			VAO meshVAO = createVAO(vertices, normals, uvs, mesh.indices);
+			loadedMesh.setVAO(meshVAO);
+
+			Material meshMaterial;
+
+			if (mesh.diffuse_map != "")
+			{
+				meshMaterial.addShadingMap(ShadingMap(loadTexture((boostFilePath.parent_path().string() + "/" + mesh.diffuse_map)), ShadingMapType::Diffuse));
+			}
+			if (mesh.specular_map != "")
+			{
+				meshMaterial.addShadingMap(ShadingMap(loadTexture((boostFilePath.parent_path().string() + "/" + mesh.specular_map)), ShadingMapType::Specular));
+				meshMaterial.changeSpecularShininess(mesh.shininess);
+			}
+			
+			loadedMesh.setMaterial(meshMaterial);
+
+			loadedMeshes.push_back(loadedMesh);
+		}
+		Model loadedModel;
+		for (auto mesh : loadedMeshes)
+		{
+			loadedModel.addMesh(mesh);
+		}
+		m_modelCache[pathToModel] = loadedModel;
+		return loadedModel;
+	}
+	else
+	{
+		return m_modelCache[pathToModel];
+	}
+}
+
 void DataManager::cleanUp()
 {
 	for (unsigned int x : m_vaos)
@@ -364,9 +363,6 @@ void DataManager::cleanUp()
 	m_vaos.clear();
 	m_vbos.clear();
 	m_textures.clear();
-
-	m_meshCache.clear();
-	m_materialCache.clear();
 }
 
 unsigned int DataManager::createVAO()
