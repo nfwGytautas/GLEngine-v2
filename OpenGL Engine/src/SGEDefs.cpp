@@ -49,26 +49,26 @@ void SGE::StateControl::_sgePrepareShaders()
 	SGE::Instances::instances->shaderManagerInstance->addShader
 	(
 		ShaderNames::Entity,
-		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/vertex.shader",
-		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/fragment.shader"
+		"C:/dev/SGE/SGE/Shaders/current/vertex.shader",
+		"C:/dev/SGE/SGE/Shaders/current/fragment.shader"
 	);
 	SGE::Instances::instances->shaderManagerInstance->addShader
 	(
 		ShaderNames::GUI,
-		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/guiV.shader",
-		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/guiF.shader"
+		"C:/dev/SGE/SGE/Shaders/current/guiV.shader",
+		"C:/dev/SGE/SGE/Shaders/current/guiF.shader"
 	);
 	SGE::Instances::instances->shaderManagerInstance->addShader
 	(
 		ShaderNames::Skybox,
-		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/skyboxV.shader",
-		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/skyboxF.shader"
+		"C:/dev/SGE/SGE/Shaders/current/skyboxV.shader",
+		"C:/dev/SGE/SGE/Shaders/current/skyboxF.shader"
 	);
 	SGE::Instances::instances->shaderManagerInstance->addShader
 	(
 		ShaderNames::MultiMaterial,
-		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/multiMaterialVertex.shader",
-		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/multiMaterialFragment.shader"
+		"C:/dev/SGE/SGE/Shaders/current/multiMaterialVertex.shader",
+		"C:/dev/SGE/SGE/Shaders/current/multiMaterialFragment.shader"
 	);
 	#elif SGE_DEVELOPMENT_STATUS == 0
 

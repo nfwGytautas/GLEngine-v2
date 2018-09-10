@@ -95,6 +95,7 @@ pointers
 ==============================================================
 */
 #define SGE_MAX_SUPPORTED_LIGHTS 4
+#define SGE_MAX_TEXTURES_IN_PACK 4
 
 #define SGE_SHADER_MAP_DIFFUSE_SUPPORT 1
 #define SGE_SHADER_MAP_SPECULAR_SUPPORT 1

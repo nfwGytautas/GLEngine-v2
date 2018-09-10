@@ -20,8 +20,6 @@ public:
 	VAO create2DQuad(std::vector<float>& vertices);
 	VAO create3DCube(std::vector<float>& vertices);
 	std::tuple<unsigned int, unsigned int, unsigned int> createSkybox();
-	VAO createFlatMesh(unsigned int vertexCount, unsigned int size);
-	VAO createHeightMappedMesh(std::string mHeightMapFilePath, float mMaxHeight, unsigned int size, continuous2DArray<float>& mCalculatedHeights);
 
 	/*Texture files must be in this order: Right, Left, Top, Bottom, Back, Front*/
 	unsigned int loadCubeMap(std::vector<std::string>& textureFiles);

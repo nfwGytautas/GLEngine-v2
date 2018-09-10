@@ -42,9 +42,6 @@
     <ClInclude Include="src\components\EntityGroups.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\components\preDefinedComponents\CMultiTexture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\components\EntityBlueprint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -177,9 +174,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\components\preDefinedComponents\CTransformation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\components\preDefinedComponents\CMultiTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\components\EntityBlueprint.cpp">
