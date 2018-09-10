@@ -295,16 +295,6 @@ void RenderSystem::loadRenderSettings(DynamicShader* shader, Entity* entity)
 	CRenderer cRenderer = entity->getComponent<CRenderer>();
 	shader->setFloatUniform("cRenderer_tileCount", (float)cRenderer.tileCount);
 
-	if (cRenderer.transparent)
-	{
-		GLCall(glDisable(GL_CULL_FACE));
-	}
-
-	if (cRenderer.fakeLighting)
-	{
-		shader->setBooleanUniform("cRenderer_fakeLighting", true);
-	}
-
 	if (cRenderer.multiTexture)
 	{
 		shader->setBooleanUniform("cRenderer_multiTexture", true);
@@ -345,7 +335,6 @@ void RenderSystem::loadDefaultRenderSettings(DynamicShader* shader)
 		GLCall(glEnable(GL_CULL_FACE));
 		GLCall(glCullFace(GL_BACK));
 
-		shader->setBooleanUniform("cRenderer_fakeLighting", false);
 		shader->setBooleanUniform("cRenderer_multiTexture", false);
 		shader->setBooleanUniform("cRenderer_disableSpecular", false);
 		shader->setFloatUniform("cRenderer_skyboxReflection", false);
