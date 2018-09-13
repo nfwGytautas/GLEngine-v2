@@ -24,6 +24,7 @@ void UpdateSystem::update()
 	updateEntitiesWithInput();
 	updateEntitiesWithPhysics();
 	updateEntitiesWithCameras();
+	updateEntitiesWthModels();
 
 	//Kinda redundant now
 	SGE::Instances::instances->entityManagerInstance->update(Display::getDelta());
@@ -102,7 +103,7 @@ void UpdateSystem::updateEntitiesWithCameras()
 			target = cameraComponent.m_hookedTo->getComponent<CTransformation>().position;
 		}
 
-		cameraComponent.m_direction = glm::vec3(
+		cameraComponent.viewDirection = glm::vec3(
 			cos(glm::radians(cameraComponent.pitch)) * cos(glm::radians(cameraComponent.yaw)),
 			sin(glm::radians(cameraComponent.pitch)),
 			cos(glm::radians(cameraComponent.pitch)) * sin(glm::radians(cameraComponent.yaw))
@@ -110,10 +111,20 @@ void UpdateSystem::updateEntitiesWithCameras()
 
 		glm::mat4 ViewMatrix = glm::lookAt(
 			cameraComponent.cTransformation->position,
-			target + cameraComponent.m_direction,
+			target + cameraComponent.viewDirection,
 			glm::vec3(0.0, 1.0, 0.0)
 		);
 
 		cameraComponent.viewMatrix = ViewMatrix;
+	}
+}
+
+void UpdateSystem::updateEntitiesWthModels()
+{
+	auto renderables = SGE::Instances::instances->entityManagerInstance->getEntitiesByGroup(EntityGroups::Renderable);
+
+	for (Entity* entity : renderables)
+	{
+		entity->getComponent<CModel>().m_rendered = false;
 	}
 }

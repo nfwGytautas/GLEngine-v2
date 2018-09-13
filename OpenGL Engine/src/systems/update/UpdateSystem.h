@@ -11,4 +11,5 @@ private:
 	void updateEntitiesWithInput();
 	void updateEntitiesWithPhysics();
 	void updateEntitiesWithCameras();
+	void updateEntitiesWthModels();
 };

@@ -21,6 +21,8 @@ public:
 	VAO create3DCube(std::vector<float>& vertices);
 	std::tuple<unsigned int, unsigned int, unsigned int> createSkybox();
 
+	unsigned int createVBO(unsigned int floatCount);
+
 	/*Texture files must be in this order: Right, Left, Top, Bottom, Back, Front*/
 	unsigned int loadCubeMap(std::vector<std::string>& textureFiles);
 	unsigned int loadTexture(std::string mFilePath);

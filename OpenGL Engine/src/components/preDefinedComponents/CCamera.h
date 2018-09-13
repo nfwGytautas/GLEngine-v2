@@ -13,6 +13,7 @@ struct CCamera : Component
 	void init() override;
 	void hookTo(Entity* mEntity, float mDistanceToHook, float mAngleAroundHook);
 
+	glm::vec3 viewDirection;
 	float distanceToHook;
 	float angleAroundHook;
 	float pitch = 0.0f;
@@ -20,7 +21,6 @@ struct CCamera : Component
 
 	virtual CCamera* clone() { return new CCamera(*this); }
 private:
-	glm::vec3 m_direction;
 
 	float m_moveSpeed = 3.0f;
 	float m_lookSpeed = 0.005f;
