@@ -17,7 +17,10 @@ class Entity
 public:
 	void init();
 	void update(float frameTime);
-	void draw();
+	void preRender();
+	void render();
+	void postRender();
+public:
 
 	bool isAlive() const;
 	void destroy();

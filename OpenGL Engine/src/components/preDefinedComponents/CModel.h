@@ -8,9 +8,12 @@
 
 class GraphicsAPI;
 class RenderSystem;
+class UpdateSystem;
 struct CModel : Component
 {
 	void init() override;
+	void preRender() override;
+	void render() override;
 
 	size_t hash() const;
 	bool operator==(const CModel& model) const
@@ -30,7 +33,9 @@ struct CModel : Component
 	CModel(Model model);
 private:
 	Model m_model;
+	bool m_rendered;
 
 	friend GraphicsAPI;
 	friend RenderSystem;
+	friend UpdateSystem;
 };

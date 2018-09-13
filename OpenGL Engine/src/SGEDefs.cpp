@@ -70,6 +70,13 @@ void SGE::StateControl::_sgePrepareShaders()
 		"C:/dev/SGE/SGE/Shaders/current/multiMaterialVertex.shader",
 		"C:/dev/SGE/SGE/Shaders/current/multiMaterialFragment.shader"
 	);
+	SGE::Instances::instances->shaderManagerInstance->addShader
+	(
+		ShaderNames::InstancedShader,
+		"C:/dev/SGE/SGE/Shaders/current/instancedV.shader",
+		"C:/dev/SGE/SGE/Shaders/current/instancedF.shader"
+	);
+
 	#elif SGE_DEVELOPMENT_STATUS == 0
 
 	std::string path;
@@ -98,11 +105,24 @@ void SGE::StateControl::_sgePrepareShaders()
 		path + "skyboxV.shader",
 		path + "skyboxF.shader"
 	);
+	SGE::Instances::instances->shaderManagerInstance->addShader
+	(
+		ShaderNames::MultiMaterial,
+		path + "multiMaterialVertex.shader",
+		path + "multiMaterialFragment.shader"
+	);
+	SGE::Instances::instances->shaderManagerInstance->addShader
+	(
+		ShaderNames::InstancedShader,
+		path + "instancedV.shader",
+		path + "instancedF.shader"
+	);
 	#endif
 
 	_sgeSendProjectionMatrix(SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::Entity));
 	_sgeSendProjectionMatrix(SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::Skybox));
 	_sgeSendProjectionMatrix(SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::MultiMaterial));
+	_sgeSendProjectionMatrix(SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::InstancedShader));
 }
 
 void SGE::StateControl::_sgeSendProjectionMatrix(DynamicShader* targetShader)

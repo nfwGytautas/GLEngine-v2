@@ -141,3 +141,14 @@ std::vector<Mesh>& Model::getMeshes()
 {
 	return m_meshes;
 }
+
+Mesh Model::getMeshByVAO(VAO vao)
+{
+	for (Mesh mesh : m_meshes)
+	{
+		if (mesh.getVAO() == vao)
+		{
+			return mesh;
+		}
+	}
+}

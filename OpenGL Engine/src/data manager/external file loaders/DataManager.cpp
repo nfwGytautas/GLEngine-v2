@@ -43,7 +43,11 @@ VAO DataManager::createVAO(std::vector<float>& vertices, std::vector<float>& nor
 	storeDataInAttributes(AttributeLocation::Normal, 3, normals);
 	unbindVAO();
 
-	return VAO(vaoID, indices.size());
+	VAO result(vaoID, indices.size());
+
+	SGE::Instances::instances->batchManagerInstance->addVAO(result);
+
+	return result;
 }
 
 VAO DataManager::createVAO(std::string pathToFile) 
@@ -53,12 +57,14 @@ VAO DataManager::createVAO(std::string pathToFile)
 		if (OBJLoader::LoadOBJ(pathToFile))
 		{
 			VAO result = createVAO(OBJLoader::loadedVertices, OBJLoader::loadedNormals, OBJLoader::loadedUVs, OBJLoader::loadedIndices);
+			SGE::Instances::instances->batchManagerInstance->addVAO(result);
 			m_VAOCache[pathToFile] = result;
 			return result;
 		}
 		else
 		{
 			VAO result(m_fallbackMeshID, m_fallbackMeshVertexCount);
+			SGE::Instances::instances->batchManagerInstance->addVAO(result);
 			m_VAOCache[pathToFile] = result;
 			return result;
 		}
@@ -137,6 +143,20 @@ std::tuple<unsigned int, unsigned int, unsigned int> DataManager::createSkybox()
 	VAO cube = create3DCube(cubeMesh);
 	std::tuple<unsigned int, unsigned int, unsigned int> result = std::make_tuple(cube.ID, cube.elementCount, textureID);
 	return result;
+}
+
+unsigned int DataManager::createVBO(unsigned int floatCount)
+{
+	unsigned int vboID;
+
+	GLCall(glGenBuffers(1, &vboID));
+	m_vbos.push_back(vboID);
+
+	GLCall(glBindBuffer(GL_ARRAY_BUFFER, vboID));
+	GLCall(glBufferData(GL_ARRAY_BUFFER, floatCount * 4, NULL, GL_STREAM_DRAW));
+	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+
+	return vboID;
 }
 
 unsigned int DataManager::loadCubeMap(std::vector<std::string>& textureFiles)

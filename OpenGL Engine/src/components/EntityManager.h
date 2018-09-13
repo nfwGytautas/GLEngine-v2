@@ -9,9 +9,12 @@
 class EntityManager
 {
 public:
-	void refresh();
 	void update(float frameTime);
-	void draw();
+	void preRender();
+	void render();
+	void postRender();
+public:
+	void refresh();
 	void registerEntity(Entity* entity);
 	void registerBlueprint(EntityBlueprint* blueprint);
 

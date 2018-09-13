@@ -5,6 +5,7 @@
 
 
 BatchManager::BatchManager()
+	: m_newVAOData(false)
 {
 }
 BatchManager::~BatchManager()
@@ -20,14 +21,21 @@ BatchManager::~BatchManager()
 	{
 		m_knownMaterials.push_back(id);
 	}
-}
-void BatchManager::acknowledgeMesh(unsigned int id)
-{
-	if (std::find(m_knownMeshes.begin(), m_knownMeshes.end(), id) == m_knownMeshes.end())
-	{
-		m_knownMeshes.push_back(id);
-	}
 }*/
+
+void BatchManager::addEntityToVAOBatch(Entity* entity, VAO vao)
+{
+	m_entityBatch[vao.ID].push_back(entity);
+}
+
+void BatchManager::addVAO(VAO vao)
+{
+	if (std::find(m_knownVertexArrays.begin(), m_knownVertexArrays.end(), vao) == m_knownVertexArrays.end())
+	{
+		m_knownVertexArrays.push_back(vao);
+		m_newVAOData = true;
+	}
+}
 
 void BatchManager::acknowledgeGUI(GUI* gui)
 {
@@ -37,35 +45,10 @@ void BatchManager::acknowledgeGUI(GUI* gui)
 	}
 }
 
-/*void BatchManager::addEntity(Entity* entity)
-{
-	if (entity->hasComponent<CMesh>())
-	{
-		auto mesh = entity->getComponent<CMesh>().m_vaoID;
-		if (m_entityBatch.find(mesh) != m_entityBatch.end())
-		{
-			m_entityBatch[mesh].push_back(entity);
-		}
-		else
-		{
-			std::vector<Entity*> newBatch;
-			newBatch.push_back(entity);
-			m_entityBatch[mesh] = newBatch;
-		}
-	}
-}
-void BatchManager::updateEntityBatch(const std::vector<Entity*>& pEntities)
-{
-	clearEntityBatch();
-	for (auto e : pEntities)
-	{
-		addEntity(e);
-	}
-}
 void BatchManager::clearEntityBatch()
 {
-	m_entityBatch.clear();
-}*/
+	m_knownVertexArrays.clear();
+}
 
 /*std::vector<Entity*>& BatchManager::getEntityBatch(unsigned int materialID)
 {
@@ -80,6 +63,16 @@ std::vector<unsigned int>& BatchManager::allKnownMeshes()
 	return m_knownMeshes;
 }*/
 
+std::vector<VAO>& BatchManager::allKnownVAOS()
+{
+	return m_knownVertexArrays;
+}
+
+std::vector<Entity*>& BatchManager::getSameVAOEntities(unsigned int vaoID)
+{
+	return m_entityBatch[vaoID];
+}
+
 std::vector<GUI*>& BatchManager::allKnownGUIs()
 {
 	return m_knownGUIs;
@@ -87,7 +80,7 @@ std::vector<GUI*>& BatchManager::allKnownGUIs()
 
 void BatchManager::cleanUp()
 {
-	/*clearEntityBatch();
-	m_knownMaterials.clear();
-	m_knownMeshes.clear();*/
+	clearEntityBatch();
+	m_knownGUIs.clear();
+	m_knownVertexArrays.clear();
 }

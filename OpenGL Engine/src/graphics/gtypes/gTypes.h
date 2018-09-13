@@ -8,7 +8,12 @@ namespace AttributeLocation
 	{
 		Position = 0,
 		UVs = 1,
-		Normal = 2
+		Normal = 2,
+
+		InstanceSlot1 = 3,
+		InstanceSlot2 = 4,
+		InstanceSlot3 = 5,
+		InstanceSlot4 = 6,
 	};
 }
 
@@ -18,6 +23,7 @@ namespace ShaderNames
 	const char* const GUI = "gui";
 	const char* const Skybox = "skybox";
 	const char* const MultiMaterial = "multiMat";
+	const char* const InstancedShader = "instanced";
 }
 
 namespace ShaderLocations
