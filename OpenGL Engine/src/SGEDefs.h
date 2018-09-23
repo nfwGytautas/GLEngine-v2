@@ -186,8 +186,6 @@ namespace SGE
 		extern InstanceManager* instances;
 	}
 
-
-
 	//Instance and other SGE state controls
 	namespace StateControl
 	{
@@ -199,6 +197,8 @@ namespace SGE
 		void _sgePrepareShaders();
 		//Sends a projection matrix to a shader 
 		void _sgeSendProjectionMatrix(DynamicShader* targetShader);
+		//Creates a projection matrix and stores it into storage file
+		void _sgeCreateProjectionMatrix();
 	}
 
 }

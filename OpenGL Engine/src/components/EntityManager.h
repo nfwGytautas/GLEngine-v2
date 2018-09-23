@@ -25,6 +25,7 @@ public:
 	~EntityManager();
 private:
 	std::vector<Entity*> m_entities;
+	std::vector<Entity*> m_activeEntities;
 	std::vector<EntityBlueprint*> m_blueprints;
 	std::array<std::vector<Entity*>, maxGroups> m_groupedEntities;
 };

@@ -7,13 +7,17 @@
 class UpdateSystem;
 struct CCamera : Component
 {
-	glm::mat4 viewMatrix;
-	CTransformation* cTransformation;
-
 	void init() override;
+	void update(float frameTime) override;
+
 	void hookTo(Entity* mEntity, float mDistanceToHook, float mAngleAroundHook);
 
+	CTransformation* cTransformation;
+	glm::mat4 viewMatrix;
 	glm::vec3 viewDirection;
+	glm::vec3 viewPoint;
+	glm::vec3 up;
+	glm::vec3 right;
 	float distanceToHook;
 	float angleAroundHook;
 	float pitch = 0.0f;

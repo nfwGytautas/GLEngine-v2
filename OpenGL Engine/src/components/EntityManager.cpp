@@ -29,6 +29,8 @@ void EntityManager::refresh()
 		std::end(m_entities)
 		);
 
+	m_activeEntities.clear();
+
 	for (Entity* entity : m_entities)
 	{
 		if (entity->hasComponent<CRenderer>())
@@ -42,6 +44,11 @@ void EntityManager::refresh()
 				entity->delGroup(EntityGroups::Instanced);
 			}
 		}
+		
+		if (entity->isActive())
+		{
+			m_activeEntities.push_back(entity);
+		}
 	}
 
 	//SGE::Instances::instances->batchManagerInstance->updateEntityBatch(m_entities);
@@ -49,7 +56,7 @@ void EntityManager::refresh()
 
 void EntityManager::update(float frameTime)
 {
-	for (auto& e : m_entities)
+	for (auto& e : m_activeEntities)
 	{
 		e->update(frameTime);
 	}
@@ -57,7 +64,7 @@ void EntityManager::update(float frameTime)
 
 void EntityManager::preRender()
 {
-	for (auto& e : m_entities)
+	for (auto& e : m_activeEntities)
 	{
 		e->preRender();
 	}
@@ -65,7 +72,7 @@ void EntityManager::preRender()
 
 void EntityManager::render()
 {
-	for (auto& e : m_entities)
+	for (auto& e : m_activeEntities)
 	{
 		e->render();
 	}
@@ -73,7 +80,7 @@ void EntityManager::render()
 
 void EntityManager::postRender()
 {
-	for (auto& e : m_entities)
+	for (auto& e : m_activeEntities)
 	{
 		e->postRender();
 	}

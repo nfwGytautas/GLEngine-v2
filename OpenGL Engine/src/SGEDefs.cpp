@@ -28,6 +28,8 @@ void SGE::StateControl::_sgeInit()
 
 	InputManager::Mouse::centerCursorPosition();
 
+	_sgeCreateProjectionMatrix();
+
 	#ifdef SGE_GRAPHICS_TECHNOLOGY_OPENGL
 	std::cout << "[SGE] OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 	#endif // SGE_GRAPHICS_TECHNOLOGY_OPENGL
@@ -128,8 +130,13 @@ void SGE::StateControl::_sgePrepareShaders()
 void SGE::StateControl::_sgeSendProjectionMatrix(DynamicShader* targetShader)
 {
 	targetShader->bind();
-	targetShader->setMatrix4fUniform("projectionMatrix", Maths::createProjectionMatrix());
+	targetShader->setMatrix4fUniform("projectionMatrix", Instances::instances->dataManagerInstance->getProjectionMatrix());
 	targetShader->unbind();
+}
+
+void SGE::StateControl::_sgeCreateProjectionMatrix()
+{
+	Instances::instances->dataManagerInstance->setProjectionMatrix(Maths::createProjectionMatrix());
 }
 
 SGE::Instances::InstanceManager::InstanceManager()

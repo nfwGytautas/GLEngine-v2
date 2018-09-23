@@ -17,10 +17,14 @@ struct CRenderer : Component
 	bool skyboxReflection;
 	//Marks entity for instancing
 	bool instanced;
+	//Marks if the entity should be rendered
+	bool shouldBeRendered;
+	//Tells the renderer to not do lighting calculations for this entity
+	bool useLighting;
 
 	CRenderer() : tileCount(1), multiTexture(false), disableSpecular(false), 
 		hasAtlas(false), atlasIndex(0), atlasRowCount(1), skyboxReflection(false),
-		instanced(false) {}
+		instanced(false), shouldBeRendered(true), useLighting(true) {}
 
 	virtual CRenderer* clone() { return new CRenderer(*this); }
 };

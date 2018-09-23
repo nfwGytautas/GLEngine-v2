@@ -39,13 +39,13 @@ int main()
 	stallEntityTransform1.position = glm::vec3(0.0f, 0.0f, -20.0f);
 	stallEntityTransform1.rotation.x = 90.0f;
 
-	Entity stallEntity2(stallBlueprint);
-	CTransformation& stallEntityTransform2 = stallEntity2.getComponent<CTransformation>();
-	stallEntityTransform2.position = glm::vec3(10.0f, 0.0f, -20.0f);
-
-	Entity stallEntity3(stallBlueprint);
-	CTransformation& stallEntityTransform3 = stallEntity3.getComponent<CTransformation>();
-	stallEntityTransform3.position = glm::vec3(20.0f, 10.0f, -30.0f);
+	//Entity stallEntity2(stallBlueprint);
+	//CTransformation& stallEntityTransform2 = stallEntity2.getComponent<CTransformation>();
+	//stallEntityTransform2.position = glm::vec3(10.0f, 0.0f, -20.0f);
+	//
+	//Entity stallEntity3(stallBlueprint);
+	//CTransformation& stallEntityTransform3 = stallEntity3.getComponent<CTransformation>();
+	//stallEntityTransform3.position = glm::vec3(20.0f, 10.0f, -30.0f);
 
 	Entity sun;
 	sun.addComponent<CLightEmiter>();

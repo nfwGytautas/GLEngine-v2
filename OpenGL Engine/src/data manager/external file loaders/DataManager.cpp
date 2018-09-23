@@ -280,6 +280,16 @@ void DataManager::cleanUp()
 	m_textures.clear();
 }
 
+glm::mat4 DataManager::getProjectionMatrix()
+{
+	return m_projectionMatrix;
+}
+
+void DataManager::setProjectionMatrix(glm::mat4 proj)
+{
+	m_projectionMatrix = proj;
+}
+
 unsigned int DataManager::createVAO()
 {
 	unsigned int vaoID;

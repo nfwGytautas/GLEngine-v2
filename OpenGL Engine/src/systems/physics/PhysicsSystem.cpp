@@ -14,8 +14,22 @@ PhysicsSystem::PhysicsSystem()
 {
 }
 
+void PhysicsSystem::calculateFrustum()
+{
+	m_frustum.calculatePlanes(Settings::camera);
+
+	glm::vec3 testPos = glm::vec3(0.0f, 0.0f, -20.0f);
+
+	if (m_frustum.sphereInFrustum(testPos, 0.5f) != Frustum::OUTSIDE)
+	{
+		std::cout << "In frustum" << std::endl;
+	}
+}
+
 void PhysicsSystem::update(float delta)
 {
+	calculateFrustum();
+
 	auto physicsEntities = SGE::Instances::instances->entityManagerInstance->getEntitiesByGroup(EntityGroups::HasPhysics);
 	for (Entity* e : physicsEntities)
 	{

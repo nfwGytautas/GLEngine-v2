@@ -21,7 +21,9 @@ public:
 	void render();
 	void postRender();
 public:
-
+	bool isActive() const;
+	void deactivate();
+	void activate();
 	bool isAlive() const;
 	void destroy();
 
@@ -65,8 +67,8 @@ public:
 	~Entity();
 	void releaseMemory();
 private:
-
 	bool m_alive{ true };
+	bool m_active{ true };
 
 	bool m_memoryReleased{ false };
 
