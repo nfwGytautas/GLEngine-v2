@@ -7,8 +7,7 @@ public:
 
 	UpdateSystem();
 private:
-	void updateEntitiesWithTransformation();
-	void updateEntitiesWithInput();
-	void updateEntitiesWithPhysics();
-	void updateEntitiesWithCameras();
+	void postEvents();
+	void updatePhysics();
+	void updateEntitiesWthModels();
 };

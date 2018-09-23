@@ -36,10 +36,10 @@
     <ClInclude Include="src\components\preDefinedComponents\CRenderer.h" />
     <ClInclude Include="src\data manager\external file loaders\ImageLoader.h" />
     <ClInclude Include="src\components\preDefinedComponents\CCamera.h" />
+    <ClInclude Include="src\systems\physics\Frustum.h" />
     <ClInclude Include="src\systems\physics\PhysicsSystem.h" />
     <ClInclude Include="src\components\preDefinedComponents\CPhysics.h" />
     <ClInclude Include="src\components\EntityBlueprint.h" />
-    <ClInclude Include="src\components\preDefinedComponents\CMultiTexture.h" />
     <ClInclude Include="src\graphics\api\GraphicsAPI.h" />
     <ClInclude Include="src\graphics\shader\DynamicShader.h" />
     <ClInclude Include="src\components\EntityGroups.h" />
@@ -79,10 +79,10 @@
     <ClCompile Include="src\systems\event\Event.cpp" />
     <ClCompile Include="src\data manager\external file loaders\ImageLoader.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CCamera.cpp" />
+    <ClCompile Include="src\systems\physics\Frustum.cpp" />
     <ClCompile Include="src\systems\physics\PhysicsSystem.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CPhysics.cpp" />
     <ClCompile Include="src\components\EntityBlueprint.cpp" />
-    <ClCompile Include="src\components\preDefinedComponents\CMultiTexture.cpp" />
     <ClCompile Include="src\graphics\api\GraphicsAPI.cpp" />
     <ClCompile Include="src\graphics\shader\DynamicShader.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CLightEmiter.cpp" />
@@ -109,7 +109,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{87B43DE8-37EB-48F0-A3DA-AA0A038DF7CC}</ProjectGuid>
     <RootNamespace>OpenGLEngine</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -157,19 +157,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>E:\CV\OpenGL engine\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
+    <OutDir>C:\dev\SGE\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
     <TargetName>SGEngine</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>E:\CV\OpenGL engine\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
+    <OutDir>C:\dev\SGE\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
     <TargetName>SGEngine</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>E:\CV\OpenGL engine\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
+    <OutDir>C:\dev\SGE\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
     <TargetName>SGEngine</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>E:\CV\OpenGL engine\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
+    <OutDir>C:\dev\SGE\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
     <TargetName>SGEngine</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -178,14 +178,14 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\gytau\Desktop\OpenGL clean;E:\Boost\boost_1_66_0\x$(PlatformArchitecture);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Programming\3rd party\OpenGL clean;D:\Programming\3rd party\boost\x$(PlatformArchitecture)\boost_1_66_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;NFW_DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>C:\Users\gytau\Desktop\OpenGL clean\x$(PlatformArchitecture);E:\Boost\boost_1_66_0\x$(PlatformArchitecture)\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Programming\3rd party\OpenGL clean\x$(PlatformArchitecture);D:\Programming\3rd party\boost\x$(PlatformArchitecture)\boost_1_66_0\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <Link>
       <AdditionalLibraryDirectories>C:\Users\gytau\Desktop\OpenGL clean\x$(PlatformArchitecture);E:\Boost\boost_1_66_0\x$(PlatformArchitecture)\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -198,14 +198,14 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\gytau\Desktop\OpenGL clean;E:\Boost\boost_1_66_0\x$(PlatformArchitecture);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Programming\3rd party\OpenGL clean;D:\Programming\3rd party\boost\x$(PlatformArchitecture)\boost_1_66_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;NFW_DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>C:\Users\gytau\Desktop\OpenGL clean\x$(PlatformArchitecture);E:\Boost\boost_1_66_0\x$(PlatformArchitecture)\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Programming\3rd party\OpenGL clean\x$(PlatformArchitecture);D:\Programming\3rd party\boost\x$(PlatformArchitecture)\boost_1_66_0\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <Link>
       <AdditionalLibraryDirectories>C:\Users\gytau\Desktop\OpenGL clean\x$(PlatformArchitecture);E:\Boost\boost_1_66_0\x$(PlatformArchitecture)\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -220,7 +220,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\gytau\Desktop\OpenGL clean;E:\Boost\boost_1_66_0\x$(PlatformArchitecture);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Programming\3rd party\OpenGL clean;D:\Programming\3rd party\boost\x$(PlatformArchitecture)\boost_1_66_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;NFW_DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -233,7 +233,7 @@
       <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>C:\Users\gytau\Desktop\OpenGL clean\x$(PlatformArchitecture);E:\Boost\boost_1_66_0\x$(PlatformArchitecture)\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Programming\3rd party\OpenGL clean\x$(PlatformArchitecture);D:\Programming\3rd party\boost\x$(PlatformArchitecture)\boost_1_66_0\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -244,7 +244,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\gytau\Desktop\OpenGL clean;E:\Boost\boost_1_66_0\x$(PlatformArchitecture);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Programming\3rd party\OpenGL clean;D:\Programming\3rd party\boost\x$(PlatformArchitecture)\boost_1_66_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;NFW_DLL_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -257,7 +257,7 @@
       <AdditionalDependencies>glew32s.lib;glfw3.lib;opengl32.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <Lib>
-      <AdditionalLibraryDirectories>C:\Users\gytau\Desktop\OpenGL clean\x$(PlatformArchitecture);E:\Boost\boost_1_66_0\x$(PlatformArchitecture)\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Programming\3rd party\OpenGL clean\x$(PlatformArchitecture);D:\Programming\3rd party\boost\x$(PlatformArchitecture)\boost_1_66_0\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

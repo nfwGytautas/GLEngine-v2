@@ -20,32 +20,17 @@ void UpdateSystem::update()
 	InputManager::update();
 	SGE::Instances::instances->entityManagerInstance->refresh();
 
-	updateEntitiesWithTransformation();
-	updateEntitiesWithInput();
-	updateEntitiesWithPhysics();
-	updateEntitiesWithCameras();
+	postEvents();
+	updatePhysics();
+	updateEntitiesWthModels();
 
-	//Kinda redundant now
 	SGE::Instances::instances->entityManagerInstance->update(Display::getDelta());
 }
 UpdateSystem::UpdateSystem()
 {
 }
-void UpdateSystem::updateEntitiesWithTransformation()
-{
-	auto transformations = SGE::Instances::instances->entityManagerInstance->getEntitiesByGroup(EntityGroups::StaticEntity);
-	for (Entity* entity : transformations)
-	{
-		CTransformation& cTransform = entity->getComponent<CTransformation>();
-		cTransform.transformationMatrix = Maths::createTransformationMatrix
-		(
-			cTransform.position,
-			cTransform.rotation,
-			cTransform.scale
-		);
-	}
-}
-void UpdateSystem::updateEntitiesWithInput()
+
+void UpdateSystem::postEvents()
 {
 	auto downKeys = InputManager::getKeyDown();
 	for (Key key : downKeys)
@@ -70,50 +55,17 @@ void UpdateSystem::updateEntitiesWithInput()
 	SGE::Instances::instances->eventSystemInstance->post(MouseMovedEvent(InputManager::Mouse::getXOffset(), InputManager::Mouse::getYOffset()));
 	SGE::Instances::instances->eventSystemInstance->post(MouseScrollEvent(InputManager::Mouse::getScrollAmountX(), InputManager::Mouse::getScrollAmountY()));
 }
-void UpdateSystem::updateEntitiesWithPhysics()
+void UpdateSystem::updatePhysics()
 {
 	SGE::Instances::instances->physicsSystemInstance->update(Display::getDelta());
 }
 
-void UpdateSystem::updateEntitiesWithCameras()
+void UpdateSystem::updateEntitiesWthModels()
 {
-	auto cameraEntities = SGE::Instances::instances->entityManagerInstance->getEntitiesByGroup(EntityGroups::Camera);
-	for (Entity* e : cameraEntities)
+	auto renderables = SGE::Instances::instances->entityManagerInstance->getEntitiesByGroup(EntityGroups::Renderable);
+
+	for (Entity* entity : renderables)
 	{
-		CCamera& cameraComponent = e->getComponent<CCamera>();
-		glm::vec3 target = cameraComponent.cTransformation->position;
-		clamp(cameraComponent.pitch, 89.0f, -89.0f);
-
-		if (e->hasGroup(EntityGroups::HasHook))
-		{
-			float horizontalDistance = cameraComponent.distanceToHook * cos(glm::radians(cameraComponent.pitch));
-			float verticalDistance = cameraComponent.distanceToHook * sin(glm::radians(cameraComponent.pitch));
-
-			float fullAngle = cameraComponent.m_hookedTo->getComponent<CTransformation>().rotation.y + cameraComponent.angleAroundHook;
-			float offsetX = (float)horizontalDistance * sin(glm::radians(fullAngle));
-			float offsetZ = (float)horizontalDistance * cos(glm::radians(fullAngle));
-
-			cameraComponent.cTransformation->position.x = cameraComponent.m_hookedTo->getComponent<CTransformation>().position.x - offsetX;
-			cameraComponent.cTransformation->position.z = cameraComponent.m_hookedTo->getComponent<CTransformation>().position.z - offsetZ;
-			cameraComponent.cTransformation->position.y = cameraComponent.m_hookedTo->getComponent<CTransformation>().position.y + verticalDistance;
-
-			cameraComponent.yaw = 180 - (fullAngle);
-
-			target = cameraComponent.m_hookedTo->getComponent<CTransformation>().position;
-		}
-
-		cameraComponent.m_direction = glm::vec3(
-			cos(glm::radians(cameraComponent.pitch)) * cos(glm::radians(cameraComponent.yaw)),
-			sin(glm::radians(cameraComponent.pitch)),
-			cos(glm::radians(cameraComponent.pitch)) * sin(glm::radians(cameraComponent.yaw))
-		);
-
-		glm::mat4 ViewMatrix = glm::lookAt(
-			cameraComponent.cTransformation->position,
-			target + cameraComponent.m_direction,
-			glm::vec3(0.0, 1.0, 0.0)
-		);
-
-		cameraComponent.viewMatrix = ViewMatrix;
+		entity->getComponent<CModel>().m_rendered = false;
 	}
 }

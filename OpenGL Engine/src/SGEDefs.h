@@ -91,10 +91,11 @@ unlike settings these should not be changed.
 
 StateControl functions control the states of all the system
 pointers
-
 ==============================================================
 */
-#define SGE_MAX_SUPPORTED_LIGHTS 4
+#define SGE_MAX_SUPPORTED_LIGHTS 4		//Max supported lights by the engine
+#define SGE_MAX_INSTANCES 10000			//Max amount of vaos in a single instance
+#define SGE_INSTANCING_THRESHOLD 100	//The amount of vaos an instance needs to have in order to be instanced
 
 #define SGE_SHADER_MAP_DIFFUSE_SUPPORT 1
 #define SGE_SHADER_MAP_SPECULAR_SUPPORT 1
@@ -185,8 +186,6 @@ namespace SGE
 		extern InstanceManager* instances;
 	}
 
-
-
 	//Instance and other SGE state controls
 	namespace StateControl
 	{
@@ -198,6 +197,8 @@ namespace SGE
 		void _sgePrepareShaders();
 		//Sends a projection matrix to a shader 
 		void _sgeSendProjectionMatrix(DynamicShader* targetShader);
+		//Creates a projection matrix and stores it into storage file
+		void _sgeCreateProjectionMatrix();
 	}
 
 }

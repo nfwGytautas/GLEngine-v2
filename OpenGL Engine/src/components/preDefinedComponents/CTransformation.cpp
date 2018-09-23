@@ -1,9 +1,20 @@
 #include "CTransformation.h"
 #include "..\Entity.h"
+#include "..\..\maths\Maths.h"
 
 void CTransformation::init()
 {
 	entity->addGroup(EntityGroups::StaticEntity);
+}
+
+void CTransformation::update(float frameTime)
+{
+	transformationMatrix = Maths::createTransformationMatrix
+	(
+		position,
+		rotation,
+		scale
+	);
 }
 
 CTransformation::CTransformation()

@@ -9,9 +9,12 @@
 class EntityManager
 {
 public:
-	void refresh();
 	void update(float frameTime);
-	void draw();
+	void preRender();
+	void render();
+	void postRender();
+public:
+	void refresh();
 	void registerEntity(Entity* entity);
 	void registerBlueprint(EntityBlueprint* blueprint);
 
@@ -22,6 +25,7 @@ public:
 	~EntityManager();
 private:
 	std::vector<Entity*> m_entities;
+	std::vector<Entity*> m_activeEntities;
 	std::vector<EntityBlueprint*> m_blueprints;
 	std::array<std::vector<Entity*>, maxGroups> m_groupedEntities;
 };
