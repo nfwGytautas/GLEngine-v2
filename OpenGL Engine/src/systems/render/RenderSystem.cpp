@@ -34,7 +34,7 @@ void RenderSystem::render()
 
 	//========ENTITY========	
 	//Render entities
-	renderEntities();	
+	renderEntities();
 	//======================
 
 	//========Skybox========
@@ -130,6 +130,10 @@ void RenderSystem::renderEntities()
 		transformationMatrixBatches[it.first].reserve(it.second.size());
 		for(Entity* entity : it.second)
 		{
+			if (!entity->isActive())
+			{
+				continue;				
+			}
 			transformationMatrixBatches[it.first].push_back(entity->getComponent<CTransformation>().transformationMatrix);
 		}
 	}	
@@ -140,66 +144,86 @@ void RenderSystem::renderEntities()
 	auto renderables = SGE::Instances::instances->entityManagerInstance->getEntitiesByGroup(EntityGroups::Renderable);
 	for (Entity* entity : renderables)
 	{
+		if (entity->hasComponent<CRenderer>())
+		{
+			if (!entity->getComponent<CRenderer>().shouldBeRendered)
+			{
+				continue;
+			}
+		}
 		entity->render();
 	}
 
 	auto vaos = SGE::Instances::instances->batchManagerInstance->allKnownVAOS();
-	for (VAO vao : vaos)
+
+	std::unordered_map<unsigned int, unsigned int> vertexArrays;
+
+	for (auto vao : vaos)
 	{
-		//Bindint vao
-		GraphicsAPI::bindVAO(vao.ID);
-		for (auto it : transformationMatrixBatches)
+		vertexArrays[vao.ID] = vao.elementCount;
+	}
+
+	for (auto it : transformationMatrixBatches)
+	{
+		GraphicsAPI::bindVAO(it.first);
+
+		if (it.second.size() > SGE_INSTANCING_THRESHOLD)
 		{
-			if (it.first == vao.ID)
-			{
-				if (it.second.size() > SGE_INSTANCING_THRESHOLD)
-				{
-					CModel& model = entityBatches[vao.ID][0]->getComponent<CModel>();
-					Mesh mesh = model.m_model.getMeshByVAO(vao);
-					Material meshMaterial = mesh.getMaterial();
-					loadMaterial(instancedShader, &meshMaterial);
+			CModel& model = entityBatches[it.first][0]->getComponent<CModel>();
+			Mesh mesh = model.m_model.getMeshByVAO(VAO(it.first, vertexArrays[it.first]));
+			Material meshMaterial = mesh.getMaterial();
+			loadMaterial(instancedShader, &meshMaterial);
 
-					instancedShader->bind();
-					GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO));
-					GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, it.second.size() * sizeof(float) * 16, &it.second[0]));
+			instancedShader->bind();
+			GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO));
+			GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, it.second.size() * sizeof(float) * 16, &it.second[0]));
 
-					// vertex Attributes
-					GLsizei vec4Size = sizeof(glm::vec4);
-					GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot1));
-					GLCall(glVertexAttribPointer(AttributeLocation::InstanceSlot1, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0));
-					GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot2));
-					GLCall(glVertexAttribPointer(AttributeLocation::InstanceSlot2, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(vec4Size)));
-					GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot3));
-					GLCall(glVertexAttribPointer(AttributeLocation::InstanceSlot3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size)));
-					GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot4));
-					GLCall(glVertexAttribPointer(AttributeLocation::InstanceSlot4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size)));
+			// vertex Attributes
+			GLsizei vec4Size = sizeof(glm::vec4);
+			GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot1));
+			GLCall(glVertexAttribPointer(AttributeLocation::InstanceSlot1, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0));
+			GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot2));
+			GLCall(glVertexAttribPointer(AttributeLocation::InstanceSlot2, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(vec4Size)));
+			GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot3));
+			GLCall(glVertexAttribPointer(AttributeLocation::InstanceSlot3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size)));
+			GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot4));
+			GLCall(glVertexAttribPointer(AttributeLocation::InstanceSlot4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size)));
 
-					glVertexAttribDivisor(AttributeLocation::InstanceSlot1, 1);
-					glVertexAttribDivisor(AttributeLocation::InstanceSlot2, 1);
-					glVertexAttribDivisor(AttributeLocation::InstanceSlot3, 1);
-					glVertexAttribDivisor(AttributeLocation::InstanceSlot4, 1);
+			glVertexAttribDivisor(AttributeLocation::InstanceSlot1, 1);
+			glVertexAttribDivisor(AttributeLocation::InstanceSlot2, 1);
+			glVertexAttribDivisor(AttributeLocation::InstanceSlot3, 1);
+			glVertexAttribDivisor(AttributeLocation::InstanceSlot4, 1);
 				
-					renderInstancedEntities(vao, it.second.size());
+			renderInstancedEntities(VAO(it.first, vertexArrays[it.first]), it.second.size());
 
-					GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
-					glBindVertexArray(0);
-				}
-				else
+			GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+			glBindVertexArray(0);
+		}
+		else if(it.second.size() > 0)
+		{
+			normalShader->bind();
+			for(unsigned int i = 0; i < entityBatches[it.first].size(); i++)
+			{
+				if (entityBatches[it.first][i]->hasComponent<CRenderer>())
 				{
-					normalShader->bind();
-					for(unsigned int i = 0; i < entityBatches[vao.ID].size(); i++)
+					if (!entityBatches[it.first][i]->getComponent<CRenderer>().shouldBeRendered)
 					{
-						CModel& model = entityBatches[vao.ID][i]->getComponent<CModel>();
-						Mesh mesh = model.m_model.getMeshByVAO(vao);
-						Material meshMaterial = mesh.getMaterial();
-						loadMaterial(normalShader, &meshMaterial);
-						normalShader->setMatrix4fUniform("transformationMatrix", it.second[i]);						
-						renderEntity(vao);
+						continue;
 					}
 				}
-				break;
+				CModel& model = entityBatches[it.first][i]->getComponent<CModel>();
+				Mesh mesh = model.m_model.getMeshByVAO(VAO(it.first, vertexArrays[it.first]));
+				Material meshMaterial = mesh.getMaterial();
+				loadMaterial(normalShader, &meshMaterial);
+				normalShader->setMatrix4fUniform("transformationMatrix", it.second[i]);						
+				renderEntity(VAO(it.first, vertexArrays[it.first]));
 			}
 		}
+		else
+		{
+			continue;
+		}
+			
 	}
 
 	normalShader->unbind();

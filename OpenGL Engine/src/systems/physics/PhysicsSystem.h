@@ -1,5 +1,6 @@
 #pragma once
 #include "..\..\algorithm\Algorithm.h"
+#include "Frustum.h"
 
 class PhysicsSystem
 {
@@ -10,6 +11,10 @@ public:
 
 	PhysicsSystem();
 private:
+	void calculateFrustum();
+private:
+	Frustum m_frustum;
+
 	continuous2DArray<float> m_heightMap;
 	float m_groundSize;
 };

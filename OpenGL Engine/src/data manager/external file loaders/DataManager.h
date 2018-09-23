@@ -30,6 +30,11 @@ public:
 	Model loadModel(std::string pathToModel);
 
 	void cleanUp();
+
+public:
+	glm::mat4 getProjectionMatrix();
+	void setProjectionMatrix(glm::mat4 proj);
+
 private:
 	void createFallbacks();
 	unsigned int createVAO();
@@ -51,4 +56,6 @@ private:
 	unsigned int m_fallbackTexture;
 	unsigned int m_fallbackMeshID;
 	unsigned int m_fallbackMeshVertexCount;
+
+	glm::mat4 m_projectionMatrix;
 };

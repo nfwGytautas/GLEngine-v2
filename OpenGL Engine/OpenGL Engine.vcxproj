@@ -36,6 +36,7 @@
     <ClInclude Include="src\components\preDefinedComponents\CRenderer.h" />
     <ClInclude Include="src\data manager\external file loaders\ImageLoader.h" />
     <ClInclude Include="src\components\preDefinedComponents\CCamera.h" />
+    <ClInclude Include="src\systems\physics\Frustum.h" />
     <ClInclude Include="src\systems\physics\PhysicsSystem.h" />
     <ClInclude Include="src\components\preDefinedComponents\CPhysics.h" />
     <ClInclude Include="src\components\EntityBlueprint.h" />
@@ -78,6 +79,7 @@
     <ClCompile Include="src\systems\event\Event.cpp" />
     <ClCompile Include="src\data manager\external file loaders\ImageLoader.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CCamera.cpp" />
+    <ClCompile Include="src\systems\physics\Frustum.cpp" />
     <ClCompile Include="src\systems\physics\PhysicsSystem.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CPhysics.cpp" />
     <ClCompile Include="src\components\EntityBlueprint.cpp" />
