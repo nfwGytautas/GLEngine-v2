@@ -28,8 +28,6 @@ void SGE::StateControl::_sgeInit()
 
 	InputManager::Mouse::centerCursorPosition();
 
-	_sgeCreateProjectionMatrix();
-
 	#ifdef SGE_GRAPHICS_TECHNOLOGY_OPENGL
 	std::cout << "[SGE] OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 	#endif // SGE_GRAPHICS_TECHNOLOGY_OPENGL
@@ -51,34 +49,27 @@ void SGE::StateControl::_sgePrepareShaders()
 	SGE::Instances::instances->shaderManagerInstance->addShader
 	(
 		ShaderNames::Entity,
-		"C:/dev/SGE/SGE/Shaders/current/vertex.shader",
-		"C:/dev/SGE/SGE/Shaders/current/fragment.shader"
+		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/vertex.shader",
+		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/fragment.shader"
 	);
 	SGE::Instances::instances->shaderManagerInstance->addShader
 	(
 		ShaderNames::GUI,
-		"C:/dev/SGE/SGE/Shaders/current/guiV.shader",
-		"C:/dev/SGE/SGE/Shaders/current/guiF.shader"
+		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/guiV.shader",
+		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/guiF.shader"
 	);
 	SGE::Instances::instances->shaderManagerInstance->addShader
 	(
 		ShaderNames::Skybox,
-		"C:/dev/SGE/SGE/Shaders/current/skyboxV.shader",
-		"C:/dev/SGE/SGE/Shaders/current/skyboxF.shader"
+		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/skyboxV.shader",
+		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/skyboxF.shader"
 	);
 	SGE::Instances::instances->shaderManagerInstance->addShader
 	(
 		ShaderNames::MultiMaterial,
-		"C:/dev/SGE/SGE/Shaders/current/multiMaterialVertex.shader",
-		"C:/dev/SGE/SGE/Shaders/current/multiMaterialFragment.shader"
+		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/multiMaterialVertex.shader",
+		"E:/CV/OpenGL engine/OpenGL Engine/Shaders/current/multiMaterialFragment.shader"
 	);
-	SGE::Instances::instances->shaderManagerInstance->addShader
-	(
-		ShaderNames::InstancedShader,
-		"C:/dev/SGE/SGE/Shaders/current/instancedV.shader",
-		"C:/dev/SGE/SGE/Shaders/current/instancedF.shader"
-	);
-
 	#elif SGE_DEVELOPMENT_STATUS == 0
 
 	std::string path;
@@ -107,36 +98,18 @@ void SGE::StateControl::_sgePrepareShaders()
 		path + "skyboxV.shader",
 		path + "skyboxF.shader"
 	);
-	SGE::Instances::instances->shaderManagerInstance->addShader
-	(
-		ShaderNames::MultiMaterial,
-		path + "multiMaterialVertex.shader",
-		path + "multiMaterialFragment.shader"
-	);
-	SGE::Instances::instances->shaderManagerInstance->addShader
-	(
-		ShaderNames::InstancedShader,
-		path + "instancedV.shader",
-		path + "instancedF.shader"
-	);
 	#endif
 
 	_sgeSendProjectionMatrix(SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::Entity));
 	_sgeSendProjectionMatrix(SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::Skybox));
 	_sgeSendProjectionMatrix(SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::MultiMaterial));
-	_sgeSendProjectionMatrix(SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::InstancedShader));
 }
 
 void SGE::StateControl::_sgeSendProjectionMatrix(DynamicShader* targetShader)
 {
 	targetShader->bind();
-	targetShader->setMatrix4fUniform("projectionMatrix", Instances::instances->dataManagerInstance->getProjectionMatrix());
+	targetShader->setMatrix4fUniform("projectionMatrix", Maths::createProjectionMatrix());
 	targetShader->unbind();
-}
-
-void SGE::StateControl::_sgeCreateProjectionMatrix()
-{
-	Instances::instances->dataManagerInstance->setProjectionMatrix(Maths::createProjectionMatrix());
 }
 
 SGE::Instances::InstanceManager::InstanceManager()

@@ -22,50 +22,15 @@ void Entity::update(float frameTime)
 		}
 	}
 }
-void Entity::preRender()
+void Entity::draw()
 {
 	for (unsigned int i = 0; i < maxComponents; i++)
 	{
 		if (m_componentArray[i] != nullptr)
 		{
-			m_componentArray[i]->preRender();
+			m_componentArray[i]->draw();
 		}
 	}
-}
-void Entity::render()
-{
-	for (unsigned int i = 0; i < maxComponents; i++)
-	{
-		if (m_componentArray[i] != nullptr)
-		{
-			m_componentArray[i]->render();
-		}
-	}
-}
-void Entity::postRender()
-{
-	for (unsigned int i = 0; i < maxComponents; i++)
-	{
-		if (m_componentArray[i] != nullptr)
-		{
-			m_componentArray[i]->postRender();
-		}
-	}
-}
-
-bool Entity::isActive() const
-{
-	return m_active;
-}
-
-void Entity::deactivate()
-{
-	m_active = false;
-}
-
-void Entity::activate()
-{
-	m_active = true;
 }
 
 bool Entity::isAlive() const

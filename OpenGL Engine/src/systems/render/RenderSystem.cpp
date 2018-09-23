@@ -32,10 +32,29 @@ void RenderSystem::render()
 
 	DynamicShader* loadedShader = nullptr;	
 
-	//========ENTITY========	
+	//====MULTI MATERIAL====
+	//Load camera
+	loadedShader = SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::MultiMaterial);
+	loadedShader->bind();
+	loadViewport(loadedShader);
+	//Load all the lights
+	loadLights(loadedShader);
 	//Render entities
-	renderEntities();
+	renderEntities(loadedShader);
+	loadedShader->unbind();
 	//======================
+
+	//========ENTITY========
+	//Load camera
+	/*loadedShader = SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::Entity);
+	loadedShader->bind();
+	loadViewport(loadedShader);
+	//Load all the lights
+	loadLights(loadedShader);
+	//Render entities
+	renderEntities(loadedShader);
+	loadedShader->unbind();*/
+	//======================	
 
 	//========Skybox========
 	loadedShader = SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::Skybox);
@@ -58,7 +77,7 @@ void RenderSystem::render()
 
 	//================================================
 
-	SGE::Instances::instances->entityManagerInstance->postRender();
+
 }
 
 RenderSystem::RenderSystem()
@@ -70,7 +89,6 @@ void RenderSystem::prepare()
 	GLCall(glEnable(GL_CULL_FACE));
 	GLCall(glCullFace(GL_BACK));
 	GLCall(glEnable(GL_DEPTH_TEST));
-	GLCall(glDepthFunc(GL_LESS));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 	GLCall(glClearColor(Settings::skyColor.r, Settings::skyColor.g, Settings::skyColor.b, 0.0f));
 
@@ -78,11 +96,8 @@ void RenderSystem::prepare()
 	{
 		m_GUIQuad = SGE::Instances::instances->dataManagerInstance->create2DQuad(Settings::guiQuad);
 		m_skybox = SGE::Instances::instances->dataManagerInstance->createSkybox();
-		m_instanceVBO = SGE::Instances::instances->dataManagerInstance->createVBO(instance_data_length * max_instances);
 		m_firstTime = false;
 	}
-
-	SGE::Instances::instances->entityManagerInstance->preRender();
 }
 void RenderSystem::loadViewport(DynamicShader* shader)
 {
@@ -111,154 +126,128 @@ void RenderSystem::loadLights(DynamicShader* shader)
 	}
 	shader->setVec3Uniform("skyColor", Settings::skyColor);
 }
-void RenderSystem::renderEntities()
-{
-	DynamicShader* normalShader = SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::MultiMaterial);
-	DynamicShader* instancedShader = SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::InstancedShader);
-
-	std::unordered_map<unsigned int, std::vector<Entity*>> entityBatches;
-
-	for (VAO vao : SGE::Instances::instances->batchManagerInstance->allKnownVAOS())
-	{
-		entityBatches[vao.ID] = SGE::Instances::instances->batchManagerInstance->getSameVAOEntities(vao.ID);
-	}
-
-	std::unordered_map<unsigned int, std::vector<glm::mat4>> transformationMatrixBatches;
-
-	for (auto it : entityBatches)
-	{
-		transformationMatrixBatches[it.first].reserve(it.second.size());
-		for(Entity* entity : it.second)
-		{
-			if (!entity->isActive())
-			{
-				continue;				
-			}
-			transformationMatrixBatches[it.first].push_back(entity->getComponent<CTransformation>().transformationMatrix);
-		}
-	}	
-
-	setupShader(normalShader);
-	setupShader(instancedShader);
-
+void RenderSystem::renderEntities(DynamicShader* shader)
+{			
+	shader->setVec3Uniform("cameraPos", Settings::camera->cTransformation->position);
 	auto renderables = SGE::Instances::instances->entityManagerInstance->getEntitiesByGroup(EntityGroups::Renderable);
-	for (Entity* entity : renderables)
+
+	for (auto renderable : renderables)
 	{
-		if (entity->hasComponent<CRenderer>())
+		CModel& model = renderable->getComponent<CModel>();
+
+		for (auto mesh : model.m_model.getMeshes())
 		{
-			if (!entity->getComponent<CRenderer>().shouldBeRendered)
-			{
-				continue;
-			}
-		}
-		entity->render();
-	}
-
-	auto vaos = SGE::Instances::instances->batchManagerInstance->allKnownVAOS();
-
-	std::unordered_map<unsigned int, unsigned int> vertexArrays;
-
-	for (auto vao : vaos)
-	{
-		vertexArrays[vao.ID] = vao.elementCount;
-	}
-
-	for (auto it : transformationMatrixBatches)
-	{
-		GraphicsAPI::bindVAO(it.first);
-
-		if (it.second.size() > SGE_INSTANCING_THRESHOLD)
-		{
-			CModel& model = entityBatches[it.first][0]->getComponent<CModel>();
-			Mesh mesh = model.m_model.getMeshByVAO(VAO(it.first, vertexArrays[it.first]));
+			VAO meshVAO = mesh.getVAO();
 			Material meshMaterial = mesh.getMaterial();
-			loadMaterial(instancedShader, &meshMaterial);
+			GraphicsAPI::bindVAO(meshVAO.ID);
 
-			instancedShader->bind();
-			GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO));
-			GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, it.second.size() * sizeof(float) * 16, &it.second[0]));
+			ShadingMap diffuseMap = meshMaterial.m_shaderMaps[(size_t)ShadingMapType::Diffuse];
+			ShadingMap specularMap = meshMaterial.m_shaderMaps[(size_t)ShadingMapType::Specular];
 
-			// vertex Attributes
-			GLsizei vec4Size = sizeof(glm::vec4);
-			GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot1));
-			GLCall(glVertexAttribPointer(AttributeLocation::InstanceSlot1, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0));
-			GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot2));
-			GLCall(glVertexAttribPointer(AttributeLocation::InstanceSlot2, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(vec4Size)));
-			GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot3));
-			GLCall(glVertexAttribPointer(AttributeLocation::InstanceSlot3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size)));
-			GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot4));
-			GLCall(glVertexAttribPointer(AttributeLocation::InstanceSlot4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size)));
-
-			glVertexAttribDivisor(AttributeLocation::InstanceSlot1, 1);
-			glVertexAttribDivisor(AttributeLocation::InstanceSlot2, 1);
-			glVertexAttribDivisor(AttributeLocation::InstanceSlot3, 1);
-			glVertexAttribDivisor(AttributeLocation::InstanceSlot4, 1);
-				
-			renderInstancedEntities(VAO(it.first, vertexArrays[it.first]), it.second.size());
-
-			GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
-			glBindVertexArray(0);
-		}
-		else if(it.second.size() > 0)
-		{
-			normalShader->bind();
-			for(unsigned int i = 0; i < entityBatches[it.first].size(); i++)
+			unsigned int textureSlot = 0;
+		
+			if (diffuseMap.textureID != 0)
 			{
-				if (entityBatches[it.first][i]->hasComponent<CRenderer>())
-				{
-					if (!entityBatches[it.first][i]->getComponent<CRenderer>().shouldBeRendered)
-					{
-						continue;
-					}
-				}
-				CModel& model = entityBatches[it.first][i]->getComponent<CModel>();
-				Mesh mesh = model.m_model.getMeshByVAO(VAO(it.first, vertexArrays[it.first]));
-				Material meshMaterial = mesh.getMaterial();
-				loadMaterial(normalShader, &meshMaterial);
-				normalShader->setMatrix4fUniform("transformationMatrix", it.second[i]);						
-				renderEntity(VAO(it.first, vertexArrays[it.first]));
+				GraphicsAPI::bindTexture(diffuseMap.textureID, ShaderLocations::Diffuse);
+				shader->setIntUniform(std::string("material.diffuse"), ShaderLocations::Diffuse);
+				shader->setBooleanUniform(std::string("material.hasDiffuseMap"), true);
 			}
+			else
+			{
+				shader->setBooleanUniform(std::string("material.hasDiffuseMap"), false);
+			}
+			if (specularMap.textureID != 0)
+			{
+				GraphicsAPI::bindTexture(specularMap.textureID, ShaderLocations::Specular);
+				shader->setIntUniform(std::string("material.specular"), ShaderLocations::Specular);
+				shader->setBooleanUniform(std::string("material.hasSpecularMap"), true);
+				shader->setFloatUniform(std::string("material.shininess"), meshMaterial.m_shininess);
+			}
+			else
+			{
+				shader->setBooleanUniform(std::string("material.hasSpecularMap"), false);
+				shader->setFloatUniform(std::string("material.shininess"), 0);
+			}
+			
+			if (renderable->hasComponent<CTransformation>())
+			{
+				shader->setMatrix4fUniform("transformationMatrix", renderable->getComponent<CTransformation>().transformationMatrix);
+			}
+			GLCall(glActiveTexture(GL_TEXTURE0));
+			GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
+			GLCall(glEnableVertexAttribArray(AttributeLocation::UVs));
+			GLCall(glEnableVertexAttribArray(AttributeLocation::Normal));
+			GLCall(glDrawElements(GL_TRIANGLES, meshVAO.elementCount, GL_UNSIGNED_INT, (void*)0));
+			GLCall(glDisableVertexAttribArray(AttributeLocation::Position));
+			GLCall(glDisableVertexAttribArray(AttributeLocation::UVs));
+			GLCall(glDisableVertexAttribArray(AttributeLocation::Normal));
+			GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+			GraphicsAPI::bindVAO(0);
+		}
+	}
+	
+	/*auto knownMeshes = SGE::Instances::instances->batchManagerInstance->allKnownMeshes();
+	for (unsigned int meshID : knownMeshes)
+	{
+		auto sameMeshEntities = SGE::Instances::instances->batchManagerInstance->getEntityBatch(meshID);
+		if (sameMeshEntities.size() != 0)
+		{
+			auto mesh = sameMeshEntities[0]->getComponent<CMesh>();
+			GraphicsAPI::bindVAO(mesh);
 		}
 		else
 		{
 			continue;
 		}
-			
-	}
-
-	normalShader->unbind();
-}
-
-void RenderSystem::renderEntity(VAO vao)
-{
-	GLCall(glActiveTexture(GL_TEXTURE0));
-	GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
-	GLCall(glEnableVertexAttribArray(AttributeLocation::UVs));
-	GLCall(glEnableVertexAttribArray(AttributeLocation::Normal));
-	GLCall(glDrawElements(GL_TRIANGLES, vao.elementCount, GL_UNSIGNED_INT, (void*)0));
-	GLCall(glDisableVertexAttribArray(AttributeLocation::Position));
-	GLCall(glDisableVertexAttribArray(AttributeLocation::UVs));
-	GLCall(glDisableVertexAttribArray(AttributeLocation::Normal));	
-}
-
-void RenderSystem::renderInstancedEntities(VAO vao, unsigned int count)
-{
-	GLCall(glActiveTexture(GL_TEXTURE0));
-	GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
-	GLCall(glEnableVertexAttribArray(AttributeLocation::UVs));
-	GLCall(glEnableVertexAttribArray(AttributeLocation::Normal));
-	GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot1));
-	GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot2));
-	GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot3));
-	GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot4));
-	GLCall(glDrawElementsInstanced(GL_TRIANGLES, vao.elementCount, GL_UNSIGNED_INT, (void*)0, count));
-	GLCall(glDisableVertexAttribArray(AttributeLocation::Position));
-	GLCall(glDisableVertexAttribArray(AttributeLocation::UVs));
-	GLCall(glDisableVertexAttribArray(AttributeLocation::Normal));
-	GLCall(glDisableVertexAttribArray(AttributeLocation::InstanceSlot1));
-	GLCall(glDisableVertexAttribArray(AttributeLocation::InstanceSlot2));
-	GLCall(glDisableVertexAttribArray(AttributeLocation::InstanceSlot3));
-	GLCall(glDisableVertexAttribArray(AttributeLocation::InstanceSlot4));
+		GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
+		GLCall(glEnableVertexAttribArray(AttributeLocation::UVs));
+		GLCall(glEnableVertexAttribArray(AttributeLocation::Normal));
+		for (Entity* entity : sameMeshEntities)
+		{
+			if (entity->hasComponent<CMaterial>())
+			{
+				auto material = entity->getComponent<CMaterial>();
+				if (m_currentMaterial == nullptr || *m_currentMaterial != material)
+				{
+					GraphicsAPI::bindTexture(material);		
+					shader->setFloatUniform("shineDamper", material.shineDamper);
+					shader->setFloatUniform("reflectivity", material.reflectivity);
+					m_currentMaterial = &material;
+				}
+			}
+			else if (entity->hasComponent<CMultiTexture>())
+			{
+				CMultiTexture pack = entity->getComponent<CMultiTexture>();
+				shader->setIntUniform("blendMap", 1);
+				GraphicsAPI::bindTexture(pack.textureBlendMap, 1);
+				shader->setIntUniform("backgroundTexture", 2);
+				GraphicsAPI::bindTexture(pack.background, 2);
+				shader->setIntUniform("rTexture", 3);
+				GraphicsAPI::bindTexture(pack.r, 3);
+				shader->setIntUniform("gTexture", 4);
+				GraphicsAPI::bindTexture(pack.g, 4);
+				shader->setIntUniform("bTexture", 5);
+				GraphicsAPI::bindTexture(pack.b, 5);
+			}
+			if (entity->hasComponent<CTransformation>())
+			{
+				shader->setMatrix4fUniform("transformationMatrix", entity->getComponent<CTransformation>().transformationMatrix);
+			}
+			loadDefaultRenderSettings(shader);
+			if (entity->hasComponent<CRenderer>())
+			{
+				loadRenderSettings(shader, entity);
+			}
+			GLCall(glDrawElements(GL_TRIANGLES, entity->getComponent<CMesh>().vertexCount, GL_UNSIGNED_INT, (void*)0));
+		}
+		GLCall(glDisableVertexAttribArray(AttributeLocation::Position));
+		GLCall(glDisableVertexAttribArray(AttributeLocation::UVs));
+		GLCall(glDisableVertexAttribArray(AttributeLocation::Normal));
+		GLCall(glBindVertexArray(0));
+		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+		GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
+		m_currentMaterial = nullptr;
+	}*/
 }
 
 void RenderSystem::renderGUI(DynamicShader* shader)
@@ -306,6 +295,16 @@ void RenderSystem::loadRenderSettings(DynamicShader* shader, Entity* entity)
 	CRenderer cRenderer = entity->getComponent<CRenderer>();
 	shader->setFloatUniform("cRenderer_tileCount", (float)cRenderer.tileCount);
 
+	if (cRenderer.transparent)
+	{
+		GLCall(glDisable(GL_CULL_FACE));
+	}
+
+	if (cRenderer.fakeLighting)
+	{
+		shader->setBooleanUniform("cRenderer_fakeLighting", true);
+	}
+
 	if (cRenderer.multiTexture)
 	{
 		shader->setBooleanUniform("cRenderer_multiTexture", true);
@@ -346,50 +345,11 @@ void RenderSystem::loadDefaultRenderSettings(DynamicShader* shader)
 		GLCall(glEnable(GL_CULL_FACE));
 		GLCall(glCullFace(GL_BACK));
 
+		shader->setBooleanUniform("cRenderer_fakeLighting", false);
 		shader->setBooleanUniform("cRenderer_multiTexture", false);
 		shader->setBooleanUniform("cRenderer_disableSpecular", false);
 		shader->setFloatUniform("cRenderer_skyboxReflection", false);
 	}
 
 	m_usingDefaults = true;
-}
-
-void RenderSystem::loadMaterial(DynamicShader* shader, Material* material)
-{
-	ShadingMap diffuseMap = material->m_shaderMaps[(size_t)ShadingMapType::Diffuse];
-	ShadingMap specularMap = material->m_shaderMaps[(size_t)ShadingMapType::Specular];
-
-	if (diffuseMap.textureID != 0)
-	{
-		GraphicsAPI::bindTexture(diffuseMap.textureID, ShaderLocations::Diffuse);
-		shader->setIntUniform(std::string("material.diffuse"), ShaderLocations::Diffuse);
-		shader->setBooleanUniform(std::string("material.hasDiffuseMap"), true);
-	}
-	else
-	{
-		shader->setBooleanUniform(std::string("material.hasDiffuseMap"), false);
-	}
-	if (specularMap.textureID != 0)
-	{
-		GraphicsAPI::bindTexture(specularMap.textureID, ShaderLocations::Specular);
-		shader->setIntUniform(std::string("material.specular"), ShaderLocations::Specular);
-		shader->setBooleanUniform(std::string("material.hasSpecularMap"), true);
-		shader->setFloatUniform(std::string("material.shininess"), material->m_shininess);
-	}
-	else
-	{
-		shader->setBooleanUniform(std::string("material.hasSpecularMap"), false);
-		shader->setFloatUniform(std::string("material.shininess"), 0);
-	}
-}
-
-void RenderSystem::setupShader(DynamicShader* shader)
-{
-	shader->bind();
-	//Load camera	
-	loadViewport(shader);
-	//Load all the lights
-	loadLights(shader);
-	//Load camera
-	shader->setVec3Uniform("cameraPos", Settings::camera->cTransformation->position);
 }

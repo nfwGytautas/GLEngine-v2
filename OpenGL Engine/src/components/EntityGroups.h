@@ -12,7 +12,6 @@ namespace EntityGroups
 		Camera = 5,
 		HasHook = 6,
 		IsGround = 7,
-		Renderable = 8,
-		Instanced = 9
+		Renderable = 8
 	};
 }

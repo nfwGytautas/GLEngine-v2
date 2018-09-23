@@ -12,8 +12,4 @@ public:
 	static void bindTexture(const GUI* mGui, unsigned int slot = 0);
 
 	static void bindVAO(unsigned int id);
-
-private:
-	static unsigned int m_currentVAO;
-	static unsigned int m_currentTextures[16];
 };

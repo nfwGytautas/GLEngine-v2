@@ -6,16 +6,10 @@ struct Component
 {
 	Entity* entity{ nullptr };
 
-	//This method is called after construction of the component
 	virtual void init() {}
-	//This method is called after every update cycle
 	virtual void update(float frameTime) {}
-	//This method is called before every render cycle
-	virtual void preRender() {}
-	//This method is called during every render cycle
-	virtual void render() {}
-	//This method is called after every render cycle
-	virtual void postRender() {}
+	virtual void draw() {}
+	virtual void handleMessage(const char* message) {}
 
 	//Required for blueprints
 	virtual Component* clone() { return new Component(*this); }

@@ -56,13 +56,10 @@ void main()
 
 	if (material.hasSpecularMap > 0.5)
 	{
-		if(cRenderer_disableSpecular < 0.5)
-		{
-			vec3 viewDir = normalize(cameraPos - pass_position);
-			vec3 reflectDir = reflect(-lightDir, norm);
-			float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-			specular = light.specular * spec * vec3(texture(material.specular, pass_texCoords));
-		}
+		vec3 viewDir = normalize(cameraPos - pass_position);
+		vec3 reflectDir = reflect(-lightDir, norm);
+		float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+		specular = light.specular * spec * vec3(texture(material.specular, pass_texCoords));
 	}
 
 	vec3 result = ambient + diffuse + specular;

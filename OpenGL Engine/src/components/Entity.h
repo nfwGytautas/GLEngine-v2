@@ -17,13 +17,8 @@ class Entity
 public:
 	void init();
 	void update(float frameTime);
-	void preRender();
-	void render();
-	void postRender();
-public:
-	bool isActive() const;
-	void deactivate();
-	void activate();
+	void draw();
+
 	bool isAlive() const;
 	void destroy();
 
@@ -67,8 +62,8 @@ public:
 	~Entity();
 	void releaseMemory();
 private:
+
 	bool m_alive{ true };
-	bool m_active{ true };
 
 	bool m_memoryReleased{ false };
 

@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{34FFEEEA-DD38-4B56-B5A1-03A35565C253}</ProjectGuid>
     <RootNamespace>TestProject</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -70,16 +70,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>C:\dev\SGE\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
+    <OutDir>E:\CV\OpenGL engine\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>C:\dev\SGE\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
+    <OutDir>E:\CV\OpenGL engine\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>C:\dev\SGE\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
+    <OutDir>E:\CV\OpenGL engine\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>C:\dev\SGE\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
+    <OutDir>E:\CV\OpenGL engine\OutPut\$(Configuration)\x$(PlatformArchitecture)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -87,11 +87,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Programming\3rd party\OpenGL clean;D:\Programming\3rd party\boost\x$(PlatformArchitecture)\boost_1_66_0;C:\dev\SGE\OutPut\$(Configuration)\x$(PlatformArchitecture);C:\dev\SGE\SGE\OpenGL Engine\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\CV\OpenGL engine\OpenGL Engine\OpenGL Engine\src;C:\Users\gytau\Desktop\OpenGL clean;E:\Boost\boost_1_66_0\x$(PlatformArchitecture);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\dev\SGE\OutPut\$(Configuration)\x$(PlatformArchitecture);D:\Programming\3rd party\boost\x$(PlatformArchitecture)\boost_1_66_0\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\CV\OpenGL engine\OutPut\$(Configuration)\x$(PlatformArchitecture);E:\Boost\boost_1_66_0\x$(PlatformArchitecture)\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>NotSet</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -101,11 +101,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Programming\3rd party\OpenGL clean;D:\Programming\3rd party\boost\x$(PlatformArchitecture)\boost_1_66_0;C:\dev\SGE\OutPut\$(Configuration)\x$(PlatformArchitecture);C:\dev\SGE\SGE\OpenGL Engine\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\CV\OpenGL engine\OpenGL Engine\OpenGL Engine\src;C:\Users\gytau\Desktop\OpenGL clean;E:\Boost\boost_1_66_0\x$(PlatformArchitecture);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\dev\SGE\OutPut\$(Configuration)\x$(PlatformArchitecture);D:\Programming\3rd party\boost\x$(PlatformArchitecture)\boost_1_66_0\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\CV\OpenGL engine\OutPut\$(Configuration)\x$(PlatformArchitecture);E:\Boost\boost_1_66_0\x$(PlatformArchitecture)\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>NotSet</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -117,13 +117,13 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Programming\3rd party\OpenGL clean;D:\Programming\3rd party\boost\x$(PlatformArchitecture)\boost_1_66_0;C:\dev\SGE\OutPut\$(Configuration)\x$(PlatformArchitecture);C:\dev\SGE\SGE\OpenGL Engine\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\CV\OpenGL engine\OpenGL Engine\OpenGL Engine\src;C:\Users\gytau\Desktop\OpenGL clean;E:\Boost\boost_1_66_0\x$(PlatformArchitecture);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>SGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\dev\SGE\OutPut\$(Configuration)\x$(PlatformArchitecture);D:\Programming\3rd party\boost\x$(PlatformArchitecture)\boost_1_66_0\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\CV\OpenGL engine\OutPut\$(Configuration)\x$(PlatformArchitecture);E:\Boost\boost_1_66_0\x$(PlatformArchitecture)\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>NotSet</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -135,13 +135,13 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Programming\3rd party\OpenGL clean;D:\Programming\3rd party\boost\x$(PlatformArchitecture)\boost_1_66_0;C:\dev\SGE\OutPut\$(Configuration)\x$(PlatformArchitecture);C:\dev\SGE\SGE\OpenGL Engine\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\CV\OpenGL engine\OpenGL Engine\OpenGL Engine\src;C:\Users\gytau\Desktop\OpenGL clean;E:\Boost\boost_1_66_0\x$(PlatformArchitecture);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>SGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\dev\SGE\OutPut\$(Configuration)\x$(PlatformArchitecture);D:\Programming\3rd party\boost\x$(PlatformArchitecture)\boost_1_66_0\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\CV\OpenGL engine\OutPut\$(Configuration)\x$(PlatformArchitecture);E:\Boost\boost_1_66_0\x$(PlatformArchitecture)\lib$(PlatformArchitecture)-msvc-14.1;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>NotSet</SubSystem>
     </Link>
   </ItemDefinitionGroup>

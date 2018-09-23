@@ -43,11 +43,7 @@ VAO DataManager::createVAO(std::vector<float>& vertices, std::vector<float>& nor
 	storeDataInAttributes(AttributeLocation::Normal, 3, normals);
 	unbindVAO();
 
-	VAO result(vaoID, indices.size());
-
-	SGE::Instances::instances->batchManagerInstance->addVAO(result);
-
-	return result;
+	return VAO(vaoID, indices.size());
 }
 
 VAO DataManager::createVAO(std::string pathToFile) 
@@ -57,14 +53,12 @@ VAO DataManager::createVAO(std::string pathToFile)
 		if (OBJLoader::LoadOBJ(pathToFile))
 		{
 			VAO result = createVAO(OBJLoader::loadedVertices, OBJLoader::loadedNormals, OBJLoader::loadedUVs, OBJLoader::loadedIndices);
-			SGE::Instances::instances->batchManagerInstance->addVAO(result);
 			m_VAOCache[pathToFile] = result;
 			return result;
 		}
 		else
 		{
 			VAO result(m_fallbackMeshID, m_fallbackMeshVertexCount);
-			SGE::Instances::instances->batchManagerInstance->addVAO(result);
 			m_VAOCache[pathToFile] = result;
 			return result;
 		}
@@ -145,18 +139,109 @@ std::tuple<unsigned int, unsigned int, unsigned int> DataManager::createSkybox()
 	return result;
 }
 
-unsigned int DataManager::createVBO(unsigned int floatCount)
+VAO DataManager::createFlatMesh(unsigned int vertexCount, unsigned int size)
 {
-	unsigned int vboID;
+	std::vector<unsigned int> indices;
+	indices.resize(6 * (vertexCount - 1) * (vertexCount - 1));
 
-	GLCall(glGenBuffers(1, &vboID));
-	m_vbos.push_back(vboID);
+	std::thread indiceCalc(calculateIndices, std::ref(indices), std::ref(vertexCount));
 
-	GLCall(glBindBuffer(GL_ARRAY_BUFFER, vboID));
-	GLCall(glBufferData(GL_ARRAY_BUFFER, floatCount * 4, NULL, GL_STREAM_DRAW));
-	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+	unsigned int count = vertexCount * vertexCount;
 
-	return vboID;
+	std::vector<float> vertices;
+	vertices.resize(count * 3);
+
+	std::vector<float> normals;
+	normals.resize(count * 3);
+
+	std::vector<float> textureCoords;
+	textureCoords.resize(count * 2);
+
+	int vertexIndex = 0;
+	for (unsigned int i = 0; i < vertexCount; i++) {
+		for (unsigned int j = 0; j < vertexCount; j++) {
+			vertices[vertexIndex * 3] = (float)j / ((float)vertexCount - 1) * size;
+			vertices[vertexIndex * 3 + 1] = 0;
+			vertices[vertexIndex * 3 + 2] = (float)i / ((float)vertexCount - 1) * size;
+			normals[vertexIndex * 3] = 0;
+			normals[vertexIndex * 3 + 1] = 1;
+			normals[vertexIndex * 3 + 2] = 0;
+			textureCoords[vertexIndex * 2] = (float)j / ((float)vertexCount - 1);
+			textureCoords[vertexIndex * 2 + 1] = (float)i / ((float)vertexCount - 1);
+			vertexIndex++;
+		}
+	}
+
+	indiceCalc.join();
+
+	return createVAO(vertices, normals, textureCoords, indices);
+}
+
+VAO DataManager::createHeightMappedMesh(std::string mHeightMapFilePath, float mMaxHeight, unsigned int size, continuous2DArray<float>& mCalculatedHeights)
+{
+	auto boostFilePath = boost::filesystem::path(mHeightMapFilePath);
+	ImageLoader::loadImage(boostFilePath.string(), boostFilePath.extension().string());
+	unsigned int vertexCount = ImageLoader::height;
+
+	std::vector<unsigned int> indices;
+	indices.resize(6 * (vertexCount - 1) * (vertexCount - 1));
+
+	std::thread indiceCalc(calculateIndices, std::ref(indices), std::ref(vertexCount));
+
+	float MAX_PIXEL_COLOR = 256 * 256 * 256;
+	std::vector<glm::vec3> heightMap;
+	heightMap.resize(ImageLoader::height * ImageLoader::width);
+
+	unsigned int k = 1;
+	unsigned int hindex = 0;
+	for (int j = 0; j < ImageLoader::height; j++)
+	{
+		for (int i = 0; i < ImageLoader::width; i++)
+		{
+
+			hindex = (j * ImageLoader::height) + i;
+
+			heightMap[hindex].x = (float)ImageLoader::imageBuffer[k - 1];
+			heightMap[hindex].y = (float)ImageLoader::imageBuffer[k];
+			heightMap[hindex].z = (float)ImageLoader::imageBuffer[k + 1];
+
+			k += 4;
+		}
+	}
+
+	unsigned int count = vertexCount * vertexCount;
+
+	std::vector<float> vertices;
+	vertices.resize(count * 3);
+	std::vector<float> normals;
+	normals.resize(count * 3);
+	std::vector<float> textureCoords;
+	textureCoords.resize(count * 2);
+
+	int vertexIndex = 0;
+	mCalculatedHeights.resize(vertexCount);
+	float height = 0;
+	for (unsigned int i = 0; i < vertexCount; i++) {
+		for (unsigned int j = 0; j < vertexCount; j++) {
+			vertices[vertexIndex * 3] = (float)j / ((float)vertexCount - 1) * size;
+			height = getHeight(j, i, heightMap, MAX_PIXEL_COLOR, mMaxHeight);
+			mCalculatedHeights(j, i) = height;
+			vertices[vertexIndex * 3 + 1] = height;
+			vertices[vertexIndex * 3 + 2] = (float)i / ((float)vertexCount - 1) * size;
+			glm::vec3 normal = calculateNormal(j, i, heightMap, MAX_PIXEL_COLOR, mMaxHeight);
+			normals[vertexIndex * 3] = normal.x;
+			normals[vertexIndex * 3 + 1] = normal.y;
+			normals[vertexIndex * 3 + 2] = normal.z;
+			textureCoords[vertexIndex * 2] = (float)j / ((float)vertexCount - 1);
+			textureCoords[vertexIndex * 2 + 1] = (float)i / ((float)vertexCount - 1);
+			vertexIndex++;
+		}
+	}
+
+	ImageLoader::freeData();
+
+	indiceCalc.join(); 
+	return createVAO(vertices, normals, textureCoords, indices);;
 }
 
 unsigned int DataManager::loadCubeMap(std::vector<std::string>& textureFiles)
@@ -278,16 +363,6 @@ void DataManager::cleanUp()
 	m_vaos.clear();
 	m_vbos.clear();
 	m_textures.clear();
-}
-
-glm::mat4 DataManager::getProjectionMatrix()
-{
-	return m_projectionMatrix;
-}
-
-void DataManager::setProjectionMatrix(glm::mat4 proj)
-{
-	m_projectionMatrix = proj;
 }
 
 unsigned int DataManager::createVAO()

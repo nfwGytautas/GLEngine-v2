@@ -6,7 +6,6 @@
 struct CTransformation : Component
 {
 	void init() override;
-	void update(float frameTime) override;
 
 	glm::mat4 transformationMatrix;
 	glm::vec3 position;

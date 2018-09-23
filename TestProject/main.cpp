@@ -3,12 +3,12 @@
 
 void applySettings()
 {
-	Settings::skyboxFiles[0] = "D:/Programming/Test files/nfw/right.jpg";
-	Settings::skyboxFiles[1] = "D:/Programming/Test files/nfw/left.jpg";
-	Settings::skyboxFiles[2] = "D:/Programming/Test files/nfw/top.jpg";
-	Settings::skyboxFiles[3] = "D:/Programming/Test files/nfw/bottom.jpg";
-	Settings::skyboxFiles[4] = "D:/Programming/Test files/nfw/front.jpg";
-	Settings::skyboxFiles[5] = "D:/Programming/Test files/nfw/back.jpg";
+	Settings::skyboxFiles[0] = "E:/Test files/nfw/right.jpg";
+	Settings::skyboxFiles[1] = "E:/Test files/nfw/left.jpg";
+	Settings::skyboxFiles[2] = "E:/Test files/nfw/top.jpg";
+	Settings::skyboxFiles[3] = "E:/Test files/nfw/bottom.jpg";
+	Settings::skyboxFiles[4] = "E:/Test files/nfw/front.jpg";
+	Settings::skyboxFiles[5] = "E:/Test files/nfw/back.jpg";
 }
 
 int main()
@@ -23,10 +23,10 @@ int main()
 
 	Model stallModel;
 	Mesh stallMesh;
-	stallMesh.setVAO(dataManager->createVAO("D:/Programming/Test files/nfw/stall.obj"));
+	stallMesh.setVAO(dataManager->createVAO("E:/Test files/nfw/stall.obj"));
 	Material stallMaterial;
 	stallMaterial.changeSpecularShininess(32.0f);
-	stallMaterial.addShadingMap(ShadingMap(dataManager->loadTexture("D:/Programming/Test files/nfw/stallTexture.png"), ShadingMapType::Diffuse));
+	stallMaterial.addShadingMap(ShadingMap(dataManager->loadTexture("E:/Test files/nfw/stallTexture.png"), ShadingMapType::Diffuse));
 	stallMesh.setMaterial(stallMaterial);
 	stallModel.addMesh(stallMesh);
 
@@ -39,19 +39,64 @@ int main()
 	stallEntityTransform1.position = glm::vec3(0.0f, 0.0f, -20.0f);
 	stallEntityTransform1.rotation.x = 90.0f;
 
-	//Entity stallEntity2(stallBlueprint);
-	//CTransformation& stallEntityTransform2 = stallEntity2.getComponent<CTransformation>();
-	//stallEntityTransform2.position = glm::vec3(10.0f, 0.0f, -20.0f);
-	//
-	//Entity stallEntity3(stallBlueprint);
-	//CTransformation& stallEntityTransform3 = stallEntity3.getComponent<CTransformation>();
-	//stallEntityTransform3.position = glm::vec3(20.0f, 10.0f, -30.0f);
+	Entity stallEntity2(stallBlueprint);
+	CTransformation& stallEntityTransform2 = stallEntity2.getComponent<CTransformation>();
+	stallEntityTransform2.position = glm::vec3(10.0f, 0.0f, -20.0f);
+
+	Entity stallEntity3(stallBlueprint);
+	CTransformation& stallEntityTransform3 = stallEntity3.getComponent<CTransformation>();
+	stallEntityTransform3.position = glm::vec3(20.0f, 10.0f, -30.0f);
+
+	/*Entity testTerrain1;
+	testTerrain1.addComponent<CTransformation>();
+	continuous2DArray<float> calculatedHeights;
+	testTerrain1.addComponent<CMesh>(dataManager->createHeightMappedMesh("E:/Test files/nfw/heightMap.png", 20, 800, calculatedHeights));
+	CMultiTexture& pack = testTerrain1.addComponent<CMultiTexture>();
+	pack.background = dataManager->loadTexture("E:/Test files/nfw/grassy.png");
+	pack.r = dataManager->loadTexture("E:/Test files/nfw/mud.png");
+	pack.g = dataManager->loadTexture("E:/Test files/nfw/grassFlowers.png");
+	pack.b = dataManager->loadTexture("E:/Test files/nfw/path.png");
+	pack.textureBlendMap = dataManager->loadTexture("E:/Test files/nfw/blendMap.png");
+	testTerrain1.addComponent<CRenderer>().tileCount = 40;
+	testTerrain1.getComponent<CRenderer>().multiTexture = true;
+	testTerrain1.getComponent<CRenderer>().disableSpecular = true;
+	engine.markAsGround(testTerrain1, calculatedHeights, 800);
+
+	Entity testTransparent1;
+	testTransparent1.addComponent<CTransformation>(glm::vec3(20, 0, 10), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
+	testTransparent1.addComponent<CMesh>(dataManager->loadMesh("E:/Test files/nfw/grassModel.obj"));
+	testTransparent1.addComponent<CMaterial>(dataManager->loadMaterial("E:/Test files/nfw/grassTexture.png"), 10, 0);
+	testTransparent1.addComponent<CRenderer>().transparent = true;
+	testTransparent1.getComponent<CRenderer>().fakeLighting = true;
+
+	EntityBlueprint fernBlueprint;
+	fernBlueprint.addComponent<CTransformation>();
+	fernBlueprint.addComponent<CMesh>(dataManager->loadMesh("E:/Test files/nfw/fern.obj"));
+	fernBlueprint.addComponent<CMaterial>(dataManager->loadMaterial("E:/Test files/nfw/fernAtlas.png"), 10, 0);
+	CRenderer& renderComponent = fernBlueprint.addComponent<CRenderer>();
+	renderComponent.transparent = true;
+	renderComponent.fakeLighting = true;
+	renderComponent.hasAtlas = true;
+	renderComponent.atlasRowCount = 2;
+
+	Entity fern1(fernBlueprint);
+	fern1.getComponent<CTransformation>().position = glm::vec3(20, 0, 50);
+	fern1.getComponent<CRenderer>().atlasIndex = 0;
+	Entity fern2(fernBlueprint);
+	fern2.getComponent<CTransformation>().position = glm::vec3(10, 0, 50);
+	fern2.getComponent<CRenderer>().atlasIndex = 1;
+	Entity fern3(fernBlueprint);
+	fern3.getComponent<CTransformation>().position = glm::vec3(0, 0, 50);
+	fern3.getComponent<CRenderer>().atlasIndex = 2;
+	Entity fern4(fernBlueprint);
+	fern4.getComponent<CTransformation>().position = glm::vec3(-10, 0, 50);
+	fern4.getComponent<CRenderer>().atlasIndex = 3;
 
 	Entity sun;
 	sun.addComponent<CLightEmiter>();
 	sun.getComponent<CTransformation>().position = glm::vec3(0, 1000, -7000);
-	sun.getComponent<CLightEmiter>().diffuse = glm::vec3(0.4f, 0.4f, 0.4f);
-	
+	sun.getComponent<CColor>().value = glm::vec3(0.4f, 0.4f, 0.4f);
+	*/
 	EntityBlueprint lightBlueprint;
 	CLightEmiter& cEmiterBP = lightBlueprint.addComponent<CLightEmiter>();
 	cEmiterBP.attenuation = glm::vec3(1.0f, 0.01f, 0.002f);
@@ -69,11 +114,11 @@ int main()
 	
 	Entity testMultiTexture;
 	testMultiTexture.addComponent<CTransformation>(glm::vec3(50, 0, 50), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
-	testMultiTexture.addComponent<CModel>(dataManager->loadModel("D:/Programming/Test files/minecraft-clone/dirtblock.obj"));
+	testMultiTexture.addComponent<CModel>(dataManager->loadModel("E:/Test files/minecraft-clone/dirtblock.obj"));
 	
 	Entity testPlayer;
 	testPlayer.addComponent<CTransformation>(glm::vec3(50, 0, 50), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
-	testPlayer.addComponent<CModel>(dataManager->loadModel("D:/Programming/Test files/nfw/realExample/nanosuit.obj"));
+	testPlayer.addComponent<CModel>(dataManager->loadModel("E:/Test files/nfw/realExample/nanosuit.obj"));
 	testPlayer.addComponent<CPhysics>().affectedByGravity = true;
 	CInput& input = testPlayer.addComponent<CInput>();
 	EventBehavior keyDownBehavior = [&](Entity& mEntity, const Event& e)
@@ -187,11 +232,11 @@ int main()
 	cameraInput.subscribe(EventType::MouseScroll, mouseScrollBehavior);
 	Settings::camera = &testCamera.getComponent<CCamera>();
 
-	/*GUI testGui("D:/Programming/Test files/nfw/testGUI3.png", glm::vec2(0.5f, 0.5f), 0, glm::vec2(0.25f, 0.25f));
+	/*GUI testGui("E:/Test files/nfw/testGUI3.png", glm::vec2(0.5f, 0.5f), 0, glm::vec2(0.25f, 0.25f));
 
 	Entity testSkyboxReflection;
 	testSkyboxReflection.addComponent<CTransformation>(glm::vec3(-50, 10, 5), glm::vec3(0, 0, 0), glm::vec3(10, 10, 10));
-	testSkyboxReflection.addComponent<CMesh>(dataManager->loadMesh("D:/Programming/Test files/nfw/simple_cube.obj"));
+	testSkyboxReflection.addComponent<CMesh>(dataManager->loadMesh("E:/Test files/nfw/simple_cube.obj"));
 	testSkyboxReflection.addComponent<CRenderer>().skyboxReflection = true;*/
 
 	Display::switchVerticalSync(true);

@@ -14,7 +14,7 @@ uniform mat4 projectionMatrix;
 void main()
 {
 	pass_position = vec3(transformationMatrix * vec4(position, 1.0));
-	pass_texCoords = texCoords;
+    pass_texCoords = texCoords;
 	pass_normal = mat3(transpose(inverse(transformationMatrix))) * normal;
-	gl_Position = projectionMatrix * viewMatrix * vec4(pass_position, 1.0);
+    gl_Position = projectionMatrix * viewMatrix * vec4(pass_position, 1.0);
 }

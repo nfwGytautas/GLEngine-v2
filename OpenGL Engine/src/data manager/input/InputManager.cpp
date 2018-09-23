@@ -143,8 +143,6 @@ void InputManager::update()
 {
 	Keyboard::m_keyUp.clear();
 	Mouse::m_keyUp.clear();
-	Mouse::m_xoffset = 0;
-	Mouse::m_yoffset = 0;
 	GLCall(glfwPollEvents());
 }
 

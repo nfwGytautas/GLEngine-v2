@@ -105,7 +105,6 @@ public:
 	void addMesh(Mesh mesh);
 
 	std::vector<Mesh>& getMeshes();
-	Mesh getMeshByVAO(VAO vao);
 private:
 	//Model meshes
 	std::vector<Mesh> m_meshes;
