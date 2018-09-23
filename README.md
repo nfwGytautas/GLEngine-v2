@@ -2,6 +2,7 @@
 * Development started at: 2018-06-08
 * First usable release: 2018-07-17
 
+**TO LINK WITH THIS YOU WILL NEED GLM AND BOOST ASWELL AS AN WORKING MULTITHREADED ASSIMP DLL (temporary)**
 
 **ENGINE USES OR USED TO USE THESE LIBRARIES**:
 * Graphics Library Framework (glfw3) http://www.glfw.org/
