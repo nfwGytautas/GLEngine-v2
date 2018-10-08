@@ -10,3 +10,4 @@
 #include "preDefinedComponents\CInput.h"			//Input component
 #include "preDefinedComponents\CPhysics.h"			//Physics component
 #include "preDefinedComponents\CCamera.h"			//Camera component
+#include "preDefinedComponents\CBoundingObject.h"	//Bounding object component

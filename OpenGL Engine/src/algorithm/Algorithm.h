@@ -1,5 +1,4 @@
 #pragma once
-
 #include <iterator>
 #include <vector>
 #include <sstream>
@@ -90,3 +89,6 @@ private:
 	unsigned int m_rCount;
 	unsigned int m_cLength;
 };
+
+//Check if a file exists
+bool fexists(const std::string& filename);

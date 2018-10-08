@@ -243,6 +243,8 @@ Model DataManager::loadModel(std::string pathToModel)
 			}
 			
 			loadedMesh.setMaterial(meshMaterial);
+			loadedMesh.setWidth(mesh.width);
+			loadedMesh.setHeight(mesh.height);
 
 			loadedMeshes.push_back(loadedMesh);
 		}

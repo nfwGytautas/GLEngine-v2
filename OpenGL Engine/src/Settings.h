@@ -3,6 +3,7 @@
 #include <glm\glm.hpp>
 #include "components\Entity.h"
 #include "components\PreDefinedComponents.h"
+#include "utility\Frustum.h"
 
 struct Settings
 {
@@ -22,4 +23,6 @@ struct Settings
 	static float farRenderPlane;
 
 	static std::string skyboxFiles[6];
+
+	static Frustum* frustum;
 };

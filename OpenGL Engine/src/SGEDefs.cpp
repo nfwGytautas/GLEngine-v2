@@ -40,6 +40,7 @@ void SGE::StateControl::_sgeTerminate()
 	Instances::instances->dataManagerInstance->cleanUp();
 
 	delete Instances::instances;
+	delete Settings::frustum;
 
 	Display::destroyDisplay();
 	std::cout << "[SGE] Engine terminated" << std::endl;
@@ -137,6 +138,11 @@ void SGE::StateControl::_sgeSendProjectionMatrix(DynamicShader* targetShader)
 void SGE::StateControl::_sgeCreateProjectionMatrix()
 {
 	Instances::instances->dataManagerInstance->setProjectionMatrix(Maths::createProjectionMatrix());
+}
+
+void SGE::StateControl::_sgeCreateFrustumClass()
+{
+	Settings::frustum = new Frustum();
 }
 
 SGE::Instances::InstanceManager::InstanceManager()

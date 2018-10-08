@@ -79,12 +79,12 @@ bool Material::operator==(const Material& rhs)
 }
 
 Mesh::Mesh()
-	:m_vertexArray(VAO(0, 0)), m_material(Material())
+	:m_vertexArray(VAO(0, 0)), m_material(Material()), m_width(0), m_height(0)
 {
 }
 
 Mesh::Mesh(VAO& vao, Material& material)
-	: m_vertexArray(vao), m_material(material)
+	: m_vertexArray(vao), m_material(material), m_width(0), m_height(0)
 {
 }
 
@@ -104,6 +104,16 @@ void Mesh::setMaterial(Material material)
 	}
 }
 
+void Mesh::setWidth(float width)
+{
+	m_width = width;
+}
+
+void Mesh::setHeight(float height)
+{
+	m_height = height;
+}
+
 VAO& Mesh::getVAO()
 {
 	return m_vertexArray;
@@ -112,6 +122,16 @@ VAO& Mesh::getVAO()
 Material& Mesh::getMaterial()
 {
 	return m_material;
+}
+
+float Mesh::getWidth()
+{
+	return m_width;
+}
+
+float Mesh::getHeight()
+{
+	return m_height;
 }
 
 bool Mesh::operator==(const Mesh& rhs)
@@ -127,6 +147,7 @@ bool Mesh::operator==(const Mesh& rhs)
 }
 
 Model::Model()
+	:m_width(0), m_height(0)
 {
 }
 
@@ -134,7 +155,25 @@ void Model::addMesh(Mesh mesh)
 {
 	if (std::find(m_meshes.begin(), m_meshes.end(), mesh) == m_meshes.end()) {
 		m_meshes.push_back(mesh);
+		if (m_width < mesh.getWidth())
+		{
+			m_width = mesh.getWidth();
+		}
+		if (m_height < mesh.getHeight())
+		{
+			m_height = mesh.getHeight();
+		}
 	}
+}
+
+float Model::getWidth() const
+{
+	return m_width;
+}
+
+float Model::getHeight() const
+{
+	return m_height;
 }
 
 std::vector<Mesh>& Model::getMeshes()

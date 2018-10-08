@@ -30,6 +30,36 @@ void ModelLoader::processNode(aiNode* node, const aiScene* scene)
 	}
 }
 
+void ModelLoader::processMinMax(glm::vec3 & maxValues, glm::vec3 & minValues, const glm::vec3& currentVertex)
+{
+	//Max values
+	if (maxValues.x < currentVertex.x)
+	{
+		maxValues.x = currentVertex.x;
+	}
+	if (maxValues.y < currentVertex.y)
+	{
+		maxValues.y = currentVertex.y;
+	}
+	if (maxValues.z < currentVertex.z)
+	{
+		maxValues.z = currentVertex.z;
+	}
+	//Min values
+	if (minValues.x > currentVertex.x)
+	{	
+		minValues.x = currentVertex.x;
+	}	
+	if (minValues.y > currentVertex.y)
+	{	
+		minValues.y = currentVertex.y;
+	}	
+	if (minValues.z > currentVertex.z)
+	{	
+		minValues.z = currentVertex.z;
+	}
+}
+
 RawMeshData ModelLoader::processMesh(aiMesh* mesh, const aiScene* scene)
 {
 	RawMeshData result;
@@ -37,9 +67,15 @@ RawMeshData ModelLoader::processMesh(aiMesh* mesh, const aiScene* scene)
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec2> texCoords;
 	std::vector<unsigned int> indices;
+	float width = 0;
+	float height = 0;
+
+	glm::vec3 minValues(mesh->mVertices[0].x, mesh->mVertices[0].y, mesh->mVertices[0].z);
+	glm::vec3 maxValues(mesh->mVertices[0].x, mesh->mVertices[0].y, mesh->mVertices[0].z);
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
+
 		positions.push_back(glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z));
 		normals.push_back(glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z));
 		if (mesh->mTextureCoords[0])
@@ -68,7 +104,9 @@ RawMeshData ModelLoader::processMesh(aiMesh* mesh, const aiScene* scene)
 		loadMaterialTextures(material, aiTextureType_DIFFUSE, result);
 		loadMaterialTextures(material, aiTextureType_SPECULAR, result);
 	}
-
+	result.width = glm::abs(minValues.x) + glm::abs(maxValues.x);
+	result.height = glm::abs(minValues.y) + glm::abs(maxValues.y);
+	result.depth = glm::abs(minValues.z) + glm::abs(maxValues.z);
 	return result;
 }
 

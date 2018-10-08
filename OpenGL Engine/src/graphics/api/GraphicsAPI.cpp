@@ -2,8 +2,59 @@
 #include "..\..\SGEDefs.h"
 #include <iostream>
 
+//======================================================================================================
+//VAO
+//======================================================================================================
+VAO::VAO()
+	:ID(0), elementCount(0)
+{
+}
+VAO::VAO(unsigned int ID, unsigned int elementCount)
+	: ID(ID), elementCount(elementCount)
+{
+}
+bool VAO::operator==(const VAO& rhs) const
+{
+	if (ID == rhs.ID && elementCount == rhs.elementCount)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+//======================================================================================================
+//TEXTURE
+//======================================================================================================
+Texture::Texture()
+	:ID(0)
+{
+}
+Texture::Texture(unsigned int ID)
+	:ID(ID)
+{
+}
+inline bool Texture::operator==(const Texture& rhs) const
+{
+	if(ID == rhs.ID)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+
+//======================================================================================================
+//API
+//======================================================================================================
 unsigned int GraphicsAPI::m_currentVAO = 0;
 unsigned int GraphicsAPI::m_currentTextures[16] = { 0 };
+std::vector<VAO> GraphicsAPI::m_VAOS;
+std::vector<Texture> GraphicsAPI::m_TEXTURES;
 
 bool GraphicsAPI::initialize()
 {

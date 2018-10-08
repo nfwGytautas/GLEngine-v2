@@ -15,6 +15,9 @@ struct RawMeshData
 	std::string diffuse_map;
 	std::string specular_map;
 	float shininess;
+	float width;
+	float height;
+	float depth;
 };
 
 class ModelLoader
@@ -25,6 +28,7 @@ public:
 	static std::vector<RawMeshData> modelMeshes;
 private:
 	static void processNode(aiNode* node, const aiScene* scene);
+	static void processMinMax(glm::vec3& maxValues, glm::vec3& minValues, const glm::vec3& currentVertex);
 	static RawMeshData processMesh(aiMesh* mesh, const aiScene* scene);
 	static void loadMaterialTextures(aiMaterial* mat, aiTextureType type, RawMeshData& target);
 };

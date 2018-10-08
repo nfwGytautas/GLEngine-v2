@@ -10,6 +10,7 @@ public:
 	static std::vector<float> loadedNormals;
 	static std::vector<float> loadedUVs;
 	static std::vector<unsigned int> loadedIndices;
+	static void calculateMinMax(glm::vec3& maxValues, glm::vec3& minValues, const glm::vec3& currentVertex);
 
 	static void loadFallbackMesh();
 };

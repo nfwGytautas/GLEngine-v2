@@ -79,9 +79,13 @@ public:
 
 	void setVAO(VAO vao);
 	void setMaterial(Material material);
+	void setWidth(float width);
+	void setHeight(float height);
 
 	VAO& getVAO();
 	Material& getMaterial();
+	float getWidth();
+	float getHeight();
 
 	//Compares meshes
 	inline bool operator==(const Mesh& rhs);
@@ -95,6 +99,10 @@ private:
 	//Mesh material
 	Material m_material;
 
+	//Individual width and height of a mesh
+	float m_width;
+	float m_height;
+
 	friend Model;
 };
 
@@ -104,9 +112,15 @@ public:
 	Model();
 	void addMesh(Mesh mesh);
 
+	float getWidth() const;
+	float getHeight() const;
+
 	std::vector<Mesh>& getMeshes();
 	Mesh getMeshByVAO(VAO vao);
 private:
 	//Model meshes
 	std::vector<Mesh> m_meshes;
+
+	float m_width;
+	float m_height;
 };

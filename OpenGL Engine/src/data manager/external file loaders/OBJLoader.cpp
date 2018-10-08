@@ -90,6 +90,36 @@ bool OBJLoader::LoadOBJ(std::string filePath)
 	return true;
 }
 
+void OBJLoader::calculateMinMax(glm::vec3 & maxValues, glm::vec3 & minValues, const glm::vec3 & currentVertex)
+{
+	//Max values
+	if (maxValues.x < currentVertex.x)
+	{
+		maxValues.x = currentVertex.x;
+	}
+	if (maxValues.y < currentVertex.y)
+	{
+		maxValues.y = currentVertex.y;
+	}
+	if (maxValues.z < currentVertex.z)
+	{
+		maxValues.z = currentVertex.z;
+	}
+	//Min values
+	if (minValues.x > currentVertex.x)
+	{
+		minValues.x = currentVertex.x;
+	}
+	if (minValues.y > currentVertex.y)
+	{
+		minValues.y = currentVertex.y;
+	}
+	if (minValues.z > currentVertex.z)
+	{
+		minValues.z = currentVertex.z;
+	}
+}
+
 void OBJLoader::loadFallbackMesh()
 {
 #pragma region OBJ DECLARATION

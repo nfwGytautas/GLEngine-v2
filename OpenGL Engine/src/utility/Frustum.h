@@ -1,7 +1,8 @@
 #pragma once
+#include <vector>
 #include <glm/glm.hpp>
-struct CCamera;
 
+struct CCamera;
 class Plane
 {
 public:
@@ -26,7 +27,7 @@ public:
 
 	CheckState pointInFrustum(glm::vec3& point);
 	CheckState sphereInFrustum(glm::vec3& point, float radius);
-	CheckState boxInFrustum();
+	CheckState polygonInFrustum(std::vector<glm::vec3>& polygonPoints);
 
 	Frustum();
 	~Frustum();

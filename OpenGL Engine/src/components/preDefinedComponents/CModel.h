@@ -15,6 +15,8 @@ struct CModel : Component
 	void preRender() override;
 	void render() override;
 
+	Model getModel() const;
+
 	size_t hash() const;
 	bool operator==(const CModel& model) const
 	{

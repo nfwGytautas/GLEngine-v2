@@ -69,3 +69,8 @@ void UpdateSystem::updateEntitiesWthModels()
 		entity->getComponent<CModel>().m_rendered = false;
 	}
 }
+
+void UpdateSystem::updateFrustum()
+{
+	Settings::frustum->calculatePlanes(Settings::camera);
+}

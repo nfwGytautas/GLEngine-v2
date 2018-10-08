@@ -39,6 +39,11 @@ int main()
 	stallEntityTransform1.position = glm::vec3(0.0f, 0.0f, -20.0f);
 	stallEntityTransform1.rotation.x = 90.0f;
 
+	Entity stallEntity2(stallBlueprint);
+	CTransformation& stallEntityTransform2 = stallEntity2.getComponent<CTransformation>();
+	stallEntityTransform2.position = glm::vec3(stallModel.getWidth() , 0.0f, -20.0f);
+	stallEntityTransform2.rotation.x = 90.0f;
+
 	//Entity stallEntity2(stallBlueprint);
 	//CTransformation& stallEntityTransform2 = stallEntity2.getComponent<CTransformation>();
 	//stallEntityTransform2.position = glm::vec3(10.0f, 0.0f, -20.0f);
@@ -70,6 +75,9 @@ int main()
 	Entity testMultiTexture;
 	testMultiTexture.addComponent<CTransformation>(glm::vec3(50, 0, 50), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
 	testMultiTexture.addComponent<CModel>(dataManager->loadModel("D:/Programming/Test files/minecraft-clone/dirtblock.obj"));
+	Entity testMultiTexture2;
+	testMultiTexture2.addComponent<CTransformation>(glm::vec3(50 + testMultiTexture.getComponent<CModel>().getModel().getWidth(), 0, 50), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));
+	testMultiTexture2.addComponent<CModel>(dataManager->loadModel("D:/Programming/Test files/minecraft-clone/dirtblock.obj"));
 	
 	Entity testPlayer;
 	testPlayer.addComponent<CTransformation>(glm::vec3(50, 0, 50), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1));

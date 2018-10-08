@@ -23,6 +23,11 @@ void CModel::render()
 
 }
 
+Model CModel::getModel() const
+{
+	return m_model;
+}
+
 CModel::CModel(Model model)
 	:m_model(model), m_rendered(false)
 {}

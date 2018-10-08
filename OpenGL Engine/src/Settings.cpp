@@ -16,3 +16,5 @@ float Settings::nearRenderPlane = 0.1f;
 float Settings::farRenderPlane = 2000.0f;
 
 std::string Settings::skyboxFiles[6] = { "", "", "", "", "", "" };
+
+Frustum* Settings::frustum = nullptr;

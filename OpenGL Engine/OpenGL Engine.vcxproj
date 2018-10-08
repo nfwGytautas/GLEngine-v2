@@ -19,6 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\asset manager\Asset.h" />
+    <ClInclude Include="src\asset manager\AssetLoader.h" />
+    <ClInclude Include="src\asset manager\AssetManager.h" />
+    <ClInclude Include="src\components\preDefinedComponents\CBoundingObject.h" />
+    <ClInclude Include="src\data manager\data structures\BoundingObjects.h" />
     <ClInclude Include="src\data manager\data structures\Model.h" />
     <ClInclude Include="src\data manager\external file loaders\ModelLoader.h" />
     <ClInclude Include="src\components\preDefinedComponents\CModel.h" />
@@ -36,7 +41,7 @@
     <ClInclude Include="src\components\preDefinedComponents\CRenderer.h" />
     <ClInclude Include="src\data manager\external file loaders\ImageLoader.h" />
     <ClInclude Include="src\components\preDefinedComponents\CCamera.h" />
-    <ClInclude Include="src\systems\physics\Frustum.h" />
+    <ClInclude Include="src\utility\Frustum.h" />
     <ClInclude Include="src\systems\physics\PhysicsSystem.h" />
     <ClInclude Include="src\components\preDefinedComponents\CPhysics.h" />
     <ClInclude Include="src\components\EntityBlueprint.h" />
@@ -66,6 +71,11 @@
     <ClInclude Include="src\utility\Time.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\asset manager\Asset.cpp" />
+    <ClCompile Include="src\asset manager\AssetLoader.cpp" />
+    <ClCompile Include="src\asset manager\AssetManager.cpp" />
+    <ClCompile Include="src\components\preDefinedComponents\CBoundingObject.cpp" />
+    <ClCompile Include="src\data manager\data structures\BoundingObjects.cpp" />
     <ClCompile Include="src\data manager\data structures\Model.cpp" />
     <ClCompile Include="src\data manager\external file loaders\ModelLoader.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CModel.cpp" />
@@ -79,7 +89,7 @@
     <ClCompile Include="src\systems\event\Event.cpp" />
     <ClCompile Include="src\data manager\external file loaders\ImageLoader.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CCamera.cpp" />
-    <ClCompile Include="src\systems\physics\Frustum.cpp" />
+    <ClCompile Include="src\utility\Frustum.cpp" />
     <ClCompile Include="src\systems\physics\PhysicsSystem.cpp" />
     <ClCompile Include="src\components\preDefinedComponents\CPhysics.cpp" />
     <ClCompile Include="src\components\EntityBlueprint.cpp" />

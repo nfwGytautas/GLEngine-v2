@@ -1,9 +1,6 @@
 #include "Frustum.h"
-#include "..\..\Settings.h"
-#include "..\..\components\preDefinedComponents\CCamera.h"
-
-#include <GL\glew.h>
-#include <GLFW\glfw3.h>
+#include "..\Settings.h"
+#include "..\components\preDefinedComponents\CCamera.h"
 
 Frustum::Frustum()
 {
@@ -77,6 +74,39 @@ Frustum::CheckState Frustum::sphereInFrustum(glm::vec3& point, float radius)
 			result = INTERSECT;
 	}
 	return result;
+}
+
+Frustum::CheckState Frustum::polygonInFrustum(std::vector<glm::vec3>& polygonPoints)
+{
+	int result = INSIDE;
+	int out;
+	int in;
+
+	for (int i = 0; i < 6; i++)
+	{
+		out = 0; in = 0;
+		for (int k = 0; k < polygonPoints.size() && (in == 0 || out == 0); k++) 
+		{
+			if (m_planes[i].distance(polygonPoints[k]) < 0)
+			{
+				out++;
+			}
+			else
+			{
+				in++;
+			}
+		}
+		if (!in)
+		{
+			return (OUTSIDE);
+		}
+		else if (out)
+		{
+			result = INTERSECT;
+		}
+	}
+
+	return CheckState(result);
 }
 
 

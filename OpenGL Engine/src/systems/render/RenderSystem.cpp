@@ -114,123 +114,58 @@ void RenderSystem::loadLights(DynamicShader* shader)
 void RenderSystem::renderEntities()
 {
 	DynamicShader* normalShader = SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::MultiMaterial);
-	DynamicShader* instancedShader = SGE::Instances::instances->shaderManagerInstance->getShader(ShaderNames::InstancedShader);
+	setupShader(normalShader);
 
-	std::unordered_map<unsigned int, std::vector<Entity*>> entityBatches;
+	std::vector<Entity*> renderableEntities = SGE::Instances::instances->entityManagerInstance->getEntitiesByGroup(EntityGroups::Renderable);
 
-	for (VAO vao : SGE::Instances::instances->batchManagerInstance->allKnownVAOS())
+	auto entities = SGE::Instances::instances->entityManagerInstance->getEntitiesByGroup(EntityGroups::Renderable);
+
+	std::vector<Entity*> activeEntities;
+	activeEntities.reserve(entities.size());
+
+	for (unsigned int i = 0; i < entities.size(); i++)
 	{
-		entityBatches[vao.ID] = SGE::Instances::instances->batchManagerInstance->getSameVAOEntities(vao.ID);
-	}
-
-	std::unordered_map<unsigned int, std::vector<glm::mat4>> transformationMatrixBatches;
-
-	for (auto it : entityBatches)
-	{
-		transformationMatrixBatches[it.first].reserve(it.second.size());
-		for(Entity* entity : it.second)
+		//Check if entity active
+		if (entities[i]->isActive())
 		{
-			if (!entity->isActive())
+			//Check if entity should be rendered
+			if (entities[i]->hasComponent<CRenderer>())
 			{
-				continue;				
-			}
-			transformationMatrixBatches[it.first].push_back(entity->getComponent<CTransformation>().transformationMatrix);
+				if (entities[i]->getComponent<CRenderer>().shouldBeRendered)
+				{
+					if (entities[i]->hasComponent<CBoundingObject>())
+					{
+						//Check if entity in frustum
+						if (entities[i]->getComponent<CBoundingObject>().insideFrustum)
+						{
+							//Add to renderable entities
+							renderableEntities.push_back(entities[i]);
+						}
+					}
+				}
+			}			
 		}
 	}	
 
-	setupShader(normalShader);
-	setupShader(instancedShader);
-
-	auto renderables = SGE::Instances::instances->entityManagerInstance->getEntitiesByGroup(EntityGroups::Renderable);
-	for (Entity* entity : renderables)
+	normalShader->bind();
+	for (unsigned int i = 0; i < renderableEntities.size(); i++)
 	{
-		if (entity->hasComponent<CRenderer>())
+		renderableEntities[i]->render();
+		normalShader->setMatrix4fUniform("transformationMatrix", renderableEntities[i]->getComponent<CTransformation>().transformationMatrix);
+		CModel& model = renderableEntities[i]->getComponent<CModel>();
+		std::vector<Mesh> meshes = model.m_model.getMeshes();
+		for (Mesh mesh : meshes)
 		{
-			if (!entity->getComponent<CRenderer>().shouldBeRendered)
-			{
-				continue;
-			}
-		}
-		entity->render();
-	}
-
-	auto vaos = SGE::Instances::instances->batchManagerInstance->allKnownVAOS();
-
-	std::unordered_map<unsigned int, unsigned int> vertexArrays;
-
-	for (auto vao : vaos)
-	{
-		vertexArrays[vao.ID] = vao.elementCount;
-	}
-
-	for (auto it : transformationMatrixBatches)
-	{
-		GraphicsAPI::bindVAO(it.first);
-
-		if (it.second.size() > SGE_INSTANCING_THRESHOLD)
-		{
-			CModel& model = entityBatches[it.first][0]->getComponent<CModel>();
-			Mesh mesh = model.m_model.getMeshByVAO(VAO(it.first, vertexArrays[it.first]));
 			Material meshMaterial = mesh.getMaterial();
-			loadMaterial(instancedShader, &meshMaterial);
-
-			instancedShader->bind();
-			GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO));
-			GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, it.second.size() * sizeof(float) * 16, &it.second[0]));
-
-			// vertex Attributes
-			GLsizei vec4Size = sizeof(glm::vec4);
-			GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot1));
-			GLCall(glVertexAttribPointer(AttributeLocation::InstanceSlot1, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0));
-			GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot2));
-			GLCall(glVertexAttribPointer(AttributeLocation::InstanceSlot2, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(vec4Size)));
-			GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot3));
-			GLCall(glVertexAttribPointer(AttributeLocation::InstanceSlot3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size)));
-			GLCall(glEnableVertexAttribArray(AttributeLocation::InstanceSlot4));
-			GLCall(glVertexAttribPointer(AttributeLocation::InstanceSlot4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size)));
-
-			glVertexAttribDivisor(AttributeLocation::InstanceSlot1, 1);
-			glVertexAttribDivisor(AttributeLocation::InstanceSlot2, 1);
-			glVertexAttribDivisor(AttributeLocation::InstanceSlot3, 1);
-			glVertexAttribDivisor(AttributeLocation::InstanceSlot4, 1);
-				
-			renderInstancedEntities(VAO(it.first, vertexArrays[it.first]), it.second.size());
-
-			GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
-			glBindVertexArray(0);
-		}
-		else if(it.second.size() > 0)
-		{
-			normalShader->bind();
-			for(unsigned int i = 0; i < entityBatches[it.first].size(); i++)
-			{
-				if (entityBatches[it.first][i]->hasComponent<CRenderer>())
-				{
-					if (!entityBatches[it.first][i]->getComponent<CRenderer>().shouldBeRendered)
-					{
-						continue;
-					}
-				}
-				CModel& model = entityBatches[it.first][i]->getComponent<CModel>();
-				Mesh mesh = model.m_model.getMeshByVAO(VAO(it.first, vertexArrays[it.first]));
-				Material meshMaterial = mesh.getMaterial();
-				loadMaterial(normalShader, &meshMaterial);
-				normalShader->setMatrix4fUniform("transformationMatrix", it.second[i]);						
-				renderEntity(VAO(it.first, vertexArrays[it.first]));
-			}
-		}
-		else
-		{
-			continue;
-		}
-			
+			loadMaterial(normalShader, &meshMaterial);		
+			renderEntity(mesh.getVAO());
+		}	
 	}
-
-	normalShader->unbind();
 }
 
 void RenderSystem::renderEntity(VAO vao)
 {
+	GraphicsAPI::bindVAO(vao.ID);
 	GLCall(glActiveTexture(GL_TEXTURE0));
 	GLCall(glEnableVertexAttribArray(AttributeLocation::Position));
 	GLCall(glEnableVertexAttribArray(AttributeLocation::UVs));

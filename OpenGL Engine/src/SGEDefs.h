@@ -121,6 +121,9 @@ pointers
 #pragma endregion
 
 //Does not have a managed instance
+#include "Settings.h"
+
+//Does not have a managed instance
 #include "algorithm\Algorithm.h"
 
 //Does not have a managed instance
@@ -128,6 +131,9 @@ pointers
 
 //Does not have a managed instance
 #include "utility\Time.h"
+
+//Frustum is managed
+#include "utility\Frustum.h"
 
 //Batch, Data, Shader and Input managers are managed
 #include "data manager\ManagerSystems.h"
@@ -178,6 +184,7 @@ namespace SGE
 			std::shared_ptr<EventSystem>	 eventSystemInstance;
 			std::shared_ptr<BatchManager>	 batchManagerInstance;
 			std::shared_ptr<ShaderManager>	 shaderManagerInstance;
+			std::shared_ptr<Frustum>		 frustumInstance;
 
 			InstanceManager();
 			~InstanceManager();
@@ -198,7 +205,9 @@ namespace SGE
 		//Sends a projection matrix to a shader 
 		void _sgeSendProjectionMatrix(DynamicShader* targetShader);
 		//Creates a projection matrix and stores it into storage file
-		void _sgeCreateProjectionMatrix();
+		void _sgeCreateProjectionMatrix();	
+		//Creates the frustum variable
+		void _sgeCreateFrustumClass();
 	}
 
 }
