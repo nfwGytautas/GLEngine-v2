@@ -2,6 +2,8 @@
 * Development started at: 2018-06-08
 * First usable release: 2018-07-17
 
+* **You can find the trelo board here: https://trello.com/b/xnpNqvH0/sge**
+
 **TO LINK WITH THIS YOU WILL NEED GLM AND BOOST ASWELL AS AN WORKING MULTITHREADED ASSIMP DLL (temporary)**
 
 **ENGINE USES OR USED TO USE THESE LIBRARIES**:
