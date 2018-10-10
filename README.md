@@ -1,8 +1,7 @@
 # SGE (Simple Graphics Engine)
 * Development started at: 2018-06-08
 * First usable release: 2018-07-17
-
-* **You can find the trelo board here: https://trello.com/b/xnpNqvH0/sge**
+* Development paused at: 2018-10-10 until XXXX-XX-XX
 
 **TO LINK WITH THIS YOU WILL NEED GLM AND BOOST ASWELL AS AN WORKING MULTITHREADED ASSIMP DLL (temporary)**
 
