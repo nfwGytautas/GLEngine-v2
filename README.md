@@ -1,7 +1,9 @@
 # SGE (Simple Graphics Engine)
 * Development started at: 2018-06-08
 * First usable release: 2018-07-17
-* Development paused at: 2018-10-10 until XXXX-XX-XX
+* Development stoped at: 2018-10-10
+
+* While doing this project I have learned alot and as such have dropped this project to create a superior version you can find it at https://github.com/nfwGytautas/Triton
 
 **TO LINK WITH THIS YOU WILL NEED GLM AND BOOST ASWELL AS AN WORKING MULTITHREADED ASSIMP DLL (temporary)**
 
